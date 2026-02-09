@@ -12,6 +12,12 @@ interface BentoGridProps {
   columns?: keyof typeof columnsMap
 }
 
+/**
+ * 비대칭 카드 그리드 레이아웃 컴포넌트.
+ * CSS Grid 기반으로 반응형 열 구성을 지원한다 (1 → 2 → columns).
+ * @param props.columns - 최대 열 수 (2/3/4, 기본: 3)
+ * @param props.className - 추가 CSS 클래스
+ */
 export function BentoGrid({
   children,
   className,
@@ -47,6 +53,12 @@ interface BentoGridItemProps {
   rowSpan?: keyof typeof rowSpanMap
 }
 
+/**
+ * BentoGrid 내부 아이템 컴포넌트.
+ * colSpan과 rowSpan으로 그리드 내 크기를 조절한다.
+ * @param props.colSpan - 열 span (1 또는 2)
+ * @param props.rowSpan - 행 span (1 또는 2)
+ */
 export function BentoGridItem({
   children,
   className,
@@ -54,9 +66,7 @@ export function BentoGridItem({
   rowSpan = 1,
 }: BentoGridItemProps) {
   return (
-    <div
-      className={cn(colSpanMap[colSpan], rowSpanMap[rowSpan], className)}
-    >
+    <div className={cn(colSpanMap[colSpan], rowSpanMap[rowSpan], className)}>
       {children}
     </div>
   )

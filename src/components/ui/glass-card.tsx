@@ -14,6 +14,13 @@ interface GlassCardProps {
   padding?: keyof typeof paddingMap
 }
 
+/**
+ * Glassmorphism 스타일 카드 컴포넌트.
+ * 반투명 배경, backdrop-blur, 미세한 보더로 유리 질감을 구현한다.
+ * @param props.hover - hover 시 밝기/보더 전환 효과 활성화 여부
+ * @param props.as - 렌더링할 HTML 요소 태그
+ * @param props.padding - 내부 패딩 크기 (sm/md/lg)
+ */
 export function GlassCard({
   children,
   className,
