@@ -8,6 +8,7 @@ interface FloatingNavItem {
   label: string
   href: string
   icon?: React.ReactNode
+  external?: boolean
 }
 
 interface FloatingNavProps {
@@ -18,8 +19,8 @@ interface FloatingNavProps {
 /**
  * 화면 하단 중앙에 떠있는 플로팅 네비게이션.
  * 현재 라우트 경로에 따라 활성 상태를 표시한다.
- * 모바일에서는 아이콘만 표시하고, 데스크톱에서는 라벨을 함께 표시한다.
- * @param props.items - 네비게이션 항목 배열 (label, href, icon)
+ * 외부 링크는 새 탭으로 연다.
+ * @param props.items - 네비게이션 항목 배열 (label, href, icon, external)
  * @param props.className - 추가 CSS 클래스
  */
 export function FloatingNav({ items, className }: FloatingNavProps) {
@@ -38,6 +39,22 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
     >
       <ul className="flex items-center gap-1">
         {items.map((item) => {
+          if (item.external) {
+            return (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200"
+                >
+                  {item.icon && <span className="shrink-0">{item.icon}</span>}
+                  <span className="hidden sm:inline">{item.label}</span>
+                </a>
+              </li>
+            )
+          }
+
           const isActive =
             item.href === "/"
               ? pathname === "/"

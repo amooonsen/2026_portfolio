@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu } from "lucide-react"
+import { ExternalLink, Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Container } from "@/components/ui/container"
 import { ThemeToggle } from "./theme-toggle"
@@ -12,6 +12,7 @@ import { MobileNav } from "./mobile-nav"
 interface NavItem {
   label: string
   href: string
+  external?: boolean
 }
 
 interface HeaderProps {
@@ -73,6 +74,21 @@ export function Header({ items, className }: HeaderProps) {
 
             <nav className="hidden md:flex items-center gap-1">
               {items.map((item) => {
+                if (item.external) {
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors rounded-lg"
+                    >
+                      {item.label}
+                      <ExternalLink className="size-3" />
+                    </a>
+                  )
+                }
+
                 const isActive =
                   item.href === "/"
                     ? pathname === "/"

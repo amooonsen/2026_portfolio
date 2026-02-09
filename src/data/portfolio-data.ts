@@ -1,7 +1,6 @@
 import type { Project } from "@/components/sections/project-card"
 import type { TimelineItem } from "@/components/sections/experience-timeline"
 import type { TechCategory } from "@/components/sections/tech-stack"
-import type { BlogPost } from "@/components/sections/blog-card"
 
 /* ─── 네비게이션 ─── */
 
@@ -10,7 +9,7 @@ export const navItems = [
   { label: "소개", href: "/about" },
   { label: "프로젝트", href: "/projects" },
   { label: "경력", href: "/experience" },
-  { label: "블로그", href: "/blog" },
+  { label: "블로그", href: "https://blog.example.com", external: true },
   { label: "연락처", href: "/contact" },
 ]
 
@@ -130,38 +129,6 @@ export const techCategories: TechCategory[] = [
       { name: "Vitest" },
       { name: "Playwright" },
     ],
-  },
-]
-
-/* ─── 블로그 ─── */
-
-export const blogPosts: BlogPost[] = [
-  {
-    slug: "nextjs-16-deep-dive",
-    title: "Next.js 16 딥다이브: 달라진 점과 마이그레이션 가이드",
-    excerpt:
-      "Next.js 16에서 변경된 주요 기능과 기존 프로젝트를 마이그레이션하는 방법을 정리합니다.",
-    date: "2026-01-15",
-    readingTime: "8분",
-    tags: ["Next.js", "React"],
-  },
-  {
-    slug: "gsap-scroll-animations",
-    title: "GSAP ScrollTrigger로 스크롤 애니메이션 구현하기",
-    excerpt:
-      "GSAP의 ScrollTrigger 플러그인을 활용한 실전 스크롤 애니메이션 패턴을 소개합니다.",
-    date: "2025-12-20",
-    readingTime: "6분",
-    tags: ["GSAP", "Animation"],
-  },
-  {
-    slug: "accessible-web-components",
-    title: "접근성을 고려한 웹 컴포넌트 설계",
-    excerpt:
-      "WCAG 2.1 기준을 만족하는 재사용 가능한 UI 컴포넌트를 설계하는 원칙과 실전 패턴.",
-    date: "2025-11-10",
-    readingTime: "10분",
-    tags: ["Accessibility", "React"],
   },
 ]
 

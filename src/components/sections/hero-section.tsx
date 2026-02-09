@@ -1,6 +1,5 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import Link from "next/link"
 import { Section } from "@/components/ui/section"
 import { GradientText } from "@/components/ui/gradient-text"
@@ -9,12 +8,6 @@ import { TextReveal } from "@/components/animation/text-reveal"
 import { FadeIn } from "@/components/animation/fade-in"
 import { SlideUp } from "@/components/animation/slide-up"
 import { Magnetic } from "@/components/ui/magnetic"
-
-const HeroScene = dynamic(
-  () =>
-    import("@/components/three/hero-scene").then((mod) => mod.HeroScene),
-  { ssr: false }
-)
 
 interface HeroSectionProps {
   title: string
@@ -28,7 +21,8 @@ interface HeroSectionProps {
 
 /**
  * Hero 섹션 컴포넌트.
- * 배경 애니메이션, 그라디언트 타이틀, CTA 버튼, 스크롤 인디케이터를 포함한다.
+ * 3D 배경 위에 그라디언트 타이틀, CTA 버튼, 스크롤 인디케이터를 표시한다.
+ * 배경 씬은 부모(page.tsx)에서 별도 렌더링한다.
  * @param props.title - 메인 타이틀
  * @param props.subtitle - 서브 타이틀
  * @param props.description - 설명 텍스트
@@ -49,12 +43,10 @@ export function HeroSection({
   return (
     <Section spacing="xl" container>
       <div className="relative flex min-h-[calc(100vh-4rem)] items-center">
-        <HeroScene />
-
         <div className="relative z-10 w-full">
           <TextReveal
             as="h1"
-            className="text-5xl font-bold tracking-tight md:text-7xl"
+            className="text-5xl font-bold tracking-tight text-white md:text-7xl"
             animation="fadeUp"
           >
             {subtitle}
@@ -72,7 +64,7 @@ export function HeroSection({
           </FadeIn>
 
           <FadeIn delay={0.5}>
-            <p className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
+            <p className="mt-6 max-w-2xl text-lg text-white/60 md:text-xl">
               {description}
             </p>
           </FadeIn>
@@ -85,7 +77,7 @@ export function HeroSection({
                 </Button>
               </Magnetic>
               <Magnetic>
-                <Button variant="outline" size="lg" asChild>
+                <Button variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10" asChild>
                   <Link href={secondaryHref}>{secondaryLabel}</Link>
                 </Button>
               </Magnetic>
@@ -97,9 +89,9 @@ export function HeroSection({
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
           <FadeIn delay={1.2}>
             <div className="flex flex-col items-center gap-2">
-              <span className="text-xs text-muted-foreground">스크롤</span>
-              <div className="h-8 w-5 rounded-full border-2 border-muted-foreground/30 p-0.5">
-                <div className="h-2 w-full animate-bounce rounded-full bg-muted-foreground/50" />
+              <span className="text-xs text-white/40">스크롤</span>
+              <div className="h-8 w-5 rounded-full border-2 border-white/20 p-0.5">
+                <div className="h-2 w-full animate-bounce rounded-full bg-white/40" />
               </div>
             </div>
           </FadeIn>
