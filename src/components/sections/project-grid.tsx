@@ -17,7 +17,7 @@ interface ProjectGridProps {
  */
 export function ProjectGrid({ projects }: ProjectGridProps) {
   return (
-    <Section id="projects" spacing="lg" container>
+    <Section spacing="lg" container>
       <FadeIn>
         <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
           Projects

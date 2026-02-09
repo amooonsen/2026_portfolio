@@ -26,7 +26,7 @@ interface TechStackProps {
  */
 export function TechStack({ categories }: TechStackProps) {
   return (
-    <Section id="tech" spacing="lg" container>
+    <Section spacing="lg" container>
       <FadeIn>
         <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
           Tech Stack

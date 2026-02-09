@@ -36,7 +36,7 @@ export function ContactSection({ email, socials }: ContactSectionProps) {
   })
 
   return (
-    <Section id="contact" spacing="lg" container containerSize="md">
+    <Section spacing="lg" container containerSize="md">
       <FadeIn>
         <div className="text-center">
           <GradientText

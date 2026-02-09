@@ -1154,3 +1154,6 @@ Three.js: dynamic import으로 lazy load (번들 분리)
 ### Phase 6 - Content
 
 24. 각 목적에 맞게 컨텐츠별 분리(메인은 히어로와 전체 개요, about은 소개, project는 실행한 프로젝트 등)
+
+<!-- TODO 1: 메인 페이지는 비쥬얼만 놔두고 각 관심사별로 분리하기 -->
+<!-- TODO 2: context 문제 확인하기  -->

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Container } from "@/components/ui/container"
@@ -21,7 +22,7 @@ interface HeaderProps {
 /**
  * 고정 헤더 컴포넌트.
  * 스크롤 다운 시 숨기고, 스크롤 업 시 glassmorphism 배경과 함께 표시한다.
- * 모바일에서는 햄버거 메뉴를 통해 MobileNav 오버레이를 토글한다.
+ * 현재 라우트에 따라 네비게이션 링크 활성 상태를 표시한다.
  * @param props.items - 네비게이션 링크 목록
  * @param props.className - 추가 CSS 클래스
  */
@@ -30,6 +31,7 @@ export function Header({ items, className }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const lastScrollY = useRef(0)
+  const pathname = usePathname()
 
   /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. */
   const handleScroll = useCallback(() => {
@@ -70,15 +72,27 @@ export function Header({ items, className }: HeaderProps) {
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">
-              {items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {items.map((item) => {
+                const isActive =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href)
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors rounded-lg",
+                      isActive
+                        ? "text-foreground bg-muted"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
             </nav>
 
             <div className="flex items-center gap-2">

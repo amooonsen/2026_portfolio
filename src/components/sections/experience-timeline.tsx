@@ -58,7 +58,7 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
   }, [reducedMotion])
 
   return (
-    <Section id="experience" spacing="lg" container>
+    <Section spacing="lg" container>
       <FadeIn>
         <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
           Experience

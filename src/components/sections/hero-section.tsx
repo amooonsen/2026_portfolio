@@ -1,5 +1,7 @@
 "use client"
 
+import dynamic from "next/dynamic"
+import Link from "next/link"
 import { Section } from "@/components/ui/section"
 import { GradientText } from "@/components/ui/gradient-text"
 import { Button } from "@/components/ui/button"
@@ -7,7 +9,12 @@ import { TextReveal } from "@/components/animation/text-reveal"
 import { FadeIn } from "@/components/animation/fade-in"
 import { SlideUp } from "@/components/animation/slide-up"
 import { Magnetic } from "@/components/ui/magnetic"
-import { HeroScene } from "@/components/three/hero-scene"
+
+const HeroScene = dynamic(
+  () =>
+    import("@/components/three/hero-scene").then((mod) => mod.HeroScene),
+  { ssr: false }
+)
 
 interface HeroSectionProps {
   title: string
@@ -35,12 +42,12 @@ export function HeroSection({
   subtitle,
   description,
   ctaLabel = "프로젝트 보기",
-  ctaHref = "#projects",
+  ctaHref = "/projects",
   secondaryLabel = "연락하기",
-  secondaryHref = "#contact",
+  secondaryHref = "/contact",
 }: HeroSectionProps) {
   return (
-    <Section id="home" spacing="xl" container>
+    <Section spacing="xl" container>
       <div className="relative flex min-h-[calc(100vh-4rem)] items-center">
         <HeroScene />
 
@@ -74,12 +81,12 @@ export function HeroSection({
             <div className="mt-10 flex gap-4">
               <Magnetic>
                 <Button size="lg" asChild>
-                  <a href={ctaHref}>{ctaLabel}</a>
+                  <Link href={ctaHref}>{ctaLabel}</Link>
                 </Button>
               </Magnetic>
               <Magnetic>
                 <Button variant="outline" size="lg" asChild>
-                  <a href={secondaryHref}>{secondaryLabel}</a>
+                  <Link href={secondaryHref}>{secondaryLabel}</Link>
                 </Button>
               </Magnetic>
             </div>
