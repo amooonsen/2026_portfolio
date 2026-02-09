@@ -14,6 +14,7 @@ interface TimelineItem {
   company: string
   role: string
   period: string
+  year: number
   description: string
   technologies: string[]
 }

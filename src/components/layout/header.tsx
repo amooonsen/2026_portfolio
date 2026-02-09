@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import { ExternalLink, Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Container } from "@/components/ui/container"
-import { ThemeToggle } from "./theme-toggle"
 import { MobileNav } from "./mobile-nav"
 
 interface NavItem {
@@ -112,7 +111,6 @@ export function Header({ items, className }: HeaderProps) {
             </nav>
 
             <div className="flex items-center gap-2">
-              <ThemeToggle />
               <button
                 className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted transition-colors"
                 onClick={() => setIsMobileNavOpen(true)}

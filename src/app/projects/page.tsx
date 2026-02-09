@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { ProjectGrid } from "@/components/sections/project-grid"
-import { projects } from "@/data/portfolio-data"
+import { getAllProjects } from "@/lib/projects"
 
 export const metadata: Metadata = {
   title: "프로젝트",
@@ -8,8 +8,9 @@ export const metadata: Metadata = {
 
 /**
  * 프로젝트 페이지.
- * BentoGrid 레이아웃으로 프로젝트 목록을 표시한다.
+ * 마크다운 기반 프로젝트 데이터를 BentoGrid 레이아웃으로 표시한다.
  */
 export default function ProjectsPage() {
+  const projects = getAllProjects()
   return <ProjectGrid projects={projects} />
 }
