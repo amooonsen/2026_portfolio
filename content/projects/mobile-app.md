@@ -1,7 +1,7 @@
 ---
 title: "모바일 앱"
 description: "React Native 크로스플랫폼 헬스케어 앱. 실시간 건강 데이터 추적 및 커뮤니티 기능."
-tags: ["React Native", "Expo", "Firebase"]
+tags: ["React Native", "TypeScript", "Firebase"]
 year: 2022
 images:
   - "https://picsum.photos/seed/mobile-1/1200/800"

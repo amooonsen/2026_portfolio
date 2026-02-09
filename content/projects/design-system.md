@@ -1,7 +1,7 @@
 ---
 title: "디자인 시스템"
 description: "일관된 UI를 위한 사내 컴포넌트 라이브러리. Storybook 문서화와 자동 시각적 회귀 테스트를 포함합니다."
-tags: ["React", "Storybook", "Tailwind CSS"]
+tags: ["React", "TypeScript", "Storybook", "Tailwind CSS"]
 year: 2023
 images:
   - "https://picsum.photos/seed/design-sys-1/1200/800"

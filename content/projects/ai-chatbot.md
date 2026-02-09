@@ -1,7 +1,7 @@
 ---
 title: "AI 챗봇"
 description: "자연어 처리 기반 고객 상담 자동화 서비스. RAG 파이프라인으로 도메인 특화 응답을 제공합니다."
-tags: ["Python", "LangChain", "React"]
+tags: ["Next.js", "TypeScript", "LangChain", "Tailwind CSS"]
 year: 2024
 images:
   - "https://picsum.photos/seed/chatbot-1/1200/800"
@@ -17,7 +17,7 @@ links:
 ## 주요 작업
 
 - **RAG 파이프라인**: LangChain을 활용한 문서 임베딩, 벡터 검색, 응답 생성 파이프라인 구축
-- **프론트엔드 채팅 UI**: React 기반 실시간 채팅 인터페이스 (스트리밍 응답 지원)
+- **프론트엔드 채팅 UI**: Next.js 기반 실시간 채팅 인터페이스 (스트리밍 응답 지원)
 - **관리자 대시보드**: 대화 기록 조회, 응답 품질 모니터링, FAQ 관리 기능
 
 ## 기술적 도전

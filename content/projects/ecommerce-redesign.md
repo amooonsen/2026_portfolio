@@ -1,7 +1,7 @@
 ---
 title: "이커머스 리디자인"
 description: "전환율 40% 향상을 이끈 UX 개선 프로젝트. A/B 테스트와 사용자 행동 분석 기반 데이터 드리븐 접근."
-tags: ["Next.js", "Stripe", "Vercel"]
+tags: ["Vue.js", "Nuxt.js", "Tailwind CSS"]
 year: 2021
 images:
   - "https://picsum.photos/seed/ecommerce-1/1200/800"
@@ -23,7 +23,7 @@ links:
 
 ## 기술적 도전
 
-Next.js App Router를 활용한 서버 사이드 렌더링으로 초기 로딩 속도를 개선하고, Stripe 결제 통합 시 보안과 사용자 경험 사이의 균형을 맞추었습니다.
+Nuxt.js SSR을 활용한 서버 사이드 렌더링으로 초기 로딩 속도를 개선하고, 결제 모듈 연동 시 보안과 사용자 경험 사이의 균형을 맞추었습니다.
 
 ## 성과
 
