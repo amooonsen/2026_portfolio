@@ -70,20 +70,20 @@ src/components/
 
 ```tsx
 interface ContainerProps {
-  children: React.ReactNode
-  className?: string
-  as?: "div" | "section" | "main" | "article"
-  size?: "sm" | "md" | "lg" | "xl" | "full"
+  children: React.ReactNode;
+  className?: string;
+  as?: "div" | "section" | "main" | "article";
+  size?: "sm" | "md" | "lg" | "xl" | "full";
 }
 ```
 
-| size | max-width |
-|------|-----------|
-| `sm` | `max-w-3xl` (768px) |
-| `md` | `max-w-5xl` (1024px) |
-| `lg` | `max-w-7xl` (1280px) — default |
-| `xl` | `max-w-[1440px]` |
-| `full` | `w-full` |
+| size   | max-width                      |
+| ------ | ------------------------------ |
+| `sm`   | `max-w-3xl` (768px)            |
+| `md`   | `max-w-5xl` (1024px)           |
+| `lg`   | `max-w-7xl` (1280px) — default |
+| `xl`   | `max-w-[1440px]`               |
+| `full` | `w-full`                       |
 
 기본 패딩: `px-4 sm:px-6 lg:px-8`
 
@@ -96,21 +96,21 @@ interface ContainerProps {
 
 ```tsx
 interface SectionProps {
-  children: React.ReactNode
-  className?: string
-  id?: string
-  spacing?: "sm" | "md" | "lg" | "xl"
-  container?: boolean          // true면 내부에 Container 래핑
-  containerSize?: ContainerProps["size"]
+  children: React.ReactNode;
+  className?: string;
+  id?: string;
+  spacing?: "sm" | "md" | "lg" | "xl";
+  container?: boolean; // true면 내부에 Container 래핑
+  containerSize?: ContainerProps["size"];
 }
 ```
 
-| spacing | padding |
-|---------|---------|
-| `sm` | `py-12 md:py-16` |
-| `md` | `py-16 md:py-24` |
-| `lg` | `py-24 md:py-32 lg:py-40` — default |
-| `xl` | `py-32 md:py-40 lg:py-48` |
+| spacing | padding                             |
+| ------- | ----------------------------------- |
+| `sm`    | `py-12 md:py-16`                    |
+| `md`    | `py-16 md:py-24`                    |
+| `lg`    | `py-24 md:py-32 lg:py-40` — default |
+| `xl`    | `py-32 md:py-40 lg:py-48`           |
 
 `id` prop은 앵커 네비게이션용. `scroll-mt-20`으로 fixed nav 높이 보정.
 
@@ -125,15 +125,16 @@ interface SectionProps {
 
 ```tsx
 interface GlassCardProps {
-  children: React.ReactNode
-  className?: string
-  hover?: boolean              // hover 시 밝기/보더 변화
-  as?: "div" | "article" | "li"
-  padding?: "sm" | "md" | "lg"
+  children: React.ReactNode;
+  className?: string;
+  hover?: boolean; // hover 시 밝기/보더 변화
+  as?: "div" | "article" | "li";
+  padding?: "sm" | "md" | "lg";
 }
 ```
 
 스타일 핵심:
+
 ```
 bg-white/5 dark:bg-white/5
 backdrop-blur-xl
@@ -142,6 +143,7 @@ rounded-2xl
 ```
 
 hover 활성 시:
+
 ```
 transition-all duration-300
 hover:bg-white/10 hover:border-white/20
@@ -159,20 +161,21 @@ hover:shadow-lg hover:shadow-white/5
 
 ```tsx
 interface BentoGridProps {
-  children: React.ReactNode
-  className?: string
-  columns?: 2 | 3 | 4           // 기본 3 (반응형: 1→2→3)
+  children: React.ReactNode;
+  className?: string;
+  columns?: 2 | 3 | 4; // 기본 3 (반응형: 1→2→3)
 }
 
 interface BentoGridItemProps {
-  children: React.ReactNode
-  className?: string
-  colSpan?: 1 | 2               // grid column span
-  rowSpan?: 1 | 2               // grid row span
+  children: React.ReactNode;
+  className?: string;
+  colSpan?: 1 | 2; // grid column span
+  rowSpan?: 1 | 2; // grid row span
 }
 ```
 
 그리드 구조:
+
 ```
 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{columns}
 gap-4 md:gap-6
@@ -180,6 +183,7 @@ auto-rows-[minmax(200px,auto)]
 ```
 
 BentoGridItem의 span 예시:
+
 ```
 Featured project:  colSpan=2, rowSpan=2  → 큰 카드
 Normal project:    colSpan=1, rowSpan=1  → 표준 카드
@@ -198,15 +202,16 @@ Tall project:      colSpan=1, rowSpan=2  → 세로 긴 카드
 
 ```tsx
 interface GradientTextProps {
-  children: React.ReactNode
-  className?: string
-  as?: "h1" | "h2" | "h3" | "span" | "p"
-  gradient?: "primary" | "accent" | "rainbow" | "custom"
-  animate?: boolean             // 그라디언트 시프트 애니메이션
+  children: React.ReactNode;
+  className?: string;
+  as?: "h1" | "h2" | "h3" | "span" | "p";
+  gradient?: "primary" | "accent" | "rainbow" | "custom";
+  animate?: boolean; // 그라디언트 시프트 애니메이션
 }
 ```
 
 그라디언트 프리셋:
+
 ```
 primary:  from-foreground via-foreground/80 to-muted-foreground
 accent:   from-indigo-400 via-purple-400 to-pink-400
@@ -227,15 +232,16 @@ animate=true일 때: `bg-[length:200%_auto] animate-gradient-shift`
 
 ```tsx
 interface MagneticProps {
-  children: React.ReactNode
-  className?: string
-  strength?: number            // 자석 강도 0-1, default 0.3
-  radius?: number              // 감지 반경 px, default 150
-  disabled?: boolean
+  children: React.ReactNode;
+  className?: string;
+  strength?: number; // 자석 강도 0-1, default 0.3
+  radius?: number; // 감지 반경 px, default 150
+  disabled?: boolean;
 }
 ```
 
 동작:
+
 1. `onMouseMove`로 마우스 위치 추적
 2. 요소 중심과의 거리 계산
 3. `radius` 내에 들어오면 `transform: translate(dx, dy)` 적용
@@ -255,15 +261,16 @@ interface MagneticProps {
 
 ```tsx
 interface SpotlightProps {
-  children: React.ReactNode
-  className?: string
-  size?: number                // 스포트라이트 크기 px, default 400
-  color?: string               // 스포트라이트 색상, default "white"
-  opacity?: number             // 0-1, default 0.08
+  children: React.ReactNode;
+  className?: string;
+  size?: number; // 스포트라이트 크기 px, default 400
+  color?: string; // 스포트라이트 색상, default "white"
+  opacity?: number; // 0-1, default 0.08
 }
 ```
 
 구현:
+
 ```
 position: relative; overflow: hidden;
 ::after pseudo-element로 radial-gradient 생성
@@ -284,15 +291,16 @@ CSS custom properties (--x, --y)로 실시간 업데이트
 
 ```tsx
 interface TechBadgeProps {
-  name: string
-  icon?: React.ReactNode       // Lucide icon 또는 커스텀 SVG
-  className?: string
-  variant?: "default" | "outline" | "ghost"
-  size?: "sm" | "md"
+  name: string;
+  icon?: React.ReactNode; // Lucide icon 또는 커스텀 SVG
+  className?: string;
+  variant?: "default" | "outline" | "ghost";
+  size?: "sm" | "md";
 }
 ```
 
 스타일:
+
 ```
 default:  bg-muted text-muted-foreground
 outline:  border border-border text-muted-foreground
@@ -310,19 +318,19 @@ ghost:    text-muted-foreground hover:bg-muted
 
 ```tsx
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  icon: React.ReactNode
-  label: string                // aria-label (필수)
-  size?: "sm" | "md" | "lg"
-  variant?: "default" | "ghost" | "outline"
-  asChild?: boolean            // Radix Slot 패턴
+  icon: React.ReactNode;
+  label: string; // aria-label (필수)
+  size?: "sm" | "md" | "lg";
+  variant?: "default" | "ghost" | "outline";
+  asChild?: boolean; // Radix Slot 패턴
 }
 ```
 
-| size | 크기 |
-|------|------|
-| `sm` | `h-8 w-8` |
+| size | 크기                  |
+| ---- | --------------------- |
+| `sm` | `h-8 w-8`             |
 | `md` | `h-10 w-10` — default |
-| `lg` | `h-12 w-12` |
+| `lg` | `h-12 w-12`           |
 
 `label` prop은 시각적으로 숨기되 `aria-label`로 적용. 접근성 필수.
 
@@ -339,11 +347,12 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 
 ```tsx
 interface HeaderProps {
-  className?: string
+  className?: string;
 }
 ```
 
 구성:
+
 ```
 <header>
   <Container>
@@ -360,6 +369,7 @@ interface HeaderProps {
 ```
 
 스크롤 동작:
+
 - 스크롤 다운 → 헤더 hide (translateY: -100%)
 - 스크롤 업 → 헤더 show + glassmorphism 배경
 - 상단(scrollY < 50) → 투명 배경
@@ -376,15 +386,16 @@ interface HeaderProps {
 ```tsx
 interface FloatingNavProps {
   items: Array<{
-    label: string
-    href: string
-    icon?: React.ReactNode
-  }>
-  className?: string
+    label: string;
+    href: string;
+    icon?: React.ReactNode;
+  }>;
+  className?: string;
 }
 ```
 
 스타일:
+
 ```
 fixed bottom-6 left-1/2 -translate-x-1/2 z-50
 bg-background/80 backdrop-blur-xl
@@ -393,6 +404,7 @@ px-2 py-1.5 shadow-2xl
 ```
 
 각 NavItem:
+
 ```
 px-4 py-2 rounded-full
 text-sm font-medium
@@ -416,13 +428,14 @@ hover → bg-muted
 ```tsx
 interface MobileNavProps {
   items: Array<{
-    label: string
-    href: string
-  }>
+    label: string;
+    href: string;
+  }>;
 }
 ```
 
 동작:
+
 - 햄버거 아이콘 클릭 → 전체 화면 오버레이 (inset-0)
 - 배경: `bg-background/95 backdrop-blur-xl`
 - 링크: 큰 폰트 (text-3xl), 순차 페이드인 (stagger)
@@ -439,11 +452,12 @@ interface MobileNavProps {
 
 ```tsx
 interface FooterProps {
-  className?: string
+  className?: string;
 }
 ```
 
 구성:
+
 ```
 <footer>
   <Container>
@@ -474,6 +488,7 @@ interface FooterProps {
 ```
 
 동작:
+
 1. `<html>` 요소의 `className`에서 `dark` 클래스 토글
 2. `localStorage`에 테마 선호도 저장
 3. 시스템 `prefers-color-scheme` 기본값 존중
@@ -491,12 +506,13 @@ interface FooterProps {
 
 ```tsx
 interface ScrollProgressProps {
-  className?: string
-  color?: string              // 바 색상, default "bg-primary"
+  className?: string;
+  color?: string; // 바 색상, default "bg-primary"
 }
 ```
 
 구현:
+
 - `scroll` 이벤트로 스크롤 비율 계산
 - `scaleX(ratio)` transform으로 너비 조절 (GPU 가속)
 - `position: fixed; top: 0; left: 0; z-index: 9999`
@@ -514,12 +530,13 @@ interface ScrollProgressProps {
 
 ```tsx
 interface SkipNavProps {
-  contentId?: string           // default "main-content"
-  label?: string               // default "콘텐츠로 건너뛰기"
+  contentId?: string; // default "main-content"
+  label?: string; // default "콘텐츠로 건너뛰기"
 }
 ```
 
 스타일:
+
 ```
 sr-only focus:not-sr-only
 focus:fixed focus:top-4 focus:left-4 focus:z-[9999]
@@ -538,15 +555,16 @@ focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg
 
 ```tsx
 interface HeroSectionProps {
-  title: string
-  subtitle: string
-  description: string
-  ctaLabel?: string
-  ctaHref?: string
+  title: string;
+  subtitle: string;
+  description: string;
+  ctaLabel?: string;
+  ctaHref?: string;
 }
 ```
 
 구성:
+
 ```
 <Section spacing="xl">
   <Container>
@@ -593,25 +611,26 @@ interface HeroSectionProps {
 
 ```tsx
 interface Project {
-  slug: string
-  title: string
-  description: string
-  thumbnail: string
-  tags: string[]
-  featured?: boolean
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  tags: string[];
+  featured?: boolean;
   links?: {
-    github?: string
-    live?: string
-  }
+    github?: string;
+    live?: string;
+  };
 }
 
 interface ProjectGridProps {
-  projects: Project[]
-  showFilter?: boolean
+  projects: Project[];
+  showFilter?: boolean;
 }
 ```
 
 구성:
+
 ```
 <Section id="projects">
   <Container>
@@ -640,12 +659,13 @@ interface ProjectGridProps {
 
 ```tsx
 interface ProjectCardProps {
-  project: Project
-  featured?: boolean
+  project: Project;
+  featured?: boolean;
 }
 ```
 
 구성:
+
 ```
 <Spotlight>
   <GlassCard hover>
@@ -675,20 +695,21 @@ interface ProjectCardProps {
 
 ```tsx
 interface TimelineItem {
-  company: string
-  role: string
-  period: string
-  description: string
-  technologies: string[]
-  logo?: string
+  company: string;
+  role: string;
+  period: string;
+  description: string;
+  technologies: string[];
+  logo?: string;
 }
 
 interface ExperienceTimelineProps {
-  items: TimelineItem[]
+  items: TimelineItem[];
 }
 ```
 
 레이아웃:
+
 - 중앙 세로선 (border-l 또는 SVG line)
 - 각 아이템은 좌우 번갈아 배치 (desktop)
 - 모바일에서는 모두 좌측 정렬
@@ -703,20 +724,21 @@ interface ExperienceTimelineProps {
 
 ```tsx
 interface TechCategory {
-  name: string
+  name: string;
   items: Array<{
-    name: string
-    icon: React.ReactNode
-    proficiency?: "learning" | "comfortable" | "expert"
-  }>
+    name: string;
+    icon: React.ReactNode;
+    proficiency?: "learning" | "comfortable" | "expert";
+  }>;
 }
 
 interface TechStackProps {
-  categories: TechCategory[]
+  categories: TechCategory[];
 }
 ```
 
 레이아웃:
+
 ```
 카테고리별 그룹:
   Frontend | Backend | DevOps | Tools
@@ -733,16 +755,17 @@ interface TechStackProps {
 
 ```tsx
 interface ContactSectionProps {
-  email: string
+  email: string;
   socials: Array<{
-    platform: string
-    url: string
-    icon: React.ReactNode
-  }>
+    platform: string;
+    url: string;
+    icon: React.ReactNode;
+  }>;
 }
 ```
 
 구성:
+
 ```
 <Section id="contact">
   <Container size="md">
@@ -770,21 +793,22 @@ Server Action으로 전송, 클라이언트에서 `useActionState` 사용.
 
 ```tsx
 interface BlogPost {
-  slug: string
-  title: string
-  excerpt: string
-  date: string
-  readingTime: string
-  tags: string[]
-  thumbnail?: string
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  readingTime: string;
+  tags: string[];
+  thumbnail?: string;
 }
 
 interface BlogCardProps {
-  post: BlogPost
+  post: BlogPost;
 }
 ```
 
 구성:
+
 ```
 <GlassCard hover as="article">
   <Link href={`/blog/${post.slug}`}>
@@ -813,17 +837,18 @@ interface BlogCardProps {
 
 ```tsx
 interface FadeInProps {
-  children: React.ReactNode
-  className?: string
-  delay?: number               // 초 단위, default 0
-  duration?: number            // 초 단위, default 0.6
-  direction?: "up" | "down" | "left" | "right" | "none"
-  distance?: number            // px, default 40
-  once?: boolean               // 한 번만 실행, default true
+  children: React.ReactNode;
+  className?: string;
+  delay?: number; // 초 단위, default 0
+  duration?: number; // 초 단위, default 0.6
+  direction?: "up" | "down" | "left" | "right" | "none";
+  distance?: number; // px, default 40
+  once?: boolean; // 한 번만 실행, default true
 }
 ```
 
 구현: GSAP + ScrollTrigger
+
 ```
 gsap.from(element, {
   opacity: 0,
@@ -850,11 +875,11 @@ FadeIn의 단축 래퍼. direction="up" 고정.
 
 ```tsx
 interface SlideUpProps {
-  children: React.ReactNode
-  className?: string
-  delay?: number
-  duration?: number
-  distance?: number
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  duration?: number;
+  distance?: number;
 }
 ```
 
@@ -868,15 +893,16 @@ interface SlideUpProps {
 
 ```tsx
 interface StaggerChildrenProps {
-  children: React.ReactNode
-  className?: string
-  stagger?: number             // 각 자식 간 딜레이, default 0.1
-  delay?: number               // 전체 시작 딜레이, default 0
-  animation?: "fadeUp" | "fadeIn" | "scaleUp"
+  children: React.ReactNode;
+  className?: string;
+  stagger?: number; // 각 자식 간 딜레이, default 0.1
+  delay?: number; // 전체 시작 딜레이, default 0
+  animation?: "fadeUp" | "fadeIn" | "scaleUp";
 }
 ```
 
 구현:
+
 - `containerRef`의 직계 자식을 `querySelectorAll(":scope > *")`로 선택
 - `gsap.from(children, { stagger: stagger, ... })`
 - ScrollTrigger로 뷰포트 진입 시 실행
@@ -891,14 +917,15 @@ interface StaggerChildrenProps {
 
 ```tsx
 interface ParallaxProps {
-  children: React.ReactNode
-  className?: string
-  speed?: number               // -1 ~ 1, default 0.5 (양수: 느리게, 음수: 빠르게)
-  direction?: "vertical" | "horizontal"
+  children: React.ReactNode;
+  className?: string;
+  speed?: number; // -1 ~ 1, default 0.5 (양수: 느리게, 음수: 빠르게)
+  direction?: "vertical" | "horizontal";
 }
 ```
 
 구현: GSAP ScrollTrigger
+
 ```
 gsap.to(element, {
   y: direction === "vertical" ? `${speed * 100}px` : 0,
@@ -923,22 +950,24 @@ gsap.to(element, {
 
 ```tsx
 interface TextRevealProps {
-  children: string              // 텍스트 문자열
-  className?: string
-  as?: "h1" | "h2" | "h3" | "p" | "span"
-  splitBy?: "char" | "word"    // default "word"
-  stagger?: number             // default 0.03 (char) / 0.08 (word)
-  delay?: number
-  animation?: "fadeUp" | "clipReveal" | "blur"
+  children: string; // 텍스트 문자열
+  className?: string;
+  as?: "h1" | "h2" | "h3" | "p" | "span";
+  splitBy?: "char" | "word"; // default "word"
+  stagger?: number; // default 0.03 (char) / 0.08 (word)
+  delay?: number;
+  animation?: "fadeUp" | "clipReveal" | "blur";
 }
 ```
 
 구현:
+
 1. 텍스트를 `splitBy` 기준으로 분할
 2. 각 단위를 `<span>` 래핑 (inline-block)
 3. GSAP stagger 애니메이션 적용
 
 animation 프리셋:
+
 ```
 fadeUp:     opacity 0→1, y 20→0
 clipReveal: clipPath "inset(100% 0 0 0)" → "inset(0 0 0 0)"
@@ -955,13 +984,13 @@ blur:       filter "blur(10px)" → "blur(0)", opacity 0→1
 
 ```tsx
 interface CountUpProps {
-  end: number
-  start?: number               // default 0
-  duration?: number            // 초, default 2
-  suffix?: string              // "+", "%", "k" 등
-  prefix?: string              // "$", ">" 등
-  className?: string
-  separator?: string           // 천 단위 구분자, default ","
+  end: number;
+  start?: number; // default 0
+  duration?: number; // 초, default 2
+  suffix?: string; // "+", "%", "k" 등
+  prefix?: string; // "$", ">" 등
+  className?: string;
+  separator?: string; // 천 단위 구분자, default ","
 }
 ```
 
@@ -979,9 +1008,9 @@ Magnetic(ui/)은 독립 컴포넌트, MagneticWrapper(animation/)는 기존 요�
 
 ```tsx
 interface MagneticWrapperProps {
-  children: React.ReactNode
-  className?: string
-  strength?: number
+  children: React.ReactNode;
+  className?: string;
+  strength?: number;
 }
 ```
 
@@ -994,7 +1023,7 @@ interface MagneticWrapperProps {
 경로: `src/hooks/use-reduced-motion.ts`
 
 ```tsx
-function useReducedMotion(): boolean
+function useReducedMotion(): boolean;
 ```
 
 `prefers-reduced-motion: reduce` 미디어 쿼리 감지.
@@ -1007,7 +1036,7 @@ function useReducedMotion(): boolean
 경로: `src/hooks/use-scroll-progress.ts`
 
 ```tsx
-function useScrollProgress(): number  // 0 ~ 1
+function useScrollProgress(): number; // 0 ~ 1
 ```
 
 페이지 전체 스크롤 진행률 반환.
@@ -1019,7 +1048,7 @@ function useScrollProgress(): number  // 0 ~ 1
 경로: `src/hooks/use-media-query.ts`
 
 ```tsx
-function useMediaQuery(query: string): boolean
+function useMediaQuery(query: string): boolean;
 ```
 
 미디어 쿼리 매칭 상태 반환.
@@ -1032,7 +1061,7 @@ SSR hydration mismatch 방지: 초기값 false, mount 후 업데이트.
 경로: `src/hooks/use-active-section.ts`
 
 ```tsx
-function useActiveSection(sectionIds: string[]): string | null
+function useActiveSection(sectionIds: string[]): string | null;
 ```
 
 Intersection Observer로 현재 뷰포트에 보이는 섹션 ID 반환.
@@ -1043,11 +1072,13 @@ FloatingNav의 활성 상태 표시에 사용.
 ## 6. Dependency Summary
 
 현재 설치됨:
+
 - `radix-ui`, `class-variance-authority`, `clsx`, `tailwind-merge` (shadcn)
 - `lucide-react` (icons)
 - `tw-animate-css` (animation)
 
 추가 필요:
+
 ```
 npm install gsap @gsap/react
 npm install three @react-three/fiber @react-three/drei
@@ -1061,46 +1092,50 @@ Three.js: dynamic import으로 lazy load (번들 분리)
 
 ## 7. Component Rendering Strategy
 
-| Component | Type | Rendering |
-|-----------|------|-----------|
-| Container, Section, GlassCard | Server | Static |
-| BentoGrid, BentoGridItem | Server | Static |
-| GradientText, TechBadge | Server | Static |
-| IconButton, SkipNav, Footer | Server | Static |
-| Header, FloatingNav | Client | Interactive |
-| ThemeToggle, MobileNav | Client | Interactive |
-| ScrollProgress | Client | Interactive |
-| Magnetic, Spotlight | Client | Interactive |
-| FadeIn, SlideUp, Stagger | Client | Animation |
-| Parallax, TextReveal, CountUp | Client | Animation |
-| HeroScene, FloatingShapes | Client + Lazy | 3D |
-| ProjectCard | Client | Hover interaction |
-| ExperienceTimeline | Client | Scroll animation |
-| ContactSection | Client | Form state |
+| Component                     | Type          | Rendering         |
+| ----------------------------- | ------------- | ----------------- |
+| Container, Section, GlassCard | Server        | Static            |
+| BentoGrid, BentoGridItem      | Server        | Static            |
+| GradientText, TechBadge       | Server        | Static            |
+| IconButton, SkipNav, Footer   | Server        | Static            |
+| Header, FloatingNav           | Client        | Interactive       |
+| ThemeToggle, MobileNav        | Client        | Interactive       |
+| ScrollProgress                | Client        | Interactive       |
+| Magnetic, Spotlight           | Client        | Interactive       |
+| FadeIn, SlideUp, Stagger      | Client        | Animation         |
+| Parallax, TextReveal, CountUp | Client        | Animation         |
+| HeroScene, FloatingShapes     | Client + Lazy | 3D                |
+| ProjectCard                   | Client        | Hover interaction |
+| ExperienceTimeline            | Client        | Scroll animation  |
+| ContactSection                | Client        | Form state        |
 
 ---
 
 ## 8. Implementation Priority
 
 ### Phase 1 — Foundation
+
 1. `Container`, `Section` — 레이아웃 기반
 2. `GlassCard`, `BentoGrid` — 핵심 UI
 3. `useReducedMotion`, `useMediaQuery` — 필수 hooks
 4. `SkipNav` — 접근성
 
 ### Phase 2 — Navigation
+
 5. `Header`, `FloatingNav`, `MobileNav`
 6. `ThemeToggle`
 7. `ScrollProgress`
 8. `useActiveSection`, `useScrollProgress`
 
 ### Phase 3 — Animation
+
 9. `FadeIn`, `SlideUp`, `StaggerChildren`
 10. `TextReveal`, `CountUp`
 11. `Parallax`
 12. `Magnetic`, `Spotlight`, `MagneticWrapper`
 
 ### Phase 4 — Sections
+
 13. `HeroSection` + `HeroScene` (Three.js)
 14. `ProjectGrid`, `ProjectCard`
 15. `ExperienceTimeline`
@@ -1110,7 +1145,12 @@ Three.js: dynamic import으로 lazy load (번들 분리)
 19. `Footer`
 
 ### Phase 5 — Polish
+
 20. `GradientText`, `IconButton`
 21. 마이크로 인터랙션 세부 조정
 22. 성능 최적화 (bundle, lazy load)
 23. 접근성 검증
+
+### Phase 6 - Content
+
+24. 각 목적에 맞게 컨텐츠별 분리(메인은 히어로와 전체 개요, about은 소개, project는 실행한 프로젝트 등)
