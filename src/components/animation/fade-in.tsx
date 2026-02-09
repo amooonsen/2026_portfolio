@@ -57,17 +57,20 @@ export function FadeIn({
           ? -distance
           : 0
 
+    // 초기 상태 즉시 적용
+    gsap.set(ref.current!, { opacity: 0, y, x })
+
     const ctx = gsap.context(() => {
-      gsap.from(ref.current!, {
-        opacity: 0,
-        y,
-        x,
+      gsap.to(ref.current!, {
+        opacity: 1,
+        y: 0,
+        x: 0,
         duration,
         delay,
         ease: "power2.out",
         scrollTrigger: {
           trigger: ref.current!,
-          start: "top 85%",
+          start: "top 90%",
           toggleActions: once
             ? "play none none none"
             : "play reverse play reverse",

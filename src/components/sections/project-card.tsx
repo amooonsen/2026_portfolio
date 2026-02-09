@@ -12,7 +12,10 @@ interface Project {
   description: string
   thumbnail?: string
   tags: string[]
+  year: number
   featured?: boolean
+  images?: string[]
+  content?: string
   links?: {
     github?: string
     live?: string
@@ -22,16 +25,28 @@ interface Project {
 interface ProjectCardProps {
   project: Project
   featured?: boolean
+  showTitle?: boolean
+  showDescription?: boolean
+  showTags?: boolean
 }
 
 /**
  * 프로젝트 카드 컴포넌트.
  * Spotlight + GlassCard 조합으로 hover 시 조명 효과를 제공한다.
- * 클릭 시 프로젝트 상세 페이지로 이동한다.
+ * showTitle, showDescription, showTags로 표시 항목을 제어한다.
  * @param props.project - 프로젝트 데이터
  * @param props.featured - 피처드 프로젝트 여부 (큰 카드 스타일 적용)
+ * @param props.showTitle - 제목 표시 여부 (기본: true)
+ * @param props.showDescription - 설명 표시 여부 (기본: true)
+ * @param props.showTags - 태그 표시 여부 (기본: true)
  */
-export function ProjectCard({ project, featured }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  featured,
+  showTitle = true,
+  showDescription = true,
+  showTags = true,
+}: ProjectCardProps) {
   return (
     <Link href={`/projects/${project.slug}`} className="block h-full">
       <Spotlight>
@@ -71,27 +86,35 @@ export function ProjectCard({ project, featured }: ProjectCardProps) {
           </div>
 
           {/* 콘텐츠 */}
-          <div className="flex flex-1 flex-col">
-            <h3 className={cn("font-semibold", featured ? "text-2xl" : "text-lg")}>
-              {project.title}
-            </h3>
-            <p
-              className={cn(
-                "mt-2 text-muted-foreground",
-                featured ? "text-base" : "text-sm",
-                !featured && "line-clamp-2"
+          {(showTitle || showDescription || showTags) && (
+            <div className="flex flex-1 flex-col">
+              {showTitle && (
+                <h3 className={cn("font-semibold", featured ? "text-2xl" : "text-lg")}>
+                  {project.title}
+                </h3>
               )}
-            >
-              {project.description}
-            </p>
+              {showDescription && (
+                <p
+                  className={cn(
+                    "mt-2 text-muted-foreground",
+                    featured ? "text-base" : "text-sm",
+                    !featured && "line-clamp-2"
+                  )}
+                >
+                  {project.description}
+                </p>
+              )}
 
-            {/* 태그 */}
-            <div className="mt-auto flex flex-wrap gap-2 pt-4">
-              {project.tags.map((tag) => (
-                <TechBadge key={tag} name={tag} variant="outline" size="sm" />
-              ))}
+              {/* 태그 */}
+              {showTags && (
+                <div className="mt-auto flex flex-wrap gap-2 pt-4">
+                  {project.tags.map((tag) => (
+                    <TechBadge key={tag} name={tag} variant="outline" size="sm" />
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </GlassCard>
       </Spotlight>
     </Link>

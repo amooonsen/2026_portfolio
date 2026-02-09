@@ -4,10 +4,16 @@ import { useEffect, useRef } from "react"
 import { gsap } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 
-const animationMap = {
+const fromMap = {
   fadeUp: { opacity: 0, y: 30 },
   fadeIn: { opacity: 0 },
   scaleUp: { opacity: 0, scale: 0.8 },
+} as const
+
+const toMap = {
+  fadeUp: { opacity: 1, y: 0 },
+  fadeIn: { opacity: 1 },
+  scaleUp: { opacity: 1, scale: 1 },
 } as const
 
 interface StaggerChildrenProps {
@@ -15,7 +21,7 @@ interface StaggerChildrenProps {
   className?: string
   stagger?: number
   delay?: number
-  animation?: keyof typeof animationMap
+  animation?: keyof typeof fromMap
 }
 
 /**
@@ -41,16 +47,19 @@ export function StaggerChildren({
     const items = containerRef.current.querySelectorAll(":scope > *")
     if (items.length === 0) return
 
+    // 초기 상태 즉시 적용
+    gsap.set(items, fromMap[animation])
+
     const ctx = gsap.context(() => {
-      gsap.from(items, {
-        ...animationMap[animation],
+      gsap.to(items, {
+        ...toMap[animation],
         duration: 0.6,
         stagger,
         delay,
         ease: "power2.out",
         scrollTrigger: {
           trigger: containerRef.current!,
-          start: "top 85%",
+          start: "top 90%",
           toggleActions: "play none none none",
         },
       })

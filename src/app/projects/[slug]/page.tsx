@@ -8,7 +8,9 @@ import { TechBadge } from "@/components/ui/tech-badge"
 import { GradientText } from "@/components/ui/gradient-text"
 import { Button } from "@/components/ui/button"
 import { FadeIn } from "@/components/animation/fade-in"
-import { projects } from "@/data/portfolio-data"
+import { ProjectGallery } from "@/components/sections/project-gallery"
+import { MarkdownContent } from "@/components/ui/markdown-content"
+import { getAllProjects, getProjectBySlug } from "@/lib/projects"
 
 interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>
@@ -19,7 +21,7 @@ interface ProjectDetailPageProps {
  * 빌드 시 모든 프로젝트 slug에 대한 페이지를 미리 생성한다.
  */
 export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }))
+  return getAllProjects().map((p) => ({ slug: p.slug }))
 }
 
 /**
@@ -29,22 +31,29 @@ export async function generateMetadata({
   params,
 }: ProjectDetailPageProps): Promise<Metadata> {
   const { slug } = await params
-  const project = projects.find((p) => p.slug === slug)
-  if (!project) return { title: "프로젝트" }
-  return { title: project.title }
+  try {
+    const project = getProjectBySlug(slug)
+    return { title: project.title }
+  } catch {
+    return { title: "프로젝트" }
+  }
 }
 
 /**
  * 프로젝트 상세 페이지.
- * 프로젝트 설명, 기술 스택, 외부 링크를 표시한다.
+ * 마크다운 파일에서 읽어온 프로젝트 설명, 기술 스택, 외부 링크를 표시한다.
  */
 export default async function ProjectDetailPage({
   params,
 }: ProjectDetailPageProps) {
   const { slug } = await params
-  const project = projects.find((p) => p.slug === slug)
 
-  if (!project) notFound()
+  let project
+  try {
+    project = getProjectBySlug(slug)
+  } catch {
+    notFound()
+  }
 
   return (
     <Section spacing="lg" container containerSize="md">
@@ -72,14 +81,19 @@ export default async function ProjectDetailPage({
         </div>
       </FadeIn>
 
-      <FadeIn delay={0.3}>
-        <GlassCard padding="lg" className="mt-8">
-          <h2 className="text-lg font-semibold">프로젝트 개요</h2>
-          <p className="mt-4 leading-relaxed text-muted-foreground">
-            {project.description}
-          </p>
-        </GlassCard>
-      </FadeIn>
+      {project.content && (
+        <FadeIn delay={0.3}>
+          <GlassCard padding="lg" className="mt-8">
+            <MarkdownContent content={project.content} />
+          </GlassCard>
+        </FadeIn>
+      )}
+
+      {project.images && project.images.length > 0 && (
+        <FadeIn delay={0.35}>
+          <ProjectGallery images={project.images} title={project.title} />
+        </FadeIn>
+      )}
 
       {project.links && (project.links.github || project.links.live) && (
         <FadeIn delay={0.4}>

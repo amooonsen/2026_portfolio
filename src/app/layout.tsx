@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import localFont from "next/font/local"
 import { Geist_Mono } from "next/font/google"
 import "./globals.css"
 
@@ -6,10 +7,18 @@ import { SkipNav } from "@/components/layout/skip-nav"
 import { Header } from "@/components/layout/header"
 import { FloatingNav } from "@/components/layout/floating-nav"
 import { ScrollProgress } from "@/components/layout/scroll-progress"
+import { SmoothScroll } from "@/components/layout/smooth-scroll"
 import { Footer } from "@/components/layout/footer"
 import { RouteAnnouncer } from "@/components/layout/route-announcer"
 import { navItems } from "@/data/portfolio-data"
 import { socials } from "@/data/socials"
+
+const pretendard = localFont({
+  src: "../fonts/PretendardVariable.woff2",
+  variable: "--font-pretendard",
+  display: "swap",
+  weight: "45 920",
+})
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -42,15 +51,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark");else document.documentElement.classList.remove("dark")}catch(e){}})()`,
-          }}
-        />
-      </head>
-      <body className={`${geistMono.variable} font-sans antialiased`}>
+    <html lang="ko" className="dark">
+      <head />
+      <body className={`${pretendard.variable} ${geistMono.variable} font-sans antialiased`}>
+        <SmoothScroll />
         <SkipNav />
         <ScrollProgress />
         <Header items={navItems} />
