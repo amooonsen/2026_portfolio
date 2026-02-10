@@ -20,28 +20,30 @@
 | React | React 19.2 (Canary) | built-in |
 
 ### Styling & Animation
-| Category | Technology | Purpose |
-|----------|-----------|---------|
-| CSS | Tailwind CSS 4 | Utility-first styling |
-| Animation | GSAP + ScrollTrigger | Scroll-based animations |
-| 3D | Three.js + React Three Fiber | 3D visual elements |
-| Transitions | React 19.2 View Transitions | Page navigation animation |
-| Motion | Framer Motion | Component-level micro-interactions |
+| Category | Technology | Purpose | 상태 |
+|----------|-----------|---------|------|
+| CSS | Tailwind CSS 4 | Utility-first styling | ✅ 구현 |
+| Animation | GSAP 3.14 + ScrollTrigger | Scroll-based animations | ✅ 구현 |
+| 3D | Three.js + React Three Fiber | 3D visual elements | ✅ 구현 |
+| Smooth Scroll | Lenis 1.3 | 스무스 스크롤 | ✅ 추가 구현 |
+| Transitions | GSAP (template.tsx) | Page navigation animation | ✅ 변경 (View Transitions → GSAP) |
+| Motion | ~~Framer Motion~~ | ~~Component-level~~ | ❌ 미사용 (GSAP으로 대체) |
 
 ### Design System
-| Category | Technology | Purpose |
-|----------|-----------|---------|
-| UI Primitives | Radix UI | Accessible base components |
-| Icons | Lucide React | Consistent iconography |
-| Fonts | Geist (Vercel) | Modern typography |
+| Category | Technology | Purpose | 상태 |
+|----------|-----------|---------|------|
+| UI Primitives | Radix UI | Accessible base components | ✅ 구현 |
+| Icons | Lucide React | Consistent iconography | ✅ 구현 |
+| Fonts | Pretendard (Variable) | 본문 한글 타이포그래피 | ✅ 변경 (Geist → Pretendard) |
+| Fonts (Mono) | Geist Mono | 코드 타이포그래피 | ✅ 구현 |
 
 ### Infrastructure
-| Category | Technology | Purpose |
-|----------|-----------|---------|
-| Deployment | Vercel | Edge-optimized hosting |
-| Analytics | Vercel Analytics | Performance monitoring |
-| CMS (optional) | MDX | Blog/content management |
-| SEO | Next.js Metadata API | Automated SEO |
+| Category | Technology | Purpose | 상태 |
+|----------|-----------|---------|------|
+| Deployment | Vercel | Edge-optimized hosting | ⏳ 예정 |
+| Analytics | Vercel Analytics | Performance monitoring | ⏳ 예정 |
+| Content | Markdown + gray-matter | 프로젝트 콘텐츠 관리 | ✅ 변경 (MDX → Markdown) |
+| SEO | Next.js Metadata API | Automated SEO | ✅ 구현 |
 
 ---
 
@@ -58,18 +60,16 @@ const nextConfig = {
 - 정적 콘텐츠(About, Projects)에 `"use cache"` 적용
 - 동적 콘텐츠(Blog, Contact form)는 request-time 렌더링
 
-### 3.2 React 19.2 View Transitions
-- 페이지 간 네비게이션에 View Transitions API 활용
-- framer-motion 없이 기본 전환 애니메이션 구현 가능
-- 복잡한 전환은 GSAP과 조합
+### 3.2 ~~React 19.2 View Transitions~~ → GSAP 페이지 전환 (변경됨)
+- ~~페이지 간 네비게이션에 View Transitions API 활용~~
+- **실제**: `template.tsx`에서 GSAP으로 페이지 전환 애니메이션 구현
+  - fade + blur + slide-up 효과 (opacity, y, filter: blur)
+  - Lenis `scrollTo(0, { immediate: true })`로 스크롤 리셋
+- Framer Motion 미사용 (GSAP으로 통합)
 
-### 3.3 proxy.ts (middleware.ts 대체)
-```ts
-// proxy.ts
-export default function proxy(request: NextRequest) {
-  // i18n routing, redirect logic
-}
-```
+### ~~3.3 proxy.ts~~ (미사용)
+- proxy.ts, middleware.ts 모두 미사용
+- 현재 라우팅은 App Router 기본 동작만 활용
 
 ### 3.4 React Compiler
 - 자동 메모이제이션으로 수동 `useMemo`/`useCallback` 불필요
@@ -83,6 +83,8 @@ export default function proxy(request: NextRequest) {
 
 ## 4. Project Structure
 
+> **참고**: 아래는 실제 구현된 구조입니다. 초기 계획에서 변경된 부분에 `← 변경` 표시.
+
 ```
 2026_portfolio/
 ├── .agent/                          # Antigravity agent config
@@ -91,79 +93,61 @@ export default function proxy(request: NextRequest) {
 │   │   ├── component-patterns.md
 │   │   └── git-workflow.md
 │   ├── skills/
-│   │   ├── create-component/
-│   │   │   └── SKILL.md
-│   │   ├── create-page/
-│   │   │   └── SKILL.md
-│   │   ├── create-animation/
-│   │   │   └── SKILL.md
-│   │   └── optimize-performance/
-│   │       └── SKILL.md
+│   │   ├── create-component/SKILL.md
+│   │   ├── create-page/SKILL.md
+│   │   ├── create-animation/SKILL.md
+│   │   └── optimize-performance/SKILL.md
 │   └── workflows/
 │       ├── new-feature.md
 │       └── code-review.md
 ├── .claude/                         # Claude Code config
 │   └── settings.local.json
+├── content/                         # ← 변경: src/content/ → root content/
+│   └── projects/                    # Markdown 프로젝트 (gray-matter)
+│       ├── ai-chatbot.md
+│       ├── dashboard-platform.md
+│       ├── design-system.md
+│       ├── ecommerce-redesign.md
+│       └── mobile-app.md
 ├── public/
 │   ├── fonts/
 │   ├── images/
 │   ├── models/                      # 3D models (.glb/.gltf)
 │   └── og/                          # OG images
 ├── src/
-│   ├── app/
-│   │   ├── layout.tsx               # Root layout
-│   │   ├── page.tsx                 # Landing page
+│   ├── app/                         # ← 변경: Route Group 미사용, 플랫 구조
+│   │   ├── layout.tsx               # Root layout (Pretendard, SmoothScroll, Header, Footer)
+│   │   ├── template.tsx             # 페이지 전환 애니메이션 + 스크롤 리셋
+│   │   ├── page.tsx                 # Landing (3D + Overview)
 │   │   ├── not-found.tsx
-│   │   ├── global-error.tsx
-│   │   ├── sitemap.ts
-│   │   ├── robots.ts
-│   │   ├── (portfolio)/             # Route group: main sections
-│   │   │   ├── layout.tsx
-│   │   │   ├── about/
-│   │   │   │   └── page.tsx
-│   │   │   ├── projects/
-│   │   │   │   ├── page.tsx
-│   │   │   │   └── [slug]/
-│   │   │   │       └── page.tsx
-│   │   │   ├── experience/
-│   │   │   │   └── page.tsx
-│   │   │   └── contact/
-│   │   │       └── page.tsx
-│   │   ├── (content)/               # Route group: blog/writing
-│   │   │   ├── layout.tsx
-│   │   │   └── blog/
-│   │   │       ├── page.tsx
-│   │   │       └── [slug]/
-│   │   │           └── page.tsx
-│   │   └── api/
-│   │       └── contact/
-│   │           └── route.ts
+│   │   ├── actions.ts               # Server Actions
+│   │   ├── about/page.tsx
+│   │   ├── projects/
+│   │   │   ├── page.tsx
+│   │   │   └── [slug]/page.tsx      # Markdown 기반 프로젝트 상세
+│   │   ├── experience/page.tsx
+│   │   └── contact/page.tsx
 │   ├── components/
-│   │   ├── ui/                      # Primitives (Button, Card, etc.)
-│   │   ├── layout/                  # Header, Footer, Navigation
-│   │   ├── sections/                # Page sections (Hero, ProjectGrid)
-│   │   ├── three/                   # Three.js/R3F components
-│   │   └── animation/               # GSAP animation wrappers
-│   ├── lib/
-│   │   ├── utils.ts
-│   │   ├── constants.ts
-│   │   └── metadata.ts              # SEO metadata helpers
-│   ├── hooks/
-│   │   ├── use-scroll-progress.ts
-│   │   ├── use-media-query.ts
-│   │   └── use-reduced-motion.ts
+│   │   ├── ui/                      # 기본 UI (12개)
+│   │   ├── layout/                  # 레이아웃 (10개, intro-loader, smooth-scroll 추가)
+│   │   ├── sections/                # 섹션 (10개, about-hero, skill-bars 추가)
+│   │   ├── animation/               # GSAP 래퍼 (7개)
+│   │   └── three/                   # Three.js (hero-scene, cosmic-scene)
+│   ├── hooks/                       # 커스텀 훅 (6개, use-gsap, use-scroll-threshold 추가)
+│   ├── lib/                         # 유틸리티 (6개, lenis-store, projects, gsap-utils 추가)
+│   ├── data/                        # ← 추가: 정적 데이터 (portfolio-data, socials)
 │   ├── styles/
 │   │   └── globals.css
-│   ├── content/                     # MDX content files
-│   │   ├── projects/
-│   │   └── blog/
-│   └── types/
-│       └── index.ts
-├── proxy.ts                         # Network proxy (was middleware)
+│   ├── types/
+│   └── fonts/
+│       └── PretendardVariable.woff2 # ← 변경: Geist → Pretendard
+├── CLAUDE.md                        # ← 추가: Claude Code 프로젝트 지침
+├── DESIGN_SPEC.md
+├── COMPONENT_SPEC.md
 ├── next.config.ts
-├── tailwind.config.ts
 ├── tsconfig.json
 ├── eslint.config.mjs
+├── components.json                  # shadcn/ui config
 ├── package.json
 └── .gitignore
 ```
@@ -263,10 +247,10 @@ Border radius: rounded-2xl (cards), rounded-full (buttons/pills)
 - 경력 사항 타임라인
 - 각 포지션 상세 (역할, 성과, 기술)
 
-### 6.5 Blog (`/blog`)
-- MDX 기반 블로그 포스트
-- 카테고리/태그 필터
-- 읽기 시간 표시
+### ~~6.5 Blog (`/blog`)~~ → 외부 링크 (변경됨)
+- ~~MDX 기반 블로그 포스트~~
+- **실제**: 블로그는 외부 플랫폼 링크로 연결 (내부 MDX 미구현)
+- BlogCard 컴포넌트에서 외부 URL로 리다이렉트
 
 ### 6.6 Contact (`/contact`)
 - 연락 폼 (Server Action 기반)
@@ -277,14 +261,15 @@ Border radius: rounded-2xl (cards), rounded-full (buttons/pills)
 
 ## 7. Animation Strategy
 
-### 7.1 Layer System
+### 7.1 Layer System (실제 구현)
 
 ```
-Layer 1: CSS Transitions        → hover, focus, color changes
-Layer 2: View Transitions API   → page navigation (React 19.2)
-Layer 3: Framer Motion          → component mount/unmount, layout
-Layer 4: GSAP + ScrollTrigger   → scroll-based storytelling
-Layer 5: Three.js / R3F         → 3D scenes, particles
+Layer 1: CSS Transitions        → hover, focus, color changes           ✅
+Layer 2: GSAP (template.tsx)    → page navigation (변경: View Transitions → GSAP) ✅
+Layer 3: (미사용)               → Framer Motion 제거, GSAP으로 통합     ❌
+Layer 4: GSAP + ScrollTrigger   → scroll-based storytelling             ✅
+Layer 5: Three.js / R3F         → 3D scenes (Hero, Cosmic)              ✅
+추가:    Lenis                   → smooth scrolling                      ✅
 ```
 
 ### 7.2 Performance Rules
@@ -852,6 +837,42 @@ Environment Variables:
   - CONTACT_EMAIL (server only)
   - ANALYTICS_ID (if external)
 ```
+
+---
+
+## 15. 구현 현황 (Implementation Status)
+
+> 마지막 업데이트: 2025-02-10
+
+### 완료된 기능
+- [x] 프로젝트 초기 세팅 (Next.js 16, Turbopack, React Compiler)
+- [x] 기초 UI 컴포넌트 (Container, Section, GlassCard, BentoGrid 등 12개)
+- [x] 레이아웃 컴포넌트 (Header, FloatingNav, Footer 등 10개)
+- [x] 애니메이션 시스템 (FadeIn, Parallax, TextReveal 등 7개)
+- [x] Three.js 3D 씬 (HeroScene, CosmicScene)
+- [x] 페이지 섹션 (HeroSection, ProjectGrid, ExperienceTimeline 등 10개)
+- [x] 커스텀 훅 (useGsap, useReducedMotion 등 6개)
+- [x] Lenis 스무스 스크롤 통합
+- [x] 프로젝트 콘텐츠 Markdown 관리 (gray-matter)
+- [x] 페이지 전환 애니메이션 (template.tsx)
+- [x] 인트로 로더 (intro-loader)
+- [x] 접근성 (SkipNav, RouteAnnouncer, ReducedMotion)
+- [x] 스크롤 탑 버튼 (Gooey 이펙트)
+
+### 미구현 / 변경된 기능
+- [ ] ThemeToggle (다크 모드 고정, 라이트 모드 전환 미구현)
+- [ ] sitemap.ts, robots.ts
+- [ ] global-error.tsx
+- [ ] Vercel 배포 및 Analytics
+- [x] ~~MDX 블로그~~ → 외부 링크로 변경
+- [x] ~~View Transitions~~ → GSAP template 전환으로 변경
+- [x] ~~Framer Motion~~ → GSAP으로 통합
+- [x] ~~Route Groups~~ → 플랫 구조로 변경
+
+### 해결된 버그
+| 날짜 | 이슈 | 원인 | 해결 |
+|------|------|------|------|
+| 2025-02-10 | 페이지 전환 시 스크롤 미초기화 | `window.scrollTo` vs Lenis 상태 불일치 | `lenis.scrollTo(0, { immediate: true })` |
 
 ---
 

@@ -3,60 +3,67 @@
 포트폴리오 전체 커스텀 컴포넌트 설계 명세.
 shadcn/ui(New York, Zinc, OKLCH) 위에 포트폴리오 전용 레이어를 구축한다.
 
+> **마지막 업데이트**: 2025-02-10
+> 상태: ✅ 구현 완료 | ⏳ 미구현 | ❌ 계획 취소 | 🆕 스펙 외 추가
+
 ---
 
-## Component Map
+## Component Map (실제 구현)
 
 ```
 src/components/
 ├── ui/                    ← shadcn primitives + custom UI
-│   ├── button.tsx            (shadcn)
-│   ├── badge.tsx             (shadcn)
-│   ├── card.tsx              (shadcn)
-│   ├── separator.tsx         (shadcn)
-│   ├── tooltip.tsx           (shadcn)
-│   ├── glass-card.tsx        ★ custom
-│   ├── bento-grid.tsx        ★ custom
-│   ├── section.tsx           ★ custom
-│   ├── container.tsx         ★ custom
-│   ├── gradient-text.tsx     ★ custom
-│   ├── magnetic.tsx          ★ custom
-│   ├── spotlight.tsx         ★ custom
-│   ├── tech-badge.tsx        ★ custom
-│   └── icon-button.tsx       ★ custom
+│   ├── button.tsx            (shadcn)                    ✅
+│   ├── container.tsx         ★ custom                    ✅
+│   ├── section.tsx           ★ custom                    ✅
+│   ├── bento-grid.tsx        ★ custom                    ✅
+│   ├── glass-card.tsx        ★ custom                    ✅
+│   ├── gradient-text.tsx     ★ custom                    ✅
+│   ├── magnetic.tsx          ★ custom                    ✅
+│   ├── spotlight.tsx         ★ custom                    ✅
+│   ├── tech-badge.tsx        ★ custom                    ✅
+│   ├── icon-button.tsx       ★ custom                    ✅
+│   ├── overview-card.tsx     ★ custom                    🆕
+│   └── markdown-content.tsx  ★ custom                    🆕
+│   (계획됨 미구현: badge, card, separator, tooltip)       ⏳
 │
 ├── layout/                ← 페이지 레이아웃
-│   ├── header.tsx
-│   ├── floating-nav.tsx
-│   ├── mobile-nav.tsx
-│   ├── footer.tsx
-│   ├── theme-toggle.tsx
-│   ├── scroll-progress.tsx
-│   └── skip-nav.tsx
+│   ├── header.tsx                                        ✅
+│   ├── floating-nav.tsx                                  ✅
+│   ├── mobile-nav.tsx                                    ✅
+│   ├── footer.tsx                                        ✅
+│   ├── skip-nav.tsx                                      ✅
+│   ├── scroll-progress.tsx                               ✅
+│   ├── scroll-to-top.tsx     (Gooey 이펙트)              🆕
+│   ├── intro-loader.tsx      (로딩 스크린)                🆕
+│   ├── smooth-scroll.tsx     (Lenis 래퍼)                🆕
+│   └── route-announcer.tsx   (접근성 라우트 알림)          🆕
+│   (계획됨 미구현: theme-toggle)                          ⏳
 │
 ├── sections/              ← 페이지 섹션
-│   ├── hero-section.tsx
-│   ├── about-preview.tsx
-│   ├── project-grid.tsx
-│   ├── project-card.tsx
-│   ├── tech-stack.tsx
-│   ├── experience-timeline.tsx
-│   ├── contact-section.tsx
-│   └── blog-card.tsx
+│   ├── hero-section.tsx                                  ✅
+│   ├── about-hero.tsx        (변경: about-preview → about-hero) ✅
+│   ├── project-grid.tsx                                  ✅
+│   ├── project-card.tsx                                  ✅
+│   ├── project-gallery.tsx                               🆕
+│   ├── experience-timeline.tsx                           ✅
+│   ├── tech-stack.tsx                                    ✅
+│   ├── skill-bars.tsx                                    🆕
+│   ├── contact-section.tsx                               ✅
+│   └── blog-card.tsx                                     ✅
 │
 ├── animation/             ← 애니메이션 래퍼
-│   ├── fade-in.tsx
-│   ├── slide-up.tsx
-│   ├── stagger-children.tsx
-│   ├── parallax.tsx
-│   ├── text-reveal.tsx
-│   ├── count-up.tsx
-│   └── magnetic-wrapper.tsx
+│   ├── fade-in.tsx                                       ✅
+│   ├── slide-up.tsx                                      ✅
+│   ├── stagger-children.tsx                              ✅
+│   ├── parallax.tsx                                      ✅
+│   ├── text-reveal.tsx                                   ✅
+│   ├── count-up.tsx                                      ✅
+│   └── magnetic-wrapper.tsx                              ✅
 │
 └── three/                 ← 3D 컴포넌트
-    ├── hero-scene.tsx
-    ├── floating-shapes.tsx
-    └── particle-field.tsx
+    ├── hero-scene.tsx                                    ✅
+    └── cosmic-scene.tsx      (변경: floating-shapes/particle-field → cosmic-scene) ✅
 ```
 
 ---
@@ -1018,7 +1025,7 @@ interface MagneticWrapperProps {
 
 ## 5. Hooks
 
-### 5.1 useReducedMotion
+### 5.1 useReducedMotion ✅
 
 경로: `src/hooks/use-reduced-motion.ts`
 
@@ -1031,7 +1038,7 @@ function useReducedMotion(): boolean;
 
 ---
 
-### 5.2 useScrollProgress
+### 5.2 useScrollProgress ✅
 
 경로: `src/hooks/use-scroll-progress.ts`
 
@@ -1039,11 +1046,11 @@ function useReducedMotion(): boolean;
 function useScrollProgress(): number; // 0 ~ 1
 ```
 
-페이지 전체 스크롤 진행률 반환.
+페이지 전체 스크롤 진행률 반환. Lenis scroll 이벤트 연동.
 
 ---
 
-### 5.3 useMediaQuery
+### 5.3 useMediaQuery ✅
 
 경로: `src/hooks/use-media-query.ts`
 
@@ -1056,7 +1063,7 @@ SSR hydration mismatch 방지: 초기값 false, mount 후 업데이트.
 
 ---
 
-### 5.4 useActiveSection
+### 5.4 useActiveSection ✅
 
 경로: `src/hooks/use-active-section.ts`
 
@@ -1069,91 +1076,143 @@ FloatingNav의 활성 상태 표시에 사용.
 
 ---
 
+### 5.5 useGsapContext 🆕
+
+경로: `src/hooks/use-gsap.ts`
+
+```tsx
+function useGsapContext(
+  ref: React.RefObject<HTMLElement>,
+  callback: () => void,
+  deps?: React.DependencyList
+): void;
+```
+
+GSAP context 생성 + 자동 cleanup 관리.
+애니메이션 컴포넌트에서 `useEffect` 대신 사용하여 메모리 누수 방지.
+
+---
+
+### 5.6 useScrollThreshold 🆕
+
+경로: `src/hooks/use-scroll-threshold.ts`
+
+스크롤 임계값 도달 감지 훅. Header hide/show 등에 사용.
+
+---
+
 ## 6. Dependency Summary
 
-현재 설치됨:
+### 설치 완료 (Runtime)
+- `next@16.1.6`, `react@19.2.3`, `react-dom@19.2.3`
+- `gsap@3.14.2` — 애니메이션 (ScrollTrigger 포함)
+- `three@0.182.0`, `@react-three/fiber@9.5.0`, `@react-three/drei@10.7.7` — 3D
+- `lenis@1.3.17` — 스무스 스크롤
+- `gray-matter@4.0.3` — Markdown front-matter 파싱
+- `radix-ui@1.4.3`, `class-variance-authority@0.7.1`, `clsx@2.1.1`, `tailwind-merge@3.4.0` (shadcn)
+- `lucide-react@0.563.0` — 아이콘
+- `babel-plugin-react-compiler@1.0.0` — React Compiler
 
-- `radix-ui`, `class-variance-authority`, `clsx`, `tailwind-merge` (shadcn)
-- `lucide-react` (icons)
-- `tw-animate-css` (animation)
+### 설치 완료 (Dev)
+- `typescript@5`, `tailwindcss@4`, `eslint@9`
+- `shadcn@3.8.4`, `tw-animate-css@1.4.0`
 
-추가 필요:
-
-```
-npm install gsap @gsap/react
-npm install three @react-three/fiber @react-three/drei
-npm install framer-motion    # (optional, 기본 mount/unmount용)
-```
-
-GSAP: ScrollTrigger, SplitText (club 플러그인 대안으로 자체 구현)
-Three.js: dynamic import으로 lazy load (번들 분리)
+### 미설치 (계획 변경)
+- ~~`framer-motion`~~ — GSAP으로 대체, 설치 불필요
+- ~~`@gsap/react`~~ — 자체 `useGsapContext` 훅으로 대체
 
 ---
 
 ## 7. Component Rendering Strategy
 
-| Component                     | Type          | Rendering         |
-| ----------------------------- | ------------- | ----------------- |
-| Container, Section, GlassCard | Server        | Static            |
-| BentoGrid, BentoGridItem      | Server        | Static            |
-| GradientText, TechBadge       | Server        | Static            |
-| IconButton, SkipNav, Footer   | Server        | Static            |
-| Header, FloatingNav           | Client        | Interactive       |
-| ThemeToggle, MobileNav        | Client        | Interactive       |
-| ScrollProgress                | Client        | Interactive       |
-| Magnetic, Spotlight           | Client        | Interactive       |
-| FadeIn, SlideUp, Stagger      | Client        | Animation         |
-| Parallax, TextReveal, CountUp | Client        | Animation         |
-| HeroScene, FloatingShapes     | Client + Lazy | 3D                |
-| ProjectCard                   | Client        | Hover interaction |
-| ExperienceTimeline            | Client        | Scroll animation  |
-| ContactSection                | Client        | Form state        |
+| Component                     | Type          | Rendering         | 상태 |
+| ----------------------------- | ------------- | ----------------- | ---- |
+| Container, Section, GlassCard | Server        | Static            | ✅ |
+| BentoGrid, BentoGridItem      | Server        | Static            | ✅ |
+| GradientText, TechBadge       | Server        | Static            | ✅ |
+| IconButton, SkipNav, Footer   | Server        | Static            | ✅ |
+| OverviewCard, MarkdownContent | Server        | Static            | 🆕 |
+| Header, FloatingNav           | Client        | Interactive       | ✅ |
+| MobileNav                     | Client        | Interactive       | ✅ |
+| ScrollProgress, ScrollToTop   | Client        | Interactive       | ✅ |
+| IntroLoader                   | Client        | Loading animation  | 🆕 |
+| SmoothScroll (Lenis)          | Client        | Scroll management  | 🆕 |
+| RouteAnnouncer                | Client        | A11y              | 🆕 |
+| Magnetic, Spotlight           | Client        | Interactive       | ✅ |
+| FadeIn, SlideUp, Stagger      | Client        | Animation         | ✅ |
+| Parallax, TextReveal, CountUp | Client        | Animation         | ✅ |
+| HeroScene, CosmicScene        | Client + Lazy | 3D                | ✅ |
+| ProjectCard                   | Client        | Hover interaction | ✅ |
+| ExperienceTimeline            | Client        | Scroll animation  | ✅ |
+| ContactSection                | Client        | Form state        | ✅ |
+| AboutHero, SkillBars          | Client        | Scroll animation  | 🆕 |
+| ProjectGallery                | Client        | Gallery view      | 🆕 |
 
 ---
 
-## 8. Implementation Priority
+## 8. Implementation Priority & Progress
 
-### Phase 1 — Foundation
+### Phase 1 — Foundation ✅ 완료
 
-1. `Container`, `Section` — 레이아웃 기반
-2. `GlassCard`, `BentoGrid` — 핵심 UI
-3. `useReducedMotion`, `useMediaQuery` — 필수 hooks
-4. `SkipNav` — 접근성
+1. ✅ `Container`, `Section` — 레이아웃 기반
+2. ✅ `GlassCard`, `BentoGrid` — 핵심 UI
+3. ✅ `useReducedMotion`, `useMediaQuery` — 필수 hooks
+4. ✅ `SkipNav` — 접근성
 
-### Phase 2 — Navigation
+### Phase 2 — Navigation ✅ 완료 (ThemeToggle 제외)
 
-5. `Header`, `FloatingNav`, `MobileNav`
-6. `ThemeToggle`
-7. `ScrollProgress`
-8. `useActiveSection`, `useScrollProgress`
+5. ✅ `Header`, `FloatingNav`, `MobileNav`
+6. ⏳ `ThemeToggle` — 미구현 (다크 모드 고정)
+7. ✅ `ScrollProgress`
+8. ✅ `useActiveSection`, `useScrollProgress`
 
-### Phase 3 — Animation
+### Phase 3 — Animation ✅ 완료
 
-9. `FadeIn`, `SlideUp`, `StaggerChildren`
-10. `TextReveal`, `CountUp`
-11. `Parallax`
-12. `Magnetic`, `Spotlight`, `MagneticWrapper`
+9. ✅ `FadeIn`, `SlideUp`, `StaggerChildren`
+10. ✅ `TextReveal`, `CountUp`
+11. ✅ `Parallax`
+12. ✅ `Magnetic`, `Spotlight`, `MagneticWrapper`
 
-### Phase 4 — Sections
+### Phase 4 — Sections ✅ 완료
 
-13. `HeroSection` + `HeroScene` (Three.js)
-14. `ProjectGrid`, `ProjectCard`
-15. `ExperienceTimeline`
-16. `TechStack`, `TechBadge`
-17. `ContactSection`
-18. `BlogCard`
-19. `Footer`
+13. ✅ `HeroSection` + `HeroScene` (Three.js)
+14. ✅ `ProjectGrid`, `ProjectCard`
+15. ✅ `ExperienceTimeline`
+16. ✅ `TechStack`, `TechBadge`
+17. ✅ `ContactSection`
+18. ✅ `BlogCard` (외부 링크로 변경)
+19. ✅ `Footer`
 
-### Phase 5 — Polish
+### Phase 5 — Polish 🔄 진행 중
 
-20. `GradientText`, `IconButton`
-21. 마이크로 인터랙션 세부 조정
-22. 성능 최적화 (bundle, lazy load)
-23. 접근성 검증
+20. ✅ `GradientText`, `IconButton`
+21. ✅ 마이크로 인터랙션 세부 조정 (Gooey ScrollToTop, IntroLoader 등)
+22. ⏳ 성능 최적화 (bundle, lazy load)
+23. ⏳ 접근성 검증 (WCAG AA 전체 감사)
 
-### Phase 6 - Content
+### Phase 6 — Content ✅ 완료
 
-24. 각 목적에 맞게 컨텐츠별 분리(메인은 히어로와 전체 개요, about은 소개, project는 실행한 프로젝트 등)
+24. ✅ 콘텐츠별 분리 완료 (메인=히어로+개요, about=소개, projects=Markdown 기반)
 
-<!-- TODO 1: 메인 페이지는 비쥬얼만 놔두고 각 관심사별로 분리하기 -->
-<!-- TODO 2: context 문제 확인하기  -->
+### 스펙 외 추가 구현 (🆕)
+
+- ✅ `SmoothScroll` (Lenis) — 스무스 스크롤 전체 적용
+- ✅ `IntroLoader` — 로딩 스크린 애니메이션
+- ✅ `ScrollToTop` — Gooey 이펙트 스크롤 탑 버튼
+- ✅ `RouteAnnouncer` — 접근성 라우트 알림
+- ✅ `AboutHero` — About 페이지 스크롤 리빌 히어로
+- ✅ `SkillBars` — 스킬 레벨 프로그레스 바
+- ✅ `ProjectGallery` — 프로젝트 갤러리 뷰
+- ✅ `OverviewCard` — 랜딩 페이지 개요 카드
+- ✅ `MarkdownContent` — Markdown 렌더링 컴포넌트
+- ✅ `CosmicScene` — 배경 우주 3D 애니메이션
+- ✅ `useGsapContext` — GSAP context 자동 cleanup 훅
+- ✅ `useScrollThreshold` — 스크롤 임계값 감지 훅
+
+### 남은 TODO
+
+- [ ] ThemeToggle (다크/라이트 모드 전환)
+- [ ] 성능 최적화 (Lighthouse 95+ 달성)
+- [ ] 접근성 전체 감사 (WCAG AA)
+- [ ] sitemap.ts, robots.ts 생성
+- [ ] Vercel 배포 설정

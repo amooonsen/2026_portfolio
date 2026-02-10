@@ -117,9 +117,9 @@ const journeyItems = [
   },
   {
     year: "2024",
-    title: "기술 리더십",
+    title: "깊이 있는 성장",
     description:
-      "시니어 개발자로서 프론트엔드 아키텍처 설계를 리드하고 있습니다. 성능 최적화, 인터랙티브 웹, 3D 그래픽스에 깊이를 더하고 있습니다.",
+      "프론트엔드 아키텍처 설계에 적극적으로 참여하고 있습니다. 성능 최적화, 인터랙티브 웹, 3D 그래픽스에 깊이를 더하며 기술적 영향력을 넓히고 있습니다.",
   },
 ]
 
@@ -131,7 +131,7 @@ export default function AboutPage() {
   return (
     <>
       {/* 스크롤 리빌 텍스트 */}
-      <AboutHero text="사용자의 경험을 최우선으로 생각하는 프론트엔드 개발자입니다. 세밀한 인터랙션과 최적화된 성능으로 웹의 가능성을 확장하며 코드의 품질과 아름다움 모두를 추구합니다." />
+      <AboutHero text="안녕하세요, 조경문입니다. 사용자의 경험을 최우선으로 생각하는 프론트엔드 개발자입니다. 세밀한 인터랙션과 최적화된 성능으로 웹의 가능성을 확장합니다." />
 
       {/* 자기소개 */}
       <Section spacing="lg" container>
@@ -148,25 +148,25 @@ export default function AboutPage() {
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                안녕하세요, 4년차 프론트엔드 개발자입니다. 에이전시에서
-                시작하여 IT 기업, 스타트업까지 다양한 환경에서 웹
-                애플리케이션을 설계하고 개발해 왔습니다.
+              <p className="mt-6 text-lg leading-relaxed text-white/80">
+                안녕하세요, <span className="text-indigo-400 font-medium">4년차 프론트엔드 개발자</span> 조경문입니다.
+                에이전시에서 시작하여 IT 기업, 스타트업까지 다양한
+                환경에서 웹 애플리케이션을 설계하고 개발해 왔습니다.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                React와 Next.js를 주력으로, TypeScript와 Tailwind CSS로 타입
-                안전하고 일관된 UI를 구축합니다. GSAP과 Three.js를 활용한
+              <p className="mt-4 text-lg leading-relaxed text-white/80">
+                <span className="text-indigo-400 font-medium">React</span>와 <span className="text-indigo-400 font-medium">Next.js</span>를 주력으로, TypeScript와 Tailwind CSS로 타입
+                안전하고 일관된 UI를 구축합니다. <span className="text-indigo-400 font-medium">GSAP</span>과 <span className="text-indigo-400 font-medium">Three.js</span>를 활용한
                 인터랙티브 웹 경험 제작에도 깊은 관심을 갖고 있습니다.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.3}>
-              <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                현재는 B2B SaaS 제품의 프론트엔드 아키텍처를 리드하며,
-                디자인 시스템 구축과 성능 최적화에 집중하고 있습니다.
+              <p className="mt-4 text-lg leading-relaxed text-white/80">
+                현재는 B2B SaaS 제품의 프론트엔드 개발에 참여하며,
+                <span className="text-indigo-400 font-medium"> 디자인 시스템 구축</span>과 <span className="text-indigo-400 font-medium">성능 최적화</span>에 집중하고 있습니다.
                 개발 생산성을 높이는 도구와 워크플로우를 설계하는 것을
                 즐깁니다.
               </p>
@@ -179,7 +179,7 @@ export default function AboutPage() {
                 <h3 className="text-lg font-semibold text-white">Quick Info</h3>
                 <dl className="space-y-3 text-sm">
                   {[
-                    { dt: "역할", dd: "시니어 프론트엔드 개발자" },
+                    { dt: "역할", dd: "프론트엔드 개발자" },
                     { dt: "경력", dd: "4년+" },
                     { dt: "위치", dd: "서울, 대한민국" },
                     { dt: "관심 분야", dd: "인터랙티브 웹, 성능" },
@@ -207,7 +207,7 @@ export default function AboutPage() {
           >
             Journey
           </GradientText>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-white/60">
             프론트엔드 개발자로서의 성장 과정입니다.
           </p>
         </FadeIn>
@@ -230,7 +230,7 @@ export default function AboutPage() {
                   </div>
 
                   <div className="md:col-span-4">
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-white/70 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -251,7 +251,7 @@ export default function AboutPage() {
           >
             Philosophy
           </GradientText>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-white/60">
             개발할 때 가장 중요하게 생각하는 가치들입니다.
           </p>
         </FadeIn>
@@ -265,14 +265,14 @@ export default function AboutPage() {
               <h3 className="mt-3 text-lg font-semibold text-white">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-2 text-sm leading-relaxed text-white/70">
                 {item.description}
               </p>
               <ul className="mt-4 space-y-2">
                 {item.details.map((detail) => (
                   <li
                     key={detail}
-                    className="flex items-start gap-2 text-xs text-muted-foreground"
+                    className="flex items-start gap-2 text-xs text-white/60"
                   >
                     <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60" />
                     {detail}
@@ -294,7 +294,7 @@ export default function AboutPage() {
           >
             Core Skills
           </GradientText>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-white/60">
             주요 기술 역량과 숙련도입니다.
           </p>
         </FadeIn>

@@ -17,15 +17,15 @@ export const navItems = [
 export const experiences: TimelineItem[] = [
   {
     company: "스타트업 A사",
-    role: "시니어 프론트엔드 개발자",
+    role: "프론트엔드 개발자",
     period: "2024 — 현재",
     year: 2024,
     description:
-      "Next.js 기반 B2B SaaS 제품의 프론트엔드 아키텍처 설계 및 개발을 리드하고 있습니다.",
+      "Next.js 기반 B2B SaaS 제품의 프론트엔드 개발에 참여하고 있습니다.",
     achievements: [
-      "디자인 시스템 구축으로 개발 생산성 30% 향상",
+      "디자인 시스템 구축 참여로 개발 생산성 향상에 기여",
       "Core Web Vitals 최적화 — LCP 40% 개선",
-      "마이크로 프론트엔드 아키텍처 도입 주도",
+      "마이크로 프론트엔드 아키텍처 도입에 참여",
     ],
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "GSAP"],
   },

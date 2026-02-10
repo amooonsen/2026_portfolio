@@ -8,7 +8,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion"
 
 /* ─── 별 필드 ─── */
 
-function StarField({ count = 1200 }: { count?: number }) {
+function StarField({ count = 600 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
@@ -47,7 +47,7 @@ function StarField({ count = 1200 }: { count?: number }) {
 
 /* ─── 네뷸라 파티클 ─── */
 
-function NebulaParticles({ count = 300 }: { count?: number }) {
+function NebulaParticles({ count = 150 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null)
 
   const [positions, colors] = useMemo(() => {

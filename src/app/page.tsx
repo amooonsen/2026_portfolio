@@ -65,8 +65,8 @@ export default function Home() {
       <div className="relative z-10">
         <HeroSection
           title="Frontend Developer"
-          subtitle="프론트엔드 개발자"
-          description="사용자 경험을 최우선으로, 세밀한 인터랙션과 성능 최적화에 집중합니다. React, Next.js, TypeScript를 주력으로 모던 웹 애플리케이션을 구축합니다."
+          subtitle="조경문"
+          description="4년차 프론트엔드 개발자입니다. 사용자 경험을 최우선으로, 세밀한 인터랙션과 성능 최적화에 집중합니다. React, Next.js, TypeScript를 주력으로 모던 웹 애플리케이션을 구축합니다."
           ctaLabel="프로젝트 보기"
           ctaHref="/projects"
           secondaryLabel="연락하기"

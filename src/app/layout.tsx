@@ -10,6 +10,7 @@ import { ScrollProgress } from "@/components/layout/scroll-progress"
 import { SmoothScroll } from "@/components/layout/smooth-scroll"
 import { Footer } from "@/components/layout/footer"
 import { RouteAnnouncer } from "@/components/layout/route-announcer"
+import { ScrollToTop } from "@/components/layout/scroll-to-top"
 import { navItems } from "@/data/portfolio-data"
 import { socials } from "@/data/socials"
 
@@ -27,10 +28,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Portfolio | Frontend Developer",
-    template: "%s | Portfolio",
+    default: "조경문 | Frontend Developer",
+    template: "%s | 조경문",
   },
-  description: "프론트엔드 개발자 포트폴리오 — 2026",
+  description: "조경문 — 프론트엔드 개발자 포트폴리오",
   openGraph: {
     type: "website",
     locale: "ko_KR",
@@ -65,6 +66,7 @@ export default function RootLayout({
 
         <Footer socials={socials} />
         <FloatingNav items={navItems} />
+        <ScrollToTop />
         <RouteAnnouncer />
       </body>
     </html>
