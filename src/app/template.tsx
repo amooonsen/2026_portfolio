@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { gsap, ScrollTrigger } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { getLenisInstance } from "@/lib/lenis-store"
 
 /**
  * 페이지 트랜지션 템플릿.
@@ -13,9 +14,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  // 라우트 전환 시 스크롤 위치를 최상단으로 리셋
+  // 라우트 전환 시 스크롤 위치를 최상단으로 리셋 (Lenis 내부 상태 포함)
   useEffect(() => {
-    window.scrollTo(0, 0)
+    const lenis = getLenisInstance()
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true })
+    } else {
+      window.scrollTo(0, 0)
+    }
   }, [])
 
   useEffect(() => {
