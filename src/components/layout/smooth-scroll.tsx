@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import Lenis from "lenis"
 import { ScrollTrigger } from "@/lib/gsap"
+import { setLenisInstance } from "@/lib/lenis-store"
 
 /**
  * Lenis 기반 스무스 스크롤 컴포넌트.
@@ -25,6 +26,7 @@ export function SmoothScroll() {
     })
 
     lenisRef.current = lenis
+    setLenisInstance(lenis)
 
     lenis.on("scroll", ScrollTrigger.update)
 
@@ -38,6 +40,7 @@ export function SmoothScroll() {
     return () => {
       lenis.destroy()
       lenisRef.current = null
+      setLenisInstance(null)
     }
   }, [])
 
