@@ -1,6 +1,7 @@
 import {Mail} from "lucide-react";
 import {Container} from "@/components/ui/container";
 import {IconButton} from "@/components/ui/icon-button";
+import {cn} from "@/lib/utils";
 
 interface FooterLink {
   platform: string;
@@ -19,7 +20,7 @@ interface FooterProps {
  */
 export function Footer({socials = [], className}: FooterProps) {
   return (
-    <footer className={className}>
+    <footer className={cn("relative z-[60]", className)}>
       <Container>
         <div className="border-t border-border py-12">
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
@@ -40,6 +41,13 @@ export function Footer({socials = [], className}: FooterProps) {
 
             {/* 이메일 + 저작권 */}
             <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground md:items-end">
+              <a
+                href="mailto:chonghocho72@gmail.com"
+                className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
+              >
+                <Mail className="size-4" />
+                <span>chonghocho72@gmail.com</span>
+              </a>
               <p>&copy; {new Date().getFullYear()} Kyungmun Cho. All rights reserved.</p>
               <p className="text-xs">Built with Next.js &middot; Deployed on Vercel</p>
             </div>

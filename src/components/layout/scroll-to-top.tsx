@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef, useCallback} from "react";
+import {useRef, useCallback, useEffect, useState} from "react";
 import {gsap} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {useScrollThreshold} from "@/hooks/use-scroll-threshold";
@@ -9,6 +9,7 @@ import {useGsapContext} from "@/hooks/use-gsap";
 import {createBlobOrbitAnimation} from "@/lib/gsap-utils";
 
 const SCROLL_THRESHOLD = 400;
+const FOOTER_OFFSET = 40;
 
 const HOVER_BLOB_POSITIONS = [
   {x: 8, y: -10, scale: 1.25},
@@ -24,46 +25,83 @@ export function ScrollToTop() {
   const blobTweensRef = useRef<gsap.core.Tween[]>([]);
   const reducedMotion = useReducedMotion();
   const isManualDismissRef = useRef(false);
+  const [bottomOffset, setBottomOffset] = useState(32); // 기본 bottom-8 (32px)
+
+  /**
+   * 푸터 위치 감지 — 버튼이 푸터 40px 위에서 멈추도록 bottom 값 조정.
+   */
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+
+    let rafId: number | null = null;
+
+    function updatePosition() {
+      if (!footer) return;
+      const footerRect = footer.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+
+      if (footerRect.top < viewportHeight) {
+        // 푸터가 뷰포트에 보임 — 버튼을 푸터 위로 올림
+        const newBottom = viewportHeight - footerRect.top + FOOTER_OFFSET;
+        setBottomOffset(Math.max(32, newBottom));
+      } else {
+        setBottomOffset(32);
+      }
+    }
+
+    function handleScroll() {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          updatePosition();
+          rafId = null;
+        });
+      }
+    }
+
+    updatePosition();
+    window.addEventListener("scroll", handleScroll, {passive: true});
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   /**
    * 스크롤 임계값에 따른 버튼 표시/숨김 애니메이션.
-   * 클릭으로 수동 dismiss 중일 때는 threshold 애니메이션을 건너뛴다.
+   * useGsapContext 대신 직접 gsap.to를 사용하여 ctx.revert()로 인한
+   * 애니메이션 즉시 초기화 문제를 방지한다.
    */
-  useGsapContext(
-    btnRef,
-    () => {
-      if (!btnRef.current) return;
+  useEffect(() => {
+    if (!btnRef.current) return;
 
-      if (visible) {
-        // 다시 보이게 될 때 수동 dismiss 플래그 초기화
-        isManualDismissRef.current = false;
-        gsap.set(btnRef.current, {pointerEvents: "auto"});
-        gsap.to(btnRef.current, {
-          scale: 1,
-          opacity: 1,
-          duration: reducedMotion ? 0 : 0.5,
-          ease: "back.out(1.7)",
-          overwrite: true,
-        });
-      } else {
-        // 클릭으로 이미 사라지고 있는 중이면 건너뜀
-        if (isManualDismissRef.current) return;
-        gsap.to(btnRef.current, {
-          scale: 0.6,
-          opacity: 0,
-          duration: reducedMotion ? 0 : 0.8,
-          ease: "power2.inOut",
-          overwrite: true,
-          onComplete: () => {
-            if (btnRef.current) {
-              gsap.set(btnRef.current, {pointerEvents: "none"});
-            }
-          },
-        });
-      }
-    },
-    [visible, reducedMotion],
-  );
+    if (visible) {
+      isManualDismissRef.current = false;
+      gsap.set(btnRef.current, {pointerEvents: "auto"});
+      gsap.to(btnRef.current, {
+        scale: 1,
+        opacity: 1,
+        duration: reducedMotion ? 0 : 0.5,
+        ease: "back.out(1.7)",
+        overwrite: true,
+      });
+    } else {
+      if (isManualDismissRef.current) return;
+      gsap.to(btnRef.current, {
+        scale: 0.6,
+        opacity: 0,
+        duration: reducedMotion ? 0 : 0.4,
+        ease: "power2.inOut",
+        overwrite: true,
+        onComplete: () => {
+          if (btnRef.current) {
+            gsap.set(btnRef.current, {pointerEvents: "none"});
+          }
+        },
+      });
+    }
+  }, [visible, reducedMotion]);
 
   /**
    * 블롭 궤도 애니메이션.
@@ -179,10 +217,8 @@ export function ScrollToTop() {
    * 버튼을 자연스럽게 페이드아웃한 후 스크롤 시작.
    */
   function handleClick() {
-    // 수동 dismiss 플래그 설정 — threshold 애니메이션 충돌 방지
     isManualDismissRef.current = true;
 
-    // 즉시 부드러운 페이드아웃 시작
     if (!reducedMotion && btnRef.current) {
       gsap.to(btnRef.current, {
         scale: 0.6,
@@ -198,7 +234,6 @@ export function ScrollToTop() {
       });
     }
 
-    // 최상단으로 부드러운 스크롤
     const lenis = getLenisInstance();
     if (lenis) {
       lenis.scrollTo(0, {duration: 1.2});
@@ -231,8 +266,12 @@ export function ScrollToTop() {
         onMouseLeave={handleMouseLeave}
         aria-label="맨 위로 스크롤"
         tabIndex={visible ? 0 : -1}
-        className="fixed bottom-8 right-8 z-50 h-14 w-14 cursor-pointer rounded-full opacity-0 scale-[0.4] pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
-        style={{filter: "url(#gooey)"}}
+        className="fixed right-8 z-50 h-14 w-14 cursor-pointer rounded-full opacity-0 scale-[0.4] pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
+        style={{
+          bottom: `${bottomOffset}px`,
+          transition: "bottom 0.3s ease-out",
+          filter: "url(#gooey)",
+        }}
       >
         <div ref={blobsRef} className="relative h-full w-full">
           <div data-main className="absolute inset-0 rounded-full bg-indigo-500" />

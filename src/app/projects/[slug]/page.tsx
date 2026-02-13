@@ -9,7 +9,8 @@ import {GradientText} from "@/components/ui/gradient-text";
 import {Button} from "@/components/ui/button";
 import {FadeIn} from "@/components/animation/fade-in";
 import {ProjectGallery} from "@/components/sections/project-gallery";
-import {MarkdownContent} from "@/components/ui/markdown-content";
+import {MarkdownContent, extractHeadings} from "@/components/ui/markdown-content";
+import {TableOfContents} from "@/components/ui/table-of-contents";
 import {ProjectSchema, BreadcrumbSchema} from "@/components/seo/json-ld";
 import {getAllProjects, getProjectBySlug} from "@/lib/projects";
 import {createMetadata} from "@/lib/metadata";
@@ -55,6 +56,7 @@ export async function generateMetadata({params}: ProjectDetailPageProps): Promis
 /**
  * 프로젝트 상세 페이지.
  * 마크다운 파일에서 읽어온 프로젝트 설명, 기술 스택, 외부 링크를 표시한다.
+ * xl 해상도에서는 우측에 ToC(목차)를 표시한다.
  */
 export default async function ProjectDetailPage({params}: ProjectDetailPageProps) {
   const {slug} = await params;
@@ -65,6 +67,8 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
   } catch {
     notFound();
   }
+
+  const headings = project.content ? extractHeadings(project.content) : [];
 
   return (
     <>
@@ -83,83 +87,91 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
         ]}
       />
 
-      <Section spacing="lg" container containerSize="md">
-        <FadeIn>
-          <nav aria-label="빵가루 네비게이션">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-            >
-              <ArrowLeft className="size-4" />
-              프로젝트 목록
-            </Link>
-          </nav>
-        </FadeIn>
+      <Section spacing="lg" container>
+        <div className="mx-auto max-w-3xl xl:max-w-none xl:grid xl:grid-cols-[1fr_200px] xl:gap-10">
+          {/* 메인 콘텐츠 */}
+          <div className="min-w-0">
+            <FadeIn>
+              <nav aria-label="빵가루 네비게이션">
+                <Link
+                  href="/projects"
+                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+                >
+                  <ArrowLeft className="size-4" />
+                  프로젝트 목록
+                </Link>
+              </nav>
+            </FadeIn>
 
-        <FadeIn delay={0.1}>
-          <GradientText as="h1" gradient="primary" className="text-4xl font-bold md:text-5xl">
-            {project.title}
-          </GradientText>
-        </FadeIn>
+            <FadeIn delay={0.1}>
+              <GradientText as="h1" gradient="primary" className="text-4xl font-bold md:text-5xl">
+                {project.title}
+              </GradientText>
+            </FadeIn>
 
-        <FadeIn delay={0.2}>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <TechBadge key={tag} name={tag} variant="outline" />
-            ))}
+            <FadeIn delay={0.2}>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <TechBadge key={tag} name={tag} variant="outline" />
+                ))}
+              </div>
+            </FadeIn>
+
+            {project.content && (
+              <FadeIn delay={0.3}>
+                <GlassCard padding="lg" className="mt-8">
+                  <article>
+                    <MarkdownContent content={project.content} />
+                  </article>
+                </GlassCard>
+              </FadeIn>
+            )}
+
+            {project.images && project.images.length > 0 && (
+              <FadeIn delay={0.35}>
+                <ProjectGallery images={project.images} title={project.title} />
+              </FadeIn>
+            )}
+
+            {project.links && (project.links.github || project.links.live) && (
+              <FadeIn delay={0.4}>
+                <div className="mt-8 flex gap-4">
+                  {project.links.github && (
+                    <Button variant="outline" asChild>
+                      <a
+                        href={project.links.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
+                        aria-label={`${project.title} GitHub 저장소`}
+                      >
+                        <Github className="size-4" aria-hidden="true" />
+                        GitHub
+                      </a>
+                    </Button>
+                  )}
+                  {project.links.live && (
+                    <Button asChild>
+                      <a
+                        href={project.links.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
+                        aria-label={`${project.title} 라이브 데모`}
+                      >
+                        <ExternalLink className="size-4" aria-hidden="true" />
+                        라이브 데모
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </FadeIn>
+            )}
           </div>
-        </FadeIn>
 
-        {project.content && (
-          <FadeIn delay={0.3}>
-            <GlassCard padding="lg" className="mt-8">
-              <article>
-                <MarkdownContent content={project.content} />
-              </article>
-            </GlassCard>
-          </FadeIn>
-        )}
-
-        {project.images && project.images.length > 0 && (
-          <FadeIn delay={0.35}>
-            <ProjectGallery images={project.images} title={project.title} />
-          </FadeIn>
-        )}
-
-        {project.links && (project.links.github || project.links.live) && (
-          <FadeIn delay={0.4}>
-            <div className="mt-8 flex gap-4">
-              {project.links.github && (
-                <Button variant="outline" asChild>
-                  <a
-                    href={project.links.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2"
-                    aria-label={`${project.title} GitHub 저장소`}
-                  >
-                    <Github className="size-4" aria-hidden="true" />
-                    GitHub
-                  </a>
-                </Button>
-              )}
-              {project.links.live && (
-                <Button asChild>
-                  <a
-                    href={project.links.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2"
-                    aria-label={`${project.title} 라이브 데모`}
-                  >
-                    <ExternalLink className="size-4" aria-hidden="true" />
-                    라이브 데모
-                  </a>
-                </Button>
-              )}
-            </div>
-          </FadeIn>
-        )}
+          {/* ToC 사이드바 — xl 이상에서만 표시 */}
+          {headings.length > 0 && <TableOfContents headings={headings} />}
+        </div>
       </Section>
     </>
   );

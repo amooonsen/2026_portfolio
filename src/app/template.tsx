@@ -1,10 +1,32 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { usePathname } from "next/navigation"
 import { gsap, ScrollTrigger } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { getLenisInstance } from "@/lib/lenis-store"
+
+/**
+ * 뒤로/앞으로 네비게이션 감지를 위한 모듈 레벨 플래그.
+ * popstate 이벤트 시 true로 설정되어 template 마운트 시 스크롤 리셋을 건너뛴다.
+ */
+let isTraversal = false
+
+if (typeof window !== "undefined") {
+  window.addEventListener("popstate", () => {
+    isTraversal = true
+  })
+}
+
+/**
+ * 특정 경로에서는 항상 스크롤을 최상단으로 리셋해야 하는지 판별한다.
+ * 프로젝트 상세 페이지처럼 콘텐츠가 다른 페이지는 항상 최상단에서 시작한다.
+ */
+function shouldAlwaysScrollTop(pathname: string): boolean {
+  // /projects/[slug] 형태의 상세 페이지
+  return /^\/projects\/[^/]+$/.test(pathname)
+}
 
 /**
  * 페이지 트랜지션 템플릿.
@@ -16,9 +38,18 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
   const isMobile = useMediaQuery("(max-width: 767px)")
+  const pathname = usePathname()
 
-  // 라우트 전환 시 스크롤 위치를 최상단으로 리셋 (Lenis 내부 상태 포함)
+  // 라우트 전환 시 스크롤 위치 제어
   useEffect(() => {
+    const wasTraversal = isTraversal
+    isTraversal = false
+
+    // 뒤로/앞으로 네비게이션이면서 상세 페이지가 아니면 스크롤 유지
+    if (wasTraversal && !shouldAlwaysScrollTop(pathname)) {
+      return
+    }
+
     // Lenis 인스턴스가 준비될 때까지 대기 후 스크롤 리셋
     const scrollToTop = () => {
       const lenis = getLenisInstance()
@@ -29,16 +60,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // 즉시 실행
     scrollToTop()
 
-    // Lenis 초기화를 위한 재시도 로직 (100ms 후)
     const timer = setTimeout(() => {
       scrollToTop()
     }, 100)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [pathname])
 
   useEffect(() => {
     if (!ref.current) return
@@ -75,8 +104,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
         duration: 0.6,
         ease: "power3.out",
         onComplete: () => {
-          // filter: blur(0px)가 인라인 스타일에 남으면 새로운 containing block이 생성되어
-          // 하위 요소의 position: sticky가 깨짐 → "none"으로 명시 제거
           if (ref.current) {
             ref.current.style.filter = "none"
             ref.current.style.transform = "none"

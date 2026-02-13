@@ -16,7 +16,7 @@ export const overviewItems: OverviewItem[] = [
   {
     href: "/projects",
     title: "프로젝트",
-    description: "직접 기획하고 개발한 프로젝트들을 확인해 보세요.",
+    description: "다양한 도메인의 프로젝트를 확인해 보세요.",
     icon: Briefcase,
     color: "from-purple-500 to-pink-500",
   },

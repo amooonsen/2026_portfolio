@@ -1,5 +1,11 @@
 import { cn } from "@/lib/utils"
 
+export interface TocHeading {
+  id: string
+  text: string
+  level: 2 | 3
+}
+
 interface MarkdownContentProps {
   content: string
   className?: string
@@ -77,12 +83,18 @@ function parseMarkdown(md: string): string {
 
     if (trimmed.startsWith("## ")) {
       if (inList) { result.push("</ul>"); inList = false }
-      const text = inlineFormat(trimmed.slice(3))
-      result.push(`<h2 class="text-xl font-semibold mt-8 mb-3 first:mt-0">${text}</h2>`)
+      const raw = trimmed.slice(3)
+      const text = inlineFormat(raw)
+      const plainText = raw.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`(.+?)`/g, "$1")
+      const id = slugify(plainText)
+      result.push(`<h2 id="${id}" class="text-xl font-semibold mt-8 mb-3 first:mt-0 scroll-mt-24">${text}</h2>`)
     } else if (trimmed.startsWith("### ")) {
       if (inList) { result.push("</ul>"); inList = false }
-      const text = inlineFormat(trimmed.slice(4))
-      result.push(`<h3 class="text-lg font-semibold mt-6 mb-2">${text}</h3>`)
+      const raw = trimmed.slice(4)
+      const text = inlineFormat(raw)
+      const plainText = raw.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`(.+?)`/g, "$1")
+      const id = slugify(plainText)
+      result.push(`<h3 id="${id}" class="text-lg font-semibold mt-6 mb-2 scroll-mt-24">${text}</h3>`)
     } else if (trimmed.startsWith("- ")) {
       if (!inList) {
         result.push('<ul class="list-disc pl-5 space-y-1 text-muted-foreground">')
@@ -100,6 +112,37 @@ function parseMarkdown(md: string): string {
   if (inList) result.push("</ul>")
 
   return result.join("\n")
+}
+
+/** 텍스트를 URL-safe slug로 변환한다. */
+function slugify(text: string): string {
+  return text
+    .replace(/<[^>]*>/g, "")
+    .replace(/[^\w\s가-힣-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .toLowerCase()
+}
+
+/**
+ * 마크다운 콘텐츠에서 h2/h3 heading을 추출한다.
+ * ToC(Table of Contents) 생성에 사용한다.
+ */
+export function extractHeadings(md: string): TocHeading[] {
+  const headings: TocHeading[] = []
+  for (const line of md.trim().split("\n")) {
+    const trimmed = line.trim()
+    if (trimmed.startsWith("### ")) {
+      const raw = trimmed.slice(4)
+      const text = raw.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`(.+?)`/g, "$1")
+      headings.push({ id: slugify(text), text, level: 3 })
+    } else if (trimmed.startsWith("## ")) {
+      const raw = trimmed.slice(3)
+      const text = raw.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`(.+?)`/g, "$1")
+      headings.push({ id: slugify(text), text, level: 2 })
+    }
+  }
+  return headings
 }
 
 /** bold, inline code 등 인라인 마크다운을 HTML로 변환한다. */

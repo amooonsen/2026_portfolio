@@ -87,7 +87,7 @@ export function ProjectGrid({
             Projects
           </GradientText>
           <p className="mt-2 text-muted-foreground">
-            직접 기획하고 개발한 프로젝트들입니다.
+            다양한 도메인에서 설계하고 구현한 프로젝트들입니다.
           </p>
         </FadeIn>
 

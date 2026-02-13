@@ -75,11 +75,19 @@ export const philosophies: Philosophy[] = [
   },
 ];
 
+/** 관련 프로젝트 링크 */
+export interface JourneyProject {
+  slug: string;
+  name: string;
+}
+
 /** 메인 페이지 개발 여정 데이터 */
 export interface JourneyItem {
   year: string;
   title: string;
   description: string;
+  /** 관련 프로젝트 링크 */
+  projects?: JourneyProject[];
 }
 
 export const journeyItems: JourneyItem[] = [
@@ -88,29 +96,43 @@ export const journeyItems: JourneyItem[] = [
     title: "입사 & 데이터 시각화",
     description:
       "이트라이브에 입사하여 RISE ETF 데이터 시각화 프로젝트를 담당했습니다. Amcharts로 5종 이상의 차트를 설계하고, WCAG 2.1 가이드라인을 적용하여 웹 접근성 인증 마크를 획득했습니다.",
+    projects: [{slug: "rise-etf", name: "RISE ETF"}],
   },
   {
     year: "2022",
     title: "엔터프라이즈 프론트엔드",
     description:
       "메리츠화재, 호텔롯데, 삼성카드, 이트라이브 자사 홈페이지 등 대형 고객사 프로젝트를 연달아 수행했습니다. 레거시 코드 리팩토링과 비즈니스 로직 모듈화를 통해 코드 품질을 개선하고, GSAP·Lottie.js 기반 인터랙션 구현 및 Lerp 기반 스무스 스크롤 엔진을 자체 설계했습니다.",
+    projects: [
+      {slug: "meritz-fire", name: "메리츠화재"},
+      {slug: "hotel-lotte", name: "호텔롯데"},
+      {slug: "samsungcard-platform", name: "삼성카드"},
+      {slug: "etribe-homepage", name: "이트라이브"},
+    ],
   },
   {
     year: "2023",
     title: "웹뷰 & 크로스 플랫폼",
     description:
       "래미안 홈플랫폼 홈닉의 Vue.js 기반 웹뷰를 개발하며 네이티브 앱과의 통신 인터페이스를 구축했습니다. Chart.js로 관리비 데이터를 시각화하고, iOS/Android 크로스 플랫폼 호환성을 확보했습니다.",
+    projects: [{slug: "raemian-homenic", name: "래미안 홈닉"}],
   },
   {
     year: "2024",
     title: "FE 리드 & AI 솔루션",
     description:
       "사내 스타트업 AI CARAMEL의 FE/BE를 리드하여 삼성·롯데 대상 AI 분석 통합 솔루션을 개발했습니다. Next.js 기반 대시보드 아키텍처 설계, Supabase·Fastify 백엔드 연동, n8n 자동화 파이프라인 구축까지 End-to-End로 수행했습니다.",
+    projects: [
+      {slug: "ai-caramel", name: "AI CARAMEL"},
+      {slug: "funetf-charts", name: "FunETF"},
+      {slug: "kpmg-homepage", name: "KPMG"},
+    ],
   },
   {
     year: "2025",
     title: "성능 최적화 & 대규모 시스템",
     description:
       "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화 및 레거시 인증 시스템 마이그레이션을 수행하며 대규모 엔터프라이즈 시스템에서의 프론트엔드 전문성을 심화했습니다.",
+    projects: [{slug: "lgcns-recruitment", name: "LG CNS 채용 솔루션"}],
   },
 ];
