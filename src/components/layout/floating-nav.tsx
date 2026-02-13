@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import gsap from "gsap"
@@ -32,24 +32,26 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
   const [isVisible, setIsVisible] = useState(false)
   const reducedMotion = useReducedMotion()
 
-  const handleScroll = useCallback(() => {
-    const currentY = window.scrollY
+  useEffect(() => {
+    function handleScroll() {
+      const currentY = window.scrollY
+      const delta = currentY - lastScrollY.current
 
-    if (currentY < 50) {
-      // 최상단: 헤더가 보이므로 FloatingNav 숨김
-      setIsVisible(false)
-    } else {
-      // 스크롤 다운 → 표시, 스크롤 업 → 숨김
-      setIsVisible(currentY > lastScrollY.current)
+      if (currentY < 50) {
+        // 최상단: 헤더가 보이므로 FloatingNav 숨김
+        setIsVisible(false)
+      } else if (Math.abs(delta) > 5) {
+        // 스크롤 다운 → 표시, 스크롤 업 → 숨김
+        // 최소 delta 임계값으로 Lenis 스무스 스크롤 및 sticky 구간에서 미세 방향 변동 방지
+        setIsVisible(delta > 0)
+      }
+
+      lastScrollY.current = currentY
     }
 
-    lastScrollY.current = currentY
-  }, [])
-
-  useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [handleScroll])
+  }, [])
 
   useEffect(() => {
     if (!navRef.current) return

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -25,24 +25,21 @@ export function MagneticWrapper({
   const [transform, setTransform] = useState({ x: 0, y: 0 })
 
   /** 마우스 위치에 따라 요소 이동량을 계산한다. */
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!ref.current || reducedMotion) return
-      const rect = ref.current.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-      setTransform({
-        x: (e.clientX - centerX) * strength,
-        y: (e.clientY - centerY) * strength,
-      })
-    },
-    [strength, reducedMotion]
-  )
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!ref.current || reducedMotion) return
+    const rect = ref.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    setTransform({
+      x: (e.clientX - centerX) * strength,
+      y: (e.clientY - centerY) * strength,
+    })
+  }
 
   /** 마우스 이탈 시 원위치로 복귀한다. */
-  const handleMouseLeave = useCallback(() => {
+  function handleMouseLeave() {
     setTransform({ x: 0, y: 0 })
-  }, [])
+  }
 
   return (
     <div

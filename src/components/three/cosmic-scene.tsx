@@ -1,9 +1,10 @@
 "use client"
 
-import { useRef, useMemo, useCallback, useEffect } from "react"
+import { useRef, useEffect } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { Points, PointMaterial, Float } from "@react-three/drei"
 import * as THREE from "three"
+import { gsap } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
@@ -12,7 +13,8 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 function StarField({ count = 600, isMobile = false }: { count?: number; isMobile?: boolean }) {
   const ref = useRef<THREE.Points>(null)
 
-  const positions = useMemo(() => {
+  const positionsRef = useRef<Float32Array | null>(null)
+  if (!positionsRef.current || positionsRef.current.length !== count * 3) {
     const pos = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
       const r = 50 + Math.random() * 150
@@ -22,8 +24,9 @@ function StarField({ count = 600, isMobile = false }: { count?: number; isMobile
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
       pos[i * 3 + 2] = r * Math.cos(phi)
     }
-    return pos
-  }, [count])
+    positionsRef.current = pos
+  }
+  const positions = positionsRef.current
 
   useFrame((_, delta) => {
     if (ref.current && !isMobile) {
@@ -51,7 +54,8 @@ function StarField({ count = 600, isMobile = false }: { count?: number; isMobile
 function NebulaParticles({ count = 150, isMobile = false }: { count?: number; isMobile?: boolean }) {
   const ref = useRef<THREE.Points>(null)
 
-  const [positions, colors] = useMemo(() => {
+  const dataRef = useRef<[Float32Array, Float32Array] | null>(null)
+  if (!dataRef.current || dataRef.current[0].length !== count * 3) {
     const pos = new Float32Array(count * 3)
     const col = new Float32Array(count * 3)
 
@@ -77,8 +81,9 @@ function NebulaParticles({ count = 150, isMobile = false }: { count?: number; is
       col[i * 3 + 1] = color.g
       col[i * 3 + 2] = color.b
     }
-    return [pos, col]
-  }, [count])
+    dataRef.current = [pos, col]
+  }
+  const [positions, colors] = dataRef.current
 
   useFrame((_, delta) => {
     if (ref.current && !isMobile) {
@@ -121,15 +126,14 @@ function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
   const { camera } = useThree()
   const mouseRef = useRef({ x: 0, y: 0 })
 
-  const handlePointerMove = useCallback((e: PointerEvent) => {
-    mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2
-    mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2
-  }, [])
-
   useEffect(() => {
+    function handlePointerMove(e: PointerEvent) {
+      mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2
+      mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2
+    }
     window.addEventListener("pointermove", handlePointerMove, { passive: true })
     return () => window.removeEventListener("pointermove", handlePointerMove)
-  }, [handlePointerMove])
+  }, [])
 
   useFrame(() => {
     if (isMobile) return
@@ -189,6 +193,12 @@ interface CosmicSceneProps {
   className?: string
   /** 로딩 완료 콜백 */
   onCreated?: () => void
+  /**
+   * true가 되면 캔버스를 페이드인으로 노출한다.
+   * template.tsx의 transform/filter가 position: fixed의 containing block을
+   * 변경하여 파티클 리사이즈를 유발하므로, 모든 전환이 끝난 뒤에 노출해야 한다.
+   */
+  visible?: boolean
 }
 
 /**
@@ -199,10 +209,33 @@ interface CosmicSceneProps {
  * 모바일에서 파티클 수와 애니메이션을 최적화하여 성능을 개선한다.
  * @param props.className - 추가 CSS 클래스
  * @param props.onCreated - Canvas 생성 완료 시 콜백
+ * @param props.visible - true가 되면 캔버스 페이드인 (기본 true)
  */
-export function CosmicScene({ className, onCreated }: CosmicSceneProps) {
+export function CosmicScene({ className, onCreated, visible = true }: CosmicSceneProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const hasRevealedRef = useRef(false)
   const reducedMotion = useReducedMotion()
   const isMobile = useMediaQuery("(max-width: 767px)")
+
+  // visible이 true가 되면 캔버스 컨테이너를 페이드인.
+  // 0.5s 딜레이로 template.tsx 애니메이션(~0.6s) 완료 후 노출하여
+  // containing block 변경에 의한 파티클 리사이즈 시프트를 방지한다.
+  useEffect(() => {
+    if (!visible || hasRevealedRef.current || !containerRef.current) return
+    hasRevealedRef.current = true
+
+    if (reducedMotion) {
+      gsap.set(containerRef.current, { opacity: 1 })
+      return
+    }
+
+    gsap.to(containerRef.current, {
+      opacity: 1,
+      duration: 1,
+      delay: 0.5,
+      ease: "power2.out",
+    })
+  }, [visible, reducedMotion])
 
   if (reducedMotion) {
     return <StaticBackground />
@@ -210,8 +243,9 @@ export function CosmicScene({ className, onCreated }: CosmicSceneProps) {
 
   return (
     <div
+      ref={containerRef}
       className={className}
-      style={{ position: "fixed", inset: 0, zIndex: 0 }}
+      style={{ position: "fixed", inset: 0, zIndex: 0, opacity: 0 }}
       aria-hidden="true"
     >
       <Canvas

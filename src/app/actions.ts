@@ -1,36 +1,55 @@
-"use server"
+"use server";
 
-interface ContactFormState {
-  success: boolean
-  message: string
+import {contactSchema} from "@/lib/validations/contact";
+import {sendContactMail} from "@/lib/mail";
+
+export interface ContactFormState {
+  success: boolean;
+  message: string;
+  errors?: {
+    name?: string[];
+    email?: string[];
+    message?: string[];
+  };
 }
 
 /**
- * 연락처 폼 제출 Server Action.
- * 클라이언트에서 useActionState와 함께 사용된다.
- * @param _prevState - 이전 폼 상태
- * @param formData - 제출된 폼 데이터 (name, email, message)
- * @returns 제출 결과 상태
+ * Contact 폼 제출 Server Action.
+ * Zod로 서버 사이드 검증 후 Nodemailer로 Gmail SMTP 전송한다.
  */
 export async function submitContactForm(
   _prevState: ContactFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ContactFormState> {
-  const name = formData.get("name") as string
-  const email = formData.get("email") as string
-  const message = formData.get("message") as string
+  const raw = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    message: formData.get("message"),
+  };
 
-  if (!name || !email || !message) {
-    return { success: false, message: "모든 필드를 입력해 주세요." }
+  const result = contactSchema.safeParse(raw);
+
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors;
+    return {
+      success: false,
+      message: "입력값을 확인해 주세요.",
+      errors: {
+        name: fieldErrors.name,
+        email: fieldErrors.email,
+        message: fieldErrors.message,
+      },
+    };
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) {
-    return { success: false, message: "올바른 이메일 주소를 입력해 주세요." }
+  try {
+    await sendContactMail(result.data);
+    return {success: true, message: "메시지가 성공적으로 전송되었습니다."};
+  } catch (error) {
+    console.error("이메일 전송 실패:", error);
+    return {
+      success: false,
+      message: "메시지 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+    };
   }
-
-  // TODO: 실제 이메일 전송 로직 구현 (Resend, SendGrid 등)
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  return { success: true, message: "메시지가 성공적으로 전송되었습니다." }
 }

@@ -62,7 +62,7 @@
 /projects       → src/app/projects/page.tsx  (프로젝트 그리드)
 /projects/[slug]→ src/app/projects/[slug]/page.tsx (프로젝트 상세 - Markdown)
 /experience     → src/app/experience/page.tsx(경력 타임라인)
-/contact        → src/app/contact/page.tsx   (연락처 폼)
+/contact        → src/app/contact/page.tsx   (Contact 폼)
 ```
 
 - Route Group `(portfolio)/`, `(content)/` 미사용 — 플랫 구조 채택
@@ -107,47 +107,55 @@ content/
 ## 컴포넌트 목록 (구현 완료)
 
 ### UI (`src/components/ui/`)
+
 button, container, section, bento-grid, glass-card, gradient-text, magnetic, spotlight, tech-badge, icon-button, overview-card, markdown-content
 
 ### Layout (`src/components/layout/`)
+
 header, floating-nav, mobile-nav, footer, skip-nav, scroll-progress, scroll-to-top, intro-loader, smooth-scroll, route-announcer
 
 ### Sections (`src/components/sections/`)
+
 hero-section, about-hero, project-grid, project-card, project-gallery, experience-timeline, tech-stack, skill-bars, contact-section, blog-card
 
 ### Animation (`src/components/animation/`)
+
 fade-in, slide-up, stagger-children, parallax, text-reveal, count-up, magnetic-wrapper
 
 ### Three.js (`src/components/three/`)
+
 hero-scene, cosmic-scene
 
 ### Hooks (`src/hooks/`)
+
 use-gsap, use-reduced-motion, use-media-query, use-scroll-progress, use-active-section, use-scroll-threshold
 
 ### Lib (`src/lib/`)
+
 utils, gsap, gsap-utils, lenis-store, projects, session-storage
 
 ---
 
 ## 스펙 대비 변경사항
 
-| 항목 | DESIGN_SPEC 계획 | 실제 구현 |
-|------|------------------|-----------|
-| Route Group | `(portfolio)/`, `(content)/` | 플랫 구조 |
-| 블로그 | 내부 MDX | 외부 링크 |
-| 폰트 | Geist Sans | Pretendard |
-| 미들웨어 | `proxy.ts` | 미사용 |
-| Framer Motion | Layer 3 | 미사용 (GSAP으로 대체) |
-| View Transitions | React 19.2 API | template.tsx GSAP 전환 |
-| 스무스 스크롤 | 미계획 | Lenis 도입 |
-| ThemeToggle | 계획됨 | 미구현 (다크 모드 고정) |
-| 콘텐츠 파서 | MDX | gray-matter (Markdown) |
+| 항목             | DESIGN_SPEC 계획             | 실제 구현               |
+| ---------------- | ---------------------------- | ----------------------- |
+| Route Group      | `(portfolio)/`, `(content)/` | 플랫 구조               |
+| 블로그           | 내부 MDX                     | 외부 링크               |
+| 폰트             | Geist Sans                   | Pretendard              |
+| 미들웨어         | `proxy.ts`                   | 미사용                  |
+| Framer Motion    | Layer 3                      | 미사용 (GSAP으로 대체)  |
+| View Transitions | React 19.2 API               | template.tsx GSAP 전환  |
+| 스무스 스크롤    | 미계획                       | Lenis 도입              |
+| ThemeToggle      | 계획됨                       | 미구현 (다크 모드 고정) |
+| 콘텐츠 파서      | MDX                          | gray-matter (Markdown)  |
 
 ---
 
 ## 해결된 이슈
 
 ### 페이지 전환 시 스크롤 위치 미초기화 (2025-02-10)
+
 - **원인**: `template.tsx`에서 `window.scrollTo(0, 0)` 사용 → Lenis 내부 상태 미동기화
 - **해결**: `getLenisInstance().scrollTo(0, { immediate: true })` 사용
 - **교훈**: Lenis 사용 시 모든 스크롤 제어는 Lenis API를 통해야 함
@@ -157,6 +165,7 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 ## 개발 규칙
 
 ### 코드 스타일
+
 - TypeScript strict mode 필수
 - 컴포넌트: PascalCase (`HeroSection.tsx`)
 - 훅: camelCase + `use` prefix (`use-scroll-progress.ts`)
@@ -164,6 +173,7 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 - 파일명: kebab-case (`glass-card.tsx`)
 
 ### Import 순서
+
 1. React / Next.js 내장
 2. 외부 라이브러리 (gsap, three 등)
 3. 내부 alias (`@/components`, `@/lib`, `@/hooks`)
@@ -171,12 +181,14 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 5. 타입 import (빈 줄로 구분)
 
 ### 스타일링
+
 - Tailwind CSS 4 유틸리티 클래스
 - 조건부 클래스: `cn()` (`clsx` + `tailwind-merge`)
 - 테마: CSS 변수 (`globals.css` 정의)
 - 인라인 스타일: 동적 값일 때만
 
 ### 애니메이션
+
 - 모든 애니메이션에 `useReducedMotion()` 체크
 - GSAP context는 `useGsapContext` 훅으로 관리 (자동 cleanup)
 - Three.js: `dynamic(() => import(...), { ssr: false })`
@@ -184,6 +196,7 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 - transform + opacity 우선 (GPU 가속)
 
 ### 접근성
+
 - 시맨틱 HTML 필수
 - ARIA 라벨 (인터랙티브 요소)
 - 키보드 내비게이션
@@ -192,6 +205,7 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 - Skip Navigation 링크
 
 ### Git
+
 - Conventional Commits: `feat:`, `fix:`, `refactor:`, `style:`, `perf:`, `docs:`, `chore:`
 - Feature branch → 커밋 → PR
 - `main` force push 금지

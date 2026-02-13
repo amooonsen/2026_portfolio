@@ -166,3 +166,8 @@
 @utility preserve-3d {
   transform-style: preserve-3d;
 }
+
+@utility text-accent-highlight {
+  color: var(--color-indigo-400, #818cf8);
+  font-weight: 500;
+}

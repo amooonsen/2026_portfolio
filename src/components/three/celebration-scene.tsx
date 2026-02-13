@@ -17,7 +17,7 @@ const BURST_FORCE = 8;
 const SPREAD = 5;
 
 /** 파티클의 기본 수명 (초) */
-const LIFETIME = 3;
+const LIFETIME = 10;
 
 /** 컨페티에 사용될 색상 팔레트 */
 const COLORS = [

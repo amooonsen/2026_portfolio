@@ -1,24 +1,11 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
-import dynamic from "next/dynamic";
-import {PartyPopper} from "lucide-react";
-import {gsap, ScrollTrigger} from "@/lib/gsap";
+import {useEffect, useRef} from "react";
+import {gsap} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
-import {Section} from "@/components/ui/section";
 import {GlassCard} from "@/components/ui/glass-card";
 import {TechBadge} from "@/components/ui/tech-badge";
-import {GradientText} from "@/components/ui/gradient-text";
-import {FadeIn} from "@/components/animation/fade-in";
 import {cn} from "@/lib/utils";
-
-const CelebrationScene = dynamic(
-  () =>
-    import("@/components/three/celebration-scene").then(
-      (mod) => mod.CelebrationScene,
-    ),
-  {ssr: false},
-);
 
 interface TimelineItem {
   company: string;
@@ -43,11 +30,7 @@ interface ExperienceTimelineProps {
 export function ExperienceTimeline({items}: ExperienceTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
-  const endTriggerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const [celebrating, setCelebrating] = useState(false);
-  const [showScene, setShowScene] = useState(false);
-  const celebratedRef = useRef(false);
 
   useEffect(() => {
     if (!containerRef.current || reducedMotion) return;
@@ -58,19 +41,19 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
     const techGroups = containerRef.current.querySelectorAll("[data-tech-group]");
 
     const ctx = gsap.context(() => {
-      // 타임라인 라인 드로우 (스크롤 연동)
+      // 타임라인 라인 드로우 — 컨테이너 진입 시 완전히 그어짐
       if (lineRef.current) {
         gsap.fromTo(
           lineRef.current,
           {scaleY: 0},
           {
             scaleY: 1,
-            ease: "none",
+            duration: 1.2,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: containerRef.current,
               start: "top 80%",
-              end: "bottom 20%",
-              scrub: 0.5,
+              toggleActions: "play none none none",
             },
           },
         );
@@ -139,39 +122,14 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
           },
         });
       });
-
-      // 스크롤 완료 시 축하 모션 트리거
-      if (endTriggerRef.current && !celebratedRef.current) {
-        ScrollTrigger.create({
-          trigger: endTriggerRef.current,
-          start: "top 80%",
-          once: true,
-          onEnter: () => {
-            celebratedRef.current = true;
-            setShowScene(true);
-            setCelebrating(true);
-            // 4초 후 페이드 아웃 시작
-            setTimeout(() => setCelebrating(false), 3500);
-            // 5초 후 완전히 언마운트 (리소스 정리)
-            setTimeout(() => setShowScene(false), 5000);
-          },
-        });
-      }
     });
 
     return () => ctx.revert();
   }, [reducedMotion]);
 
   return (
-    <Section spacing="lg" container>
-      <FadeIn>
-        <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
-          Experience
-        </GradientText>
-        <p className="mt-2 text-muted-foreground">성장하며 쌓아온 경험들입니다.</p>
-      </FadeIn>
-
-      <div ref={containerRef} className="relative mt-16 overflow-hidden">
+    <div className="pt-8">
+      <div ref={containerRef} className="relative">
         {/* 중앙 세로선 — 스크롤 연동 드로우 */}
         <div
           ref={lineRef}
@@ -252,35 +210,8 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
             );
           })}
         </div>
-
-        {/* 스크롤 완료 축하 트리거 + 메시지 */}
-        <div ref={endTriggerRef} className="mt-20 flex flex-col items-center gap-4 pb-8">
-          <div
-            className={cn(
-              "text-center transition-all duration-700",
-              celebrating
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0",
-            )}
-          >
-            <PartyPopper className="mx-auto h-10 w-10 text-indigo-400" strokeWidth={1.5} />
-            <GradientText
-              as="p"
-              gradient="primary"
-              className="mt-2 text-xl font-bold"
-            >
-              여기까지 봐주셔서 감사합니다!
-            </GradientText>
-            <p className="mt-1 text-sm text-muted-foreground">
-              함께 성장할 기회를 기다리고 있습니다.
-            </p>
-          </div>
-        </div>
       </div>
-
-      {/* 3D 축하 컨페티 — showScene일 때만 마운트 (리소스 최적화) */}
-      {showScene && !reducedMotion && <CelebrationScene active={celebrating} />}
-    </Section>
+    </div>
   );
 }
 

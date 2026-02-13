@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ExternalLink, Menu } from "lucide-react"
@@ -36,26 +36,36 @@ export function Header({ items, className }: HeaderProps) {
   const pathname = usePathname()
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. 모바일에서는 항상 표시. */
-  const handleScroll = useCallback(() => {
-    const currentY = window.scrollY
-
-    if (currentY < 50) {
-      setIsVisible(true)
-      setIsScrolled(false)
-    } else {
-      // 모바일에서는 항상 visible, 데스크톱에서만 스크롤 방향에 따라 숨김/표시
-      setIsVisible(!isDesktop || currentY < lastScrollY.current)
-      setIsScrolled(true)
-    }
-
-    lastScrollY.current = currentY
-  }, [isDesktop])
+  // 초기 로딩 시 레이아웃 시프트로 인한 false hide 방지용 grace period
+  const isReadyRef = useRef(false)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      isReadyRef.current = true
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
+    /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. 모바일에서는 항상 표시. */
+    function handleScroll() {
+      const currentY = window.scrollY
+
+      if (currentY < 50) {
+        setIsVisible(true)
+        setIsScrolled(false)
+      } else {
+        // 초기화 완료 전에는 항상 표시 (레이아웃 시프트 false hide 방지)
+        // 모바일에서는 항상 visible, 데스크톱에서만 스크롤 방향에 따라 숨김/표시
+        setIsVisible(!isReadyRef.current || !isDesktop || currentY < lastScrollY.current)
+        setIsScrolled(true)
+      }
+
+      lastScrollY.current = currentY
+    }
+
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [handleScroll])
+  }, [isDesktop])
 
   return (
     <>

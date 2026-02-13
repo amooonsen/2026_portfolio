@@ -1,67 +1,206 @@
 "use client";
 
-import {useEffect, useState, useCallback, useRef} from "react";
+import {useEffect, useState, useRef} from "react";
+import {createPortal} from "react-dom";
 import {cn} from "@/lib/utils";
 import {gsap} from "@/lib/gsap";
 import {useGsap} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {hasSessionItem, setSessionItem} from "@/lib/session-storage";
-import {animateCharsStagger, animateProgress} from "@/lib/gsap-utils";
+import {animateCharsStagger} from "@/lib/gsap-utils";
+import {getLenisInstance} from "@/lib/lenis-store";
 
 const INTRO_CACHE_KEY = "portfolio-intro-seen";
-const PROGRESS_SIMULATION_DURATION = 2500;
-const MAX_SIMULATED_PROGRESS = 80;
-const DISMISS_DELAY = 400;
+/** 첫 방문 인트로 최소 표시 시간 (ms) */
+const MIN_DISPLAY_DURATION = 1200;
+/** 재방문 시 리소스 로딩 유예 시간 — 이 시간 내 완료 시 로더 생략 (ms) */
+const GRACE_PERIOD = 400;
+/** 100% 도달 후 종료 시퀀스까지 대기 시간 (ms) */
+const DISMISS_DELAY = 300;
 
 interface IntroLoaderProps {
   isSceneReady: boolean;
+  onComplete?: () => void;
   children: React.ReactNode;
 }
 
-export function IntroLoader({isSceneReady, children}: IntroLoaderProps) {
-  const [shouldShow, setShouldShow] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isDismissed, setIsDismissed] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const animRef = useRef<number | null>(null);
-  const reducedMotion = useReducedMotion();
+/**
+ * 리소스 인식 로딩 오버레이.
+ *
+ * **첫 방문**: 풀 브랜디드 인트로(타이틀 + 프로그레스)를 즉시 표시.
+ * **재방문**: 유예 시간(GRACE_PERIOD) 동안 리소스 로딩을 대기.
+ *   - 유예 내 완료 → 로더 없이 콘텐츠 즉시 노출 (부드러운 페이드인).
+ *   - 유예 초과 → 미니멀 프로그레스 바를 표시하고 완료 시 페이드아웃.
+ *
+ * 콘텐츠는 항상 DOM에 렌더링되어(opacity: 0) 리소스가 병렬 로드된다.
+ * 오버레이를 body에 portal로 렌더링하여 template.tsx의 transform scope를 벗어난다.
+ */
+export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderProps) {
+  type Mode = "grace" | "intro" | "loading" | "complete";
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const isFirstVisitRef = useRef(false);
+  const [mode, setMode] = useState<Mode>("grace");
+  const [isMounted, setIsMounted] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  // ── Refs: 풀 인트로 오버레이 ──
+  const introRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
   const counterGroupRef = useRef<HTMLDivElement>(null);
   const progressGroupRef = useRef<HTMLDivElement>(null);
-  const counterObjRef = useRef({value: 0});
 
+  // ── Refs: 미니멀 로딩 오버레이 ──
+  const loadingRef = useRef<HTMLDivElement>(null);
+  const loadingBarRef = useRef<HTMLDivElement>(null);
+
+  // ── 공통 Refs ──
+  const progressObjRef = useRef({value: 0});
+  const progressTweenRef = useRef<gsap.core.Tween | null>(null);
+  const mountTimeRef = useRef(0);
+  const dismissedRef = useRef(false);
+
+  /** 프로그레스 UI 동시 갱신 (카운터 텍스트 + 인트로 바 + 미니멀 바) */
+  function updateProgressUI() {
+    const val = Math.round(progressObjRef.current.value);
+    if (counterRef.current) counterRef.current.textContent = String(val);
+    const pct = `${progressObjRef.current.value}%`;
+    if (progressBarRef.current) progressBarRef.current.style.width = pct;
+    if (loadingBarRef.current) loadingBarRef.current.style.width = pct;
+  }
+
+  /** Lenis 동기화 스크롤 리셋 */
+  function resetScroll() {
+    const lenis = getLenisInstance();
+    if (lenis) {
+      lenis.scrollTo(0, {immediate: true});
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  // ─── 초기화: 모드 결정 + body overflow 잠금 ───
   useEffect(() => {
     setIsMounted(true);
-    if (!hasSessionItem(INTRO_CACHE_KEY)) {
-      setShouldShow(true);
+    mountTimeRef.current = Date.now();
+    isFirstVisitRef.current = !hasSessionItem(INTRO_CACHE_KEY);
+
+    if (isFirstVisitRef.current) {
+      setMode("intro");
+      document.body.style.overflow = "hidden";
     }
+    // 재방문은 'grace' 유지 (SSR-safe default)
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
-  /**
-   * 인트로 입장 애니메이션 시퀀스.
-   * 1. 배경 페이드인
-   * 2. 타이틀 문자 스태거 (3D 회전)
-   * 3. 서브타이틀 슬라이드업
-   * 4. 카운터 숫자 스케일 등장
-   * 5. 프로그레스 바 스케일 등장
-   */
+  // ─── Grace period: 재방문 시 유예 시간 관리 ───
+  useEffect(() => {
+    if (mode !== "grace" || !isMounted) return;
+
+    // 유예 중 리소스 준비 완료 → 로더 없이 즉시 완료
+    if (isSceneReady) {
+      setIsContentVisible(true);
+      setMode("complete");
+      onCompleteRef.current?.();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      // 유예 초과: 미니멀 로딩 오버레이 표시
+      setMode("loading");
+      document.body.style.overflow = "hidden";
+    }, GRACE_PERIOD);
+
+    return () => clearTimeout(timer);
+  }, [mode, isMounted, isSceneReady]);
+
+  // ─── 종료 시퀀스 ───
+  function dismiss() {
+    if (dismissedRef.current) return;
+    dismissedRef.current = true;
+
+    if (isFirstVisitRef.current) {
+      setSessionItem(INTRO_CACHE_KEY, "1");
+    }
+
+    document.body.style.overflow = "";
+    resetScroll();
+    // 프레임 이후 한번 더 리셋하여 Lenis + 브라우저 동기화 보장
+    requestAnimationFrame(() => resetScroll());
+
+    const isIntro = mode === "intro";
+    const container = isIntro ? introRef.current : loadingRef.current;
+
+    if (!container || reducedMotion) {
+      setIsContentVisible(true);
+      setMode("complete");
+      onCompleteRef.current?.();
+      return;
+    }
+
+    if (isIntro) {
+      // 풀 인트로: 카운터 펄스 → 오버레이 페이드아웃
+      const tl = gsap.timeline({
+        onComplete: () => setMode("complete"),
+      });
+
+      if (counterGroupRef.current) {
+        tl.to(counterGroupRef.current, {
+          scale: 1.05,
+          duration: 0.2,
+          ease: "power2.out",
+        }).to(counterGroupRef.current, {
+          scale: 1,
+          duration: 0.3,
+          ease: "elastic.out(1, 0.5)",
+        });
+      }
+
+      tl.to(
+        container,
+        {
+          opacity: 0,
+          scale: 1.05,
+          duration: 0.8,
+          ease: "power3.inOut",
+          onStart: () => {
+            setIsContentVisible(true);
+            onCompleteRef.current?.();
+          },
+        },
+        "-=0.2",
+      );
+    } else {
+      // 미니멀 로더: 빠른 페이드아웃
+      gsap.to(container, {
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.out",
+        onStart: () => {
+          setIsContentVisible(true);
+          onCompleteRef.current?.();
+        },
+        onComplete: () => setMode("complete"),
+      });
+    }
+  }
+
+  // ─── 풀 인트로 입장 애니메이션 시퀀스 ───
   useGsap(() => {
-    if (!shouldShow || reducedMotion || !containerRef.current) return;
+    if (mode !== "intro" || reducedMotion || !introRef.current) return;
 
     const tl = gsap.timeline({defaults: {ease: "power3.out"}});
 
-    // 1. 배경 페이드인
-    tl.from(containerRef.current, {
-      opacity: 0,
-      duration: 0.6,
-    });
+    tl.from(introRef.current, {opacity: 0, duration: 0.6});
 
-    // 2. 타이틀 문자 스태거
     if (titleRef.current) {
       animateCharsStagger(titleRef.current, {
         stagger: 0.03,
@@ -73,180 +212,96 @@ export function IntroLoader({isSceneReady, children}: IntroLoaderProps) {
       });
     }
 
-    // 3. 서브타이틀 슬라이드업
     if (subtitleRef.current) {
-      tl.from(
-        subtitleRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.5,
-        },
-        "-=0.4",
-      );
+      tl.from(subtitleRef.current, {opacity: 0, y: 20, duration: 0.5}, "-=0.4");
     }
 
-    // 4. 카운터 숫자 스케일 등장
     if (counterGroupRef.current) {
       tl.from(
         counterGroupRef.current,
-        {
-          opacity: 0,
-          scale: 0.5,
-          duration: 0.7,
-          ease: "back.out(1.5)",
-        },
+        {opacity: 0, scale: 0.5, duration: 0.7, ease: "back.out(1.5)"},
         "-=0.3",
       );
     }
 
-    // 5. 프로그레스 바 스케일 등장
     if (progressGroupRef.current) {
       tl.from(
         progressGroupRef.current,
-        {
-          opacity: 0,
-          scaleX: 0.3,
-          duration: 0.6,
-          ease: "power3.out",
-        },
+        {opacity: 0, scaleX: 0.3, duration: 0.6, ease: "power3.out"},
         "-=0.4",
       );
     }
-  }, [shouldShow, reducedMotion]);
+  }, [mode, reducedMotion]);
 
-  /**
-   * 하이브리드 프로그레스 시뮬레이션.
-   * - 1단계: 시뮬레이션 (0-80%)
-   * - 2단계: 씬 로드 완료 후 100%까지 가속
-   */
+  // ─── 미니멀 로더 입장 페이드인 ───
+  useGsap(() => {
+    if (mode !== "loading" || !loadingRef.current) return;
+    gsap.from(loadingRef.current, {opacity: 0, duration: 0.3, ease: "power2.out"});
+  }, [mode]);
+
+  // ─── 프로그레스 Phase 1: 느린 진행 (0 → 80) ───
   useEffect(() => {
-    if (!shouldShow) return;
+    if (mode !== "intro" && mode !== "loading") return;
 
-    let start: number | null = null;
-
-    const animate = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const elapsed = timestamp - start;
-
-      if (!isSceneReady) {
-        const simulated = Math.min(
-          (elapsed / PROGRESS_SIMULATION_DURATION) * MAX_SIMULATED_PROGRESS,
-          MAX_SIMULATED_PROGRESS,
-        );
-        setProgress(simulated);
-      } else {
-        setProgress((prev) => {
-          const next = prev + (100 - prev) * 0.08;
-          return next > 99 ? 100 : next;
-        });
-      }
-
-      animRef.current = requestAnimationFrame(animate);
-    };
-
-    animRef.current = requestAnimationFrame(animate);
+    progressObjRef.current.value = 0;
+    progressTweenRef.current = gsap.to(progressObjRef.current, {
+      value: 80,
+      duration: mode === "intro" ? 4 : 2,
+      ease: "power1.out",
+      onUpdate: updateProgressUI,
+    });
 
     return () => {
-      if (animRef.current) cancelAnimationFrame(animRef.current);
+      progressTweenRef.current?.kill();
     };
-  }, [shouldShow, isSceneReady]);
+  }, [mode]);
 
-  /**
-   * 프로그레스 바 너비 애니메이션.
-   */
+  // ─── 프로그레스 Phase 2: 리소스 준비 → 100% + 종료 시퀀스 ───
   useEffect(() => {
-    if (!progressBarRef.current || !shouldShow) return;
-    animateProgress(progressBarRef.current, progress);
-  }, [progress, shouldShow]);
+    if (!isSceneReady || (mode !== "intro" && mode !== "loading") || dismissedRef.current) return;
 
-  /**
-   * 카운터 숫자 GSAP 보간 애니메이션.
-   * 숫자가 부드럽게 카운트업되는 효과.
-   */
-  useEffect(() => {
-    if (!counterRef.current || !shouldShow) return;
+    // Phase 1 느린 트윈 중지
+    progressTweenRef.current?.kill();
 
-    gsap.to(counterObjRef.current, {
-      value: Math.round(progress),
-      duration: 0.5,
-      ease: "power1.out",
-      overwrite: true,
-      snap: {value: 1},
-      onUpdate: () => {
-        if (counterRef.current) {
-          counterRef.current.textContent = String(Math.round(counterObjRef.current.value));
+    let dismissTimer: ReturnType<typeof setTimeout>;
+
+    progressTweenRef.current = gsap.to(progressObjRef.current, {
+      value: 100,
+      duration: 0.6,
+      ease: "power2.out",
+      onUpdate: updateProgressUI,
+      onComplete: () => {
+        if (mode === "intro") {
+          // 입장 애니메이션이 끝날 때까지 최소 표시 시간 보장
+          const elapsed = Date.now() - mountTimeRef.current;
+          const remaining = Math.max(0, MIN_DISPLAY_DURATION - elapsed);
+          dismissTimer = setTimeout(dismiss, remaining + DISMISS_DELAY);
+        } else {
+          // 미니멀 로더: 빠르게 종료
+          dismissTimer = setTimeout(dismiss, 100);
         }
       },
     });
-  }, [progress, shouldShow]);
 
-  /**
-   * 인트로 종료 시퀀스.
-   */
-  const dismiss = useCallback(() => {
-    if (!containerRef.current || reducedMotion) {
-      setSessionItem(INTRO_CACHE_KEY, "1");
-      setIsDismissed(true);
-      return;
-    }
+    return () => {
+      progressTweenRef.current?.kill();
+      clearTimeout(dismissTimer);
+    };
+  }, [isSceneReady, mode]);
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setSessionItem(INTRO_CACHE_KEY, "1");
-        setIsDismissed(true);
-      },
-    });
-
-    // 카운터 + 프로그레스 바 완료 펄스
-    if (counterGroupRef.current) {
-      tl.to(counterGroupRef.current, {
-        scale: 1.05,
-        duration: 0.2,
-        ease: "power2.out",
-      }).to(counterGroupRef.current, {
-        scale: 1,
-        duration: 0.3,
-        ease: "elastic.out(1, 0.5)",
-      });
-    }
-
-    // 전체 컨테이너 페이드아웃
-    tl.to(
-      containerRef.current,
-      {
-        opacity: 0,
-        scale: 1.05,
-        duration: 0.7,
-        ease: "power3.inOut",
-      },
-      "-=0.2",
-    );
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    if (progress >= 100 && shouldShow && !isDismissed) {
-      const timer = setTimeout(dismiss, DISMISS_DELAY);
-      return () => clearTimeout(timer);
-    }
-  }, [progress, shouldShow, isDismissed, dismiss]);
-
-  const showOverlay = !isMounted || (shouldShow && !isDismissed);
-  const contentVisible = isMounted && (!shouldShow || isDismissed);
+  const showIntroOverlay = isMounted && mode === "intro";
+  const showLoadingOverlay = isMounted && mode === "loading";
 
   return (
     <>
-      {/* 인트로 오버레이 */}
-      <div
-        ref={containerRef}
-        className={cn(
-          "fixed inset-0 z-[9999] bg-[#030014]",
-          showOverlay ? "opacity-100" : "opacity-0 pointer-events-none",
-        )}
-        aria-hidden={!showOverlay}
-      >
-        {shouldShow && (
-          <>
+      {/* ── 풀 브랜디드 인트로 오버레이 (첫 방문) ── */}
+      {showIntroOverlay &&
+        createPortal(
+          <div
+            ref={introRef}
+            className="fixed inset-0 z-[9999] h-screen bg-[#030014]"
+            aria-hidden={!showIntroOverlay}
+          >
             {/* 앰비언트 그라디언트 오브 */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-1/4 left-1/4 h-[450px] w-[450px] rounded-full bg-violet-600/25 blur-[120px] animate-pulse" />
@@ -293,15 +348,43 @@ export function IntroLoader({isSceneReady, children}: IntroLoaderProps) {
                 </div>
               </div>
             </div>
-          </>
+          </div>,
+          document.body,
         )}
-      </div>
 
-      {/* 메인 콘텐츠 */}
+      {/* ── 미니멀 로딩 오버레이 (재방문 + 느린 리소스) ── */}
+      {showLoadingOverlay &&
+        createPortal(
+          <div
+            ref={loadingRef}
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#030014]"
+            aria-hidden={!showLoadingOverlay}
+          >
+            {/* 앰비언트 그라디언트 (단순화) */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute top-1/3 left-1/3 h-[300px] w-[300px] rounded-full bg-violet-600/15 blur-[100px]" />
+              <div className="absolute bottom-1/3 right-1/3 h-[250px] w-[250px] rounded-full bg-indigo-600/10 blur-[80px]" />
+            </div>
+
+            {/* 미니멀 프로그레스 바 */}
+            <div className="relative z-10 w-48 md:w-56">
+              <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
+                <div
+                  ref={loadingBarRef}
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_12px_rgba(139,92,246,0.4)]"
+                  style={{width: "0%"}}
+                />
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {/* ── 메인 콘텐츠 — 항상 DOM에 렌더링 (리소스 병렬 로드) ── */}
       <div
         className={cn(
-          "transition-opacity duration-700",
-          contentVisible ? "opacity-100" : "opacity-0",
+          "transition-opacity duration-300",
+          isContentVisible ? "opacity-100" : "opacity-0",
         )}
       >
         {children}

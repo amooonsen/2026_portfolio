@@ -25,6 +25,79 @@ links:
 
 인턴과 기업 회원이라는 두 가지 사용자 유형에 맞춰 서로 다른 채용 프로세스 플로우를 설계하고, Tosspayments 결제 모듈을 연동하여 기업 채용 공고 결제 시스템을 구축하는 것이 핵심 과제였습니다.
 
+페이지 유형별로 최적의 렌더링 전략을 선택하는 것도 중요한 과제였습니다. 채용 공고 목록은 검색 엔진 노출이 중요하면서도 실시간 데이터 반영이 필요했고, 기업 관리자 페이지는 SEO가 불필요하지만 빠른 인터랙션이 필수였습니다. 각 페이지의 요구사항을 분석하여 SSR, SSG, CSR을 혼합 적용하는 하이브리드 아키텍처를 설계했습니다.
+
+결제 시스템 구현에서는 결제 승인과 실패 처리의 원자성(atomicity)을 보장하는 것이 가장 까다로운 부분이었습니다. 클라이언트에서 결제 위젯을 통해 결제를 요청한 후, 서버 사이드에서 최종 승인을 수행하는 2단계 구조를 채택하여 결제 금액 위변조를 방지하고, 네트워크 오류 시에도 안전한 복구가 가능하도록 했습니다.
+
+## 기술적 의사결정 및 근거
+
+### 렌더링 전략: 페이지 유형별 하이브리드 아키텍처
+
+채용 플랫폼은 페이지마다 요구사항이 극명하게 달랐기 때문에, 단일 렌더링 전략으로는 최적화가 불가능했습니다. 채용 공고 목록은 검색 엔진 노출과 실시간 데이터 반영이 동시에 필요하고, 기업 소개/가이드 페이지는 정적 콘텐츠로 변경이 드물며, 마이페이지/관리자 페이지는 인증 후 접근하여 SEO가 불필요한 대신 빠른 인터랙션이 필수였습니다.
+
+이에 따라 Next.js App Router의 페이지별 렌더링 전략 혼합을 활용하여 각 페이지 특성에 맞게 개별 적용했습니다. 채용 공고 목록은 SSR로 검색 엔진 크롤링과 실시간 데이터를 동시 충족하고, 기업 소개/가이드는 SSG로 빌드 시 생성하여 최고 성능을 확보했으며, 마이페이지/관리자는 CSR로 빠른 클라이언트 인터랙션을 우선했습니다.
+
+### 결제 시스템: Tosspayments vs PortOne (구 아임포트)
+
+**Tosspayments 채택.** 단일 PG사만 사용하는 구조에서 PortOne(구 아임포트)의 멀티 PG 추상화는 불필요한 복잡성이었습니다. Tosspayments의 직접 연동은 서버 사이드 결제 승인 방식으로 금액 위변조 방지 구조가 명확하고, 웹훅 기반 상태 알림으로 네트워크 오류 시에도 안정적인 동기화가 가능했습니다. 해외인턴십 타겟 사용자의 모바일 이용률을 고려했을 때 결제 위젯 UI의 모바일 UX도 우수했고, 문제 발생 시 PG사와 직접 소통이 가능하다는 운영상 이점도 있었습니다.
+
+```typescript
+// Tosspayments 결제 플로우: 클라이언트 요청 + 서버 승인 2단계 구조
+
+// 1단계: 클라이언트 - 결제 위젯으로 결제 요청
+async function requestPayment(orderData: OrderData) {
+  const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
+  const payment = tossPayments.payment({ customerKey: orderData.userId });
+
+  await payment.requestPayment({
+    method: 'CARD',
+    amount: { currency: 'KRW', value: orderData.amount },
+    orderId: orderData.orderId,
+    orderName: orderData.planName,
+    successUrl: `${window.location.origin}/payment/success`,
+    failUrl: `${window.location.origin}/payment/fail`,
+  });
+}
+
+// 2단계: 서버 - 결제 승인 (금액 위변조 방지)
+// /api/payment/confirm (서버 사이드)
+async function confirmPayment(req: NextRequest) {
+  const { paymentKey, orderId, amount } = await req.json();
+
+  // DB에서 주문 정보 조회하여 금액 일치 여부 검증
+  const order = await db.order.findUnique({ where: { orderId } });
+  if (!order || order.amount !== amount) {
+    return NextResponse.json({ error: '결제 금액 불일치' }, { status: 400 });
+  }
+
+  // Tosspayments 서버로 최종 승인 요청
+  const response = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${TOSS_SECRET_KEY}:`).toString('base64')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ paymentKey, orderId, amount }),
+  });
+
+  if (!response.ok) {
+    // 승인 실패 시 주문 상태를 FAILED로 업데이트
+    await db.order.update({ where: { orderId }, data: { status: 'FAILED' } });
+    return NextResponse.json({ error: '결제 승인 실패' }, { status: 400 });
+  }
+
+  // 승인 성공 시 주문 상태 업데이트 + 채용 공고 활성화
+  await db.order.update({ where: { orderId }, data: { status: 'PAID' } });
+  await activateJobPosting(order.jobPostingId);
+
+  return NextResponse.json({ success: true });
+}
+```
+
+### 에러 모니터링: Sentry vs Datadog
+
+**Sentry 채택.** 이 프로젝트에서 필요한 것은 프론트엔드 에러 트래킹과 사용자 세션 리플레이였고, Sentry는 이 영역에서 가장 성숙한 도구입니다. Next.js 공식 SDK(`@sentry/nextjs`)로 서버/클라이언트 에러를 통합 수집하고, 릴리즈별 에러 추적으로 배포 후 회귀 여부를 즉시 파악할 수 있었습니다. Datadog은 APM, 인프라 모니터링, 로그 관리를 통합 제공하지만 프론트엔드 전용으로는 과도했고, 인프라 모니터링은 AWS CloudWatch로 충분했습니다. 무료 플랜(월 5K 이벤트)으로 스타트업 단계의 비용 부담도 없었습니다.
+
 ## 담당 기간
 
 2024.10 - 2026.02 | 프론트엔드 개발 매니저

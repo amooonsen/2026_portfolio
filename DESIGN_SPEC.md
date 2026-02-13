@@ -11,45 +11,50 @@
 ## 2. Tech Stack
 
 ### Core
-| Category | Technology | Version |
-|----------|-----------|---------|
-| Framework | Next.js | 16.x |
-| Language | TypeScript | 5.1+ |
-| Runtime | Node.js | 20.9+ |
-| Bundler | Turbopack (default) | stable |
-| React | React 19.2 (Canary) | built-in |
+
+| Category  | Technology          | Version  |
+| --------- | ------------------- | -------- |
+| Framework | Next.js             | 16.x     |
+| Language  | TypeScript          | 5.1+     |
+| Runtime   | Node.js             | 20.9+    |
+| Bundler   | Turbopack (default) | stable   |
+| React     | React 19.2 (Canary) | built-in |
 
 ### Styling & Animation
-| Category | Technology | Purpose | 상태 |
-|----------|-----------|---------|------|
-| CSS | Tailwind CSS 4 | Utility-first styling | ✅ 구현 |
-| Animation | GSAP 3.14 + ScrollTrigger | Scroll-based animations | ✅ 구현 |
-| 3D | Three.js + React Three Fiber | 3D visual elements | ✅ 구현 |
-| Smooth Scroll | Lenis 1.3 | 스무스 스크롤 | ✅ 추가 구현 |
-| Transitions | GSAP (template.tsx) | Page navigation animation | ✅ 변경 (View Transitions → GSAP) |
-| Motion | ~~Framer Motion~~ | ~~Component-level~~ | ❌ 미사용 (GSAP으로 대체) |
+
+| Category      | Technology                   | Purpose                   | 상태                              |
+| ------------- | ---------------------------- | ------------------------- | --------------------------------- |
+| CSS           | Tailwind CSS 4               | Utility-first styling     | ✅ 구현                           |
+| Animation     | GSAP 3.14 + ScrollTrigger    | Scroll-based animations   | ✅ 구현                           |
+| 3D            | Three.js + React Three Fiber | 3D visual elements        | ✅ 구현                           |
+| Smooth Scroll | Lenis 1.3                    | 스무스 스크롤             | ✅ 추가 구현                      |
+| Transitions   | GSAP (template.tsx)          | Page navigation animation | ✅ 변경 (View Transitions → GSAP) |
+| Motion        | ~~Framer Motion~~            | ~~Component-level~~       | ❌ 미사용 (GSAP으로 대체)         |
 
 ### Design System
-| Category | Technology | Purpose | 상태 |
-|----------|-----------|---------|------|
-| UI Primitives | Radix UI | Accessible base components | ✅ 구현 |
-| Icons | Lucide React | Consistent iconography | ✅ 구현 |
-| Fonts | Pretendard (Variable) | 본문 한글 타이포그래피 | ✅ 변경 (Geist → Pretendard) |
-| Fonts (Mono) | Geist Mono | 코드 타이포그래피 | ✅ 구현 |
+
+| Category      | Technology            | Purpose                    | 상태                         |
+| ------------- | --------------------- | -------------------------- | ---------------------------- |
+| UI Primitives | Radix UI              | Accessible base components | ✅ 구현                      |
+| Icons         | Lucide React          | Consistent iconography     | ✅ 구현                      |
+| Fonts         | Pretendard (Variable) | 본문 한글 타이포그래피     | ✅ 변경 (Geist → Pretendard) |
+| Fonts (Mono)  | Geist Mono            | 코드 타이포그래피          | ✅ 구현                      |
 
 ### Infrastructure
-| Category | Technology | Purpose | 상태 |
-|----------|-----------|---------|------|
-| Deployment | Vercel | Edge-optimized hosting | ⏳ 예정 |
-| Analytics | Vercel Analytics | Performance monitoring | ⏳ 예정 |
-| Content | Markdown + gray-matter | 프로젝트 콘텐츠 관리 | ✅ 변경 (MDX → Markdown) |
-| SEO | Next.js Metadata API | Automated SEO | ✅ 구현 |
+
+| Category   | Technology             | Purpose                | 상태                     |
+| ---------- | ---------------------- | ---------------------- | ------------------------ |
+| Deployment | Vercel                 | Edge-optimized hosting | ⏳ 예정                  |
+| Analytics  | Vercel Analytics       | Performance monitoring | ⏳ 예정                  |
+| Content    | Markdown + gray-matter | 프로젝트 콘텐츠 관리   | ✅ 변경 (MDX → Markdown) |
+| SEO        | Next.js Metadata API   | Automated SEO          | ✅ 구현                  |
 
 ---
 
 ## 3. Next.js 16 Core Features 활용
 
 ### 3.1 Cache Components (`"use cache"`)
+
 ```ts
 // next.config.ts
 const nextConfig = {
@@ -57,10 +62,12 @@ const nextConfig = {
   reactCompiler: true, // React Compiler 1.0 (stable)
 };
 ```
+
 - 정적 콘텐츠(About, Projects)에 `"use cache"` 적용
 - 동적 콘텐츠(Blog, Contact form)는 request-time 렌더링
 
 ### 3.2 ~~React 19.2 View Transitions~~ → GSAP 페이지 전환 (변경됨)
+
 - ~~페이지 간 네비게이션에 View Transitions API 활용~~
 - **실제**: `template.tsx`에서 GSAP으로 페이지 전환 애니메이션 구현
   - fade + blur + slide-up 효과 (opacity, y, filter: blur)
@@ -68,14 +75,17 @@ const nextConfig = {
 - Framer Motion 미사용 (GSAP으로 통합)
 
 ### ~~3.3 proxy.ts~~ (미사용)
+
 - proxy.ts, middleware.ts 모두 미사용
 - 현재 라우팅은 App Router 기본 동작만 활용
 
 ### 3.4 React Compiler
+
 - 자동 메모이제이션으로 수동 `useMemo`/`useCallback` 불필요
 - 렌더링 성능 자동 최적화
 
 ### 3.5 `<Activity />` Component
+
 - Background에서 상태 유지하면서 display: none 처리
 - 탭/섹션 전환 시 상태 보존에 활용
 
@@ -158,15 +168,15 @@ const nextConfig = {
 
 ### 5.1 Design Trends (2026)
 
-| Trend | 적용 방식 |
-|-------|----------|
-| **Bento Grid** | Projects 섹션에 비대칭 카드 레이아웃 |
-| **Glassmorphism** | Navigation, Card overlays에 반투명 블러 |
-| **Micro-interactions** | Hover, click, scroll 시 세밀한 피드백 |
+| Trend                   | 적용 방식                                      |
+| ----------------------- | ---------------------------------------------- |
+| **Bento Grid**          | Projects 섹션에 비대칭 카드 레이아웃           |
+| **Glassmorphism**       | Navigation, Card overlays에 반투명 블러        |
+| **Micro-interactions**  | Hover, click, scroll 시 세밀한 피드백          |
 | **Scroll Storytelling** | GSAP ScrollTrigger 기반 스크롤 연동 애니메이션 |
-| **Anti-grid 요소** | Hero 섹션에 의도적 비정렬, 스케일 플레이 |
-| **3D Elements** | Hero/About에 인터랙티브 3D 오브젝트 |
-| **Dark-first** | 다크 모드 기본, 라이트 모드 전환 지원 |
+| **Anti-grid 요소**      | Hero 섹션에 의도적 비정렬, 스케일 플레이       |
+| **3D Elements**         | Hero/About에 인터랙티브 3D 오브젝트            |
+| **Dark-first**          | 다크 모드 기본, 라이트 모드 전환 지원          |
 
 ### 5.2 Color System
 
@@ -176,7 +186,7 @@ const nextConfig = {
 --foreground: #fafafa;
 --muted: #18181b;
 --muted-foreground: #a1a1aa;
---accent: #6366f1;        /* Indigo */
+--accent: #6366f1; /* Indigo */
 --accent-hover: #818cf8;
 --border: #27272a;
 --glass: rgba(255, 255, 255, 0.05);
@@ -223,19 +233,22 @@ Border radius: rounded-2xl (cards), rounded-full (buttons/pills)
 ## 6. Page Architecture
 
 ### 6.1 Landing Page (`/`)
+
 - **Hero Section**: 전체화면, 3D 인터랙티브 배경 + 타이포그래피 애니메이션
 - **About Preview**: 간략한 자기 소개 + CTA
 - **Featured Projects**: Bento grid로 주요 프로젝트 3-4개
 - **Tech Stack**: 아이콘 기반 기술 스택 표시
-- **Contact CTA**: 연락처 섹션
+- **Contact CTA**: Contact 섹션
 
 ### 6.2 About (`/about`)
+
 - 프로필 & 소개
 - 경력 타임라인 (스크롤 애니메이션)
 - 기술 스택 상세 (카테고리별)
 - 가치관 & 개발 철학
 
 ### 6.3 Projects (`/projects`)
+
 - Bento Grid 프로젝트 목록
 - 필터링 (카테고리, 기술 스택)
 - 프로젝트 상세 (`/projects/[slug]`)
@@ -244,15 +257,18 @@ Border radius: rounded-2xl (cards), rounded-full (buttons/pills)
   - 링크 (GitHub, Live demo)
 
 ### 6.4 Experience (`/experience`)
+
 - 경력 사항 타임라인
 - 각 포지션 상세 (역할, 성과, 기술)
 
 ### ~~6.5 Blog (`/blog`)~~ → 외부 링크 (변경됨)
+
 - ~~MDX 기반 블로그 포스트~~
 - **실제**: 블로그는 외부 플랫폼 링크로 연결 (내부 MDX 미구현)
 - BlogCard 컴포넌트에서 외부 URL로 리다이렉트
 
 ### 6.6 Contact (`/contact`)
+
 - 연락 폼 (Server Action 기반)
 - 소셜 링크
 - 이메일 직접 연결
@@ -273,12 +289,14 @@ Layer 5: Three.js / R3F         → 3D scenes (Hero, Cosmic)              ✅
 ```
 
 ### 7.2 Performance Rules
+
 - `prefers-reduced-motion` 체크 → 애니메이션 비활성화 옵션
 - Three.js는 Hero 섹션만 → `loading="lazy"` 패턴
 - GSAP 애니메이션은 Intersection Observer로 뷰포트 진입 시 실행
 - `will-change` 속성은 애니메이션 직전에만 적용, 완료 후 제거
 
 ### 7.3 Scroll Animation Patterns
+
 ```
 Fade Up:      opacity 0→1, translateY 40px→0
 Stagger:      children 순차 등장 (0.1s delay each)
@@ -292,17 +310,18 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 
 ## 8. Performance Targets
 
-| Metric | Target |
-|--------|--------|
-| LCP | < 2.5s |
-| FID | < 100ms |
-| CLS | < 0.1 |
-| INP | < 200ms |
-| TTI | < 3.5s |
-| Lighthouse Score | ≥ 95 |
+| Metric           | Target          |
+| ---------------- | --------------- |
+| LCP              | < 2.5s          |
+| FID              | < 100ms         |
+| CLS              | < 0.1           |
+| INP              | < 200ms         |
+| TTI              | < 3.5s          |
+| Lighthouse Score | ≥ 95            |
 | Bundle Size (JS) | < 150KB initial |
 
 ### Optimization Strategies
+
 - Turbopack (default) → 2-5x faster builds
 - React Compiler → automatic memoization
 - `"use cache"` → static content pre-rendering
@@ -339,15 +358,18 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 ### 9.2 Rules Files
 
 #### `.agent/rules/code-style.md`
+
 ```markdown
 # Code Style Guide
 
 ## Language & Framework
+
 - TypeScript strict mode required for all files
 - Next.js 16 App Router conventions only (no Pages Router)
 - React 19.2 patterns: Server Components by default, "use client" only when needed
 
 ## Naming Conventions
+
 - Components: PascalCase (e.g., `HeroSection.tsx`)
 - Hooks: camelCase with `use` prefix (e.g., `useScrollProgress.ts`)
 - Utilities: camelCase (e.g., `formatDate.ts`)
@@ -356,6 +378,7 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 - Files: kebab-case for non-components (e.g., `scroll-utils.ts`)
 
 ## Import Order
+
 1. React / Next.js built-ins
 2. External libraries (gsap, three, etc.)
 3. Internal aliases (@/components, @/lib, @/hooks)
@@ -363,6 +386,7 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 5. Type imports (separate with blank line)
 
 ## Component Structure
+
 - Server Components: default (no directive needed)
 - Client Components: "use client" at top
 - Cached Components: "use cache" for static content
@@ -370,12 +394,14 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 - Export: named exports preferred, default for pages
 
 ## Styling
+
 - Tailwind CSS 4 utility classes
 - No inline styles unless dynamic values
 - cn() utility for conditional classes (clsx + twMerge)
 - CSS variables for theming (defined in globals.css)
 
 ## Forbidden
+
 - Do NOT use Pages Router patterns
 - Do NOT use middleware.ts (use proxy.ts)
 - Do NOT manually useMemo/useCallback (React Compiler handles this)
@@ -384,37 +410,44 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 ```
 
 #### `.agent/rules/component-patterns.md`
+
 ```markdown
 # Component Patterns
 
 ## Server Component (Default)
+
 - Async data fetching directly in component
 - No useState, useEffect, event handlers
 - Access to file system, database, environment variables
 
 ## Client Component
+
 - "use client" directive required
 - Interactive elements: forms, animations, event handlers
 - Keep as small as possible, push down the tree
 
 ## Composition Pattern
+
 - Server Component wraps Client Component
 - Pass data as props from server to client
 - "use cache" for expensive server computations
 
 ## Animation Components
+
 - Wrap GSAP/Framer Motion in client components
 - useRef for DOM references
 - useGSAP() hook for GSAP lifecycle (not useEffect)
 - Always check useReducedMotion() before animating
 
 ## Three.js Components
+
 - Lazy load with next/dynamic + ssr: false
 - Suspense boundary with loading fallback
 - Canvas only in client components
 - Dispose resources in cleanup
 
 ## Accessibility
+
 - Semantic HTML elements
 - ARIA labels for interactive elements
 - Keyboard navigation support
@@ -423,16 +456,19 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 ```
 
 #### `.agent/rules/git-workflow.md`
+
 ```markdown
 # Git Workflow
 
 ## Branch Naming
+
 - feature/[description] — new features
 - fix/[description] — bug fixes
 - refactor/[description] — code improvements
 - style/[description] — visual/CSS changes
 
 ## Commit Messages (Conventional Commits)
+
 - feat: new feature
 - fix: bug fix
 - refactor: code restructuring
@@ -442,6 +478,7 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 - chore: tooling, dependencies
 
 ## Flow
+
 1. Create feature branch from main
 2. Commit incrementally with meaningful messages
 3. Review changes before staging
@@ -451,7 +488,8 @@ Pin Section:  특정 섹션 고정 후 내부 콘텐츠 전환
 ### 9.3 Skill Files
 
 #### `.agent/skills/create-component/SKILL.md`
-```markdown
+
+````markdown
 ---
 name: create-component
 description: Creates a new React component following project conventions with proper typing, styling, and accessibility.
@@ -460,11 +498,13 @@ description: Creates a new React component following project conventions with pr
 # Create Component
 
 ## Use this skill when
+
 - User asks to create a new UI component
 - User asks to add a new section to a page
 - User needs a reusable component
 
 ## Do not use this skill when
+
 - User is editing an existing component
 - User is creating a page (use create-page skill)
 
@@ -483,19 +523,17 @@ description: Creates a new React component following project conventions with pr
    - `src/components/animation/` — animation wrappers
 
 3. **Create component file** with this structure:
+
    ```tsx
    // "use client" — only if client component
 
-   import type { ComponentNameProps } from "./types"
+   import type {ComponentNameProps} from "./types";
 
-   export function ComponentName({ prop1, prop2 }: ComponentNameProps) {
-     return (
-       <section className="...">
-         {/* semantic HTML */}
-       </section>
-     )
+   export function ComponentName({prop1, prop2}: ComponentNameProps) {
+     return <section className="...">{/* semantic HTML */}</section>;
    }
    ```
+````
 
 4. **Apply styling**:
    - Use Tailwind CSS utility classes
@@ -507,7 +545,8 @@ description: Creates a new React component following project conventions with pr
    - ARIA labels where needed
    - Keyboard navigation support
    - prefers-reduced-motion check for animations
-```
+
+````
 
 #### `.agent/skills/create-page/SKILL.md`
 ```markdown
@@ -549,7 +588,7 @@ description: Creates a new page in the Next.js App Router with proper metadata, 
        </main>
      )
    }
-   ```
+````
 
 3. **Apply caching strategy**:
    - Static content → `"use cache"` directive
@@ -564,10 +603,11 @@ description: Creates a new page in the Next.js App Router with proper metadata, 
 5. **Create loading.tsx** if page has async data:
    ```tsx
    export default function Loading() {
-     return <PageSkeleton />
+     return <PageSkeleton />;
    }
    ```
-```
+
+````
 
 #### `.agent/skills/create-animation/SKILL.md`
 ```markdown
@@ -619,7 +659,7 @@ description: Creates scroll-based or interactive animations using GSAP, Framer M
 
      return <div ref={containerRef}>...</div>
    }
-   ```
+````
 
 3. **For Three.js scenes**:
    - Dynamic import with `ssr: false`
@@ -632,7 +672,8 @@ description: Creates scroll-based or interactive animations using GSAP, Framer M
    - Use `will-change` only during animation, remove after
    - Prefer `transform` and `opacity` (GPU-accelerated)
    - Limit scroll listeners with throttle/debounce
-```
+
+````
 
 #### `.agent/skills/optimize-performance/SKILL.md`
 ```markdown
@@ -678,11 +719,12 @@ description: Analyzes and optimizes page performance targeting Core Web Vitals t
    - Run `next build` and check output
    - Lighthouse audit
    - Test on throttled connection (3G)
-```
+````
 
 ### 9.4 Workflow Files
 
 #### `.agent/workflows/new-feature.md`
+
 ```markdown
 # New Feature Workflow
 
@@ -699,6 +741,7 @@ description: Analyzes and optimizes page performance targeting Core Web Vitals t
 ```
 
 #### `.agent/workflows/code-review.md`
+
 ```markdown
 # Code Review Workflow
 
@@ -717,7 +760,7 @@ description: Analyzes and optimizes page performance targeting Core Web Vitals t
 ## 10. next.config.ts Specification
 
 ```ts
-import type { NextConfig } from "next"
+import type {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
   // Cache Components (opt-in caching)
@@ -747,9 +790,9 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 ---
@@ -757,6 +800,7 @@ export default nextConfig
 ## 11. SEO & Metadata Strategy
 
 ### Root Layout Metadata
+
 ```ts
 export const metadata: Metadata = {
   metadataBase: new URL("https://your-domain.com"),
@@ -777,13 +821,15 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-}
+};
 ```
 
 ### Per-page Metadata
+
 각 페이지별 `export const metadata` 또는 `generateMetadata()` 사용
 
 ### Structured Data
+
 JSON-LD로 Person, WebSite 스키마 적용
 
 ---
@@ -809,16 +855,16 @@ Images: srcSet + sizes for responsive loading
 
 ## 13. Accessibility Requirements
 
-| Requirement | Standard |
-|-------------|----------|
-| Color Contrast | WCAG AA (4.5:1) |
-| Keyboard Navigation | Full support |
-| Screen Reader | Semantic HTML + ARIA |
-| Reduced Motion | `prefers-reduced-motion` respected |
-| Focus Indicators | Visible focus rings |
-| Skip Navigation | Skip to content link |
-| Language | `lang="ko"` attribute |
-| Alt Text | All images have descriptive alt |
+| Requirement         | Standard                           |
+| ------------------- | ---------------------------------- |
+| Color Contrast      | WCAG AA (4.5:1)                    |
+| Keyboard Navigation | Full support                       |
+| Screen Reader       | Semantic HTML + ARIA               |
+| Reduced Motion      | `prefers-reduced-motion` respected |
+| Focus Indicators    | Visible focus rings                |
+| Skip Navigation     | Skip to content link               |
+| Language            | `lang="ko"` attribute              |
+| Alt Text            | All images have descriptive alt    |
 
 ---
 
@@ -845,6 +891,7 @@ Environment Variables:
 > 마지막 업데이트: 2025-02-10
 
 ### 완료된 기능
+
 - [x] 프로젝트 초기 세팅 (Next.js 16, Turbopack, React Compiler)
 - [x] 기초 UI 컴포넌트 (Container, Section, GlassCard, BentoGrid 등 12개)
 - [x] 레이아웃 컴포넌트 (Header, FloatingNav, Footer 등 10개)
@@ -860,6 +907,7 @@ Environment Variables:
 - [x] 스크롤 탑 버튼 (Gooey 이펙트)
 
 ### 미구현 / 변경된 기능
+
 - [ ] ThemeToggle (다크 모드 고정, 라이트 모드 전환 미구현)
 - [ ] sitemap.ts, robots.ts
 - [ ] global-error.tsx
@@ -870,8 +918,9 @@ Environment Variables:
 - [x] ~~Route Groups~~ → 플랫 구조로 변경
 
 ### 해결된 버그
-| 날짜 | 이슈 | 원인 | 해결 |
-|------|------|------|------|
+
+| 날짜       | 이슈                           | 원인                                   | 해결                                     |
+| ---------- | ------------------------------ | -------------------------------------- | ---------------------------------------- |
 | 2025-02-10 | 페이지 전환 시 스크롤 미초기화 | `window.scrollTo` vs Lenis 상태 불일치 | `lenis.scrollTo(0, { immediate: true })` |
 
 ---
