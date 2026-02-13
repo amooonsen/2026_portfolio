@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -32,17 +32,14 @@ export function Spotlight({
   const [isHovered, setIsHovered] = useState(false)
 
   /** 마우스 위치를 추적하여 스포트라이트 중심 좌표를 업데이트한다. */
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!ref.current || reducedMotion) return
-      const rect = ref.current.getBoundingClientRect()
-      setPosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      })
-    },
-    [reducedMotion]
-  )
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!ref.current || reducedMotion) return
+    const rect = ref.current.getBoundingClientRect()
+    setPosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
 
   return (
     <div

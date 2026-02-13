@@ -41,19 +41,19 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
     const techGroups = containerRef.current.querySelectorAll("[data-tech-group]");
 
     const ctx = gsap.context(() => {
-      // 타임라인 라인 드로우 (스크롤 연동)
+      // 타임라인 라인 드로우 — 컨테이너 진입 시 완전히 그어짐
       if (lineRef.current) {
         gsap.fromTo(
           lineRef.current,
           {scaleY: 0},
           {
             scaleY: 1,
-            ease: "none",
+            duration: 1.2,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: containerRef.current,
               start: "top 80%",
-              end: "bottom 20%",
-              scrub: 0.5,
+              toggleActions: "play none none none",
             },
           },
         );
@@ -122,7 +122,6 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
           },
         });
       });
-
     });
 
     return () => ctx.revert();
@@ -130,7 +129,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
 
   return (
     <div className="pt-8">
-      <div ref={containerRef} className="relative overflow-hidden">
+      <div ref={containerRef} className="relative">
         {/* 중앙 세로선 — 스크롤 연동 드로우 */}
         <div
           ref={lineRef}
@@ -211,7 +210,6 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
             );
           })}
         </div>
-
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef, useEffect, useCallback} from "react";
+import {useRef, useEffect} from "react";
 import {Canvas, useFrame} from "@react-three/fiber";
 import {Float} from "@react-three/drei";
 import * as THREE from "three";
@@ -225,15 +225,14 @@ function BottomGlow() {
 function RobotSceneInner() {
   const mouseRef = useRef({x: 0, y: 0});
 
-  const handlePointerMove = useCallback((e: PointerEvent) => {
-    mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
-  }, []);
-
   useEffect(() => {
+    function handlePointerMove(e: PointerEvent) {
+      mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
+    }
     window.addEventListener("pointermove", handlePointerMove, {passive: true});
     return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, [handlePointerMove]);
+  }, []);
 
   return (
     <>

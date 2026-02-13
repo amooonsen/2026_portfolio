@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import { ExternalLink, X } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -20,24 +20,21 @@ interface MobileNavProps {
  * @param props.onClose - 오버레이를 닫는 콜백
  */
 export function MobileNav({ items, isOpen, onClose }: MobileNavProps) {
-  /** ESC 키 입력 시 오버레이를 닫는다. */
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    },
-    [onClose]
-  )
-
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-      document.addEventListener("keydown", handleKeyDown)
+    if (!isOpen) return
+
+    /** ESC 키 입력 시 오버레이를 닫는다. */
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose()
     }
+
+    document.body.style.overflow = "hidden"
+    document.addEventListener("keydown", handleKeyDown)
     return () => {
       document.body.style.overflow = ""
       document.removeEventListener("keydown", handleKeyDown)
     }
-  }, [isOpen, handleKeyDown])
+  }, [isOpen, onClose])
 
   return (
     <div

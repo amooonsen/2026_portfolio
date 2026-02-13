@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 import { IntroLoader } from "@/components/layout/intro-loader"
 import { IntroProvider } from "@/lib/intro-context"
@@ -29,13 +29,13 @@ export function HomeClient({ children }: HomeClientProps) {
   const [isAstronautReady, setIsAstronautReady] = useState(false)
   const [isIntroComplete, setIsIntroComplete] = useState(false)
 
-  const handleCosmicCreated = useCallback(() => {
+  function handleCosmicCreated() {
     setIsCosmicReady(true)
-  }, [])
+  }
 
-  const handleIntroComplete = useCallback(() => {
+  function handleIntroComplete() {
     setIsIntroComplete(true)
-  }, [])
+  }
 
   // 로봇 캐릭터의 Canvas 준비 콜백 등록 + 모바일 대비 폴백 타임아웃
   useEffect(() => {

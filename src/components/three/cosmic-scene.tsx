@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useMemo, useCallback, useEffect } from "react"
+import { useRef, useEffect } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { Points, PointMaterial, Float } from "@react-three/drei"
 import * as THREE from "three"
@@ -13,7 +13,8 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 function StarField({ count = 600, isMobile = false }: { count?: number; isMobile?: boolean }) {
   const ref = useRef<THREE.Points>(null)
 
-  const positions = useMemo(() => {
+  const positionsRef = useRef<Float32Array | null>(null)
+  if (!positionsRef.current || positionsRef.current.length !== count * 3) {
     const pos = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
       const r = 50 + Math.random() * 150
@@ -23,8 +24,9 @@ function StarField({ count = 600, isMobile = false }: { count?: number; isMobile
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
       pos[i * 3 + 2] = r * Math.cos(phi)
     }
-    return pos
-  }, [count])
+    positionsRef.current = pos
+  }
+  const positions = positionsRef.current
 
   useFrame((_, delta) => {
     if (ref.current && !isMobile) {
@@ -52,7 +54,8 @@ function StarField({ count = 600, isMobile = false }: { count?: number; isMobile
 function NebulaParticles({ count = 150, isMobile = false }: { count?: number; isMobile?: boolean }) {
   const ref = useRef<THREE.Points>(null)
 
-  const [positions, colors] = useMemo(() => {
+  const dataRef = useRef<[Float32Array, Float32Array] | null>(null)
+  if (!dataRef.current || dataRef.current[0].length !== count * 3) {
     const pos = new Float32Array(count * 3)
     const col = new Float32Array(count * 3)
 
@@ -78,8 +81,9 @@ function NebulaParticles({ count = 150, isMobile = false }: { count?: number; is
       col[i * 3 + 1] = color.g
       col[i * 3 + 2] = color.b
     }
-    return [pos, col]
-  }, [count])
+    dataRef.current = [pos, col]
+  }
+  const [positions, colors] = dataRef.current
 
   useFrame((_, delta) => {
     if (ref.current && !isMobile) {
@@ -122,15 +126,14 @@ function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
   const { camera } = useThree()
   const mouseRef = useRef({ x: 0, y: 0 })
 
-  const handlePointerMove = useCallback((e: PointerEvent) => {
-    mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2
-    mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2
-  }, [])
-
   useEffect(() => {
+    function handlePointerMove(e: PointerEvent) {
+      mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2
+      mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2
+    }
     window.addEventListener("pointermove", handlePointerMove, { passive: true })
     return () => window.removeEventListener("pointermove", handlePointerMove)
-  }, [handlePointerMove])
+  }, [])
 
   useFrame(() => {
     if (isMobile) return

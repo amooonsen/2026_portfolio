@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useState, useCallback, useRef} from "react";
+import {useEffect, useState, useRef} from "react";
 import {createPortal} from "react-dom";
 import {cn} from "@/lib/utils";
 import {gsap} from "@/lib/gsap";
@@ -66,23 +66,23 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
   const dismissedRef = useRef(false);
 
   /** 프로그레스 UI 동시 갱신 (카운터 텍스트 + 인트로 바 + 미니멀 바) */
-  const updateProgressUI = useCallback(() => {
+  function updateProgressUI() {
     const val = Math.round(progressObjRef.current.value);
     if (counterRef.current) counterRef.current.textContent = String(val);
     const pct = `${progressObjRef.current.value}%`;
     if (progressBarRef.current) progressBarRef.current.style.width = pct;
     if (loadingBarRef.current) loadingBarRef.current.style.width = pct;
-  }, []);
+  }
 
   /** Lenis 동기화 스크롤 리셋 */
-  const resetScroll = useCallback(() => {
+  function resetScroll() {
     const lenis = getLenisInstance();
     if (lenis) {
       lenis.scrollTo(0, {immediate: true});
     } else {
       window.scrollTo(0, 0);
     }
-  }, []);
+  }
 
   // ─── 초기화: 모드 결정 + body overflow 잠금 ───
   useEffect(() => {
@@ -123,7 +123,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
   }, [mode, isMounted, isSceneReady]);
 
   // ─── 종료 시퀀스 ───
-  const dismiss = useCallback(() => {
+  function dismiss() {
     if (dismissedRef.current) return;
     dismissedRef.current = true;
 
@@ -191,7 +191,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         onComplete: () => setMode("complete"),
       });
     }
-  }, [mode, reducedMotion, resetScroll]);
+  }
 
   // ─── 풀 인트로 입장 애니메이션 시퀀스 ───
   useGsap(() => {
@@ -254,7 +254,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
     return () => {
       progressTweenRef.current?.kill();
     };
-  }, [mode, updateProgressUI]);
+  }, [mode]);
 
   // ─── 프로그레스 Phase 2: 리소스 준비 → 100% + 종료 시퀀스 ───
   useEffect(() => {
@@ -287,7 +287,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
       progressTweenRef.current?.kill();
       clearTimeout(dismissTimer);
     };
-  }, [isSceneReady, mode, updateProgressUI, dismiss]);
+  }, [isSceneReady, mode]);
 
   const showIntroOverlay = isMounted && mode === "intro";
   const showLoadingOverlay = isMounted && mode === "loading";

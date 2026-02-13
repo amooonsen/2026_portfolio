@@ -1,27 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Section } from "@/components/ui/section"
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid"
-import { FadeIn } from "@/components/animation/fade-in"
-import { StaggerChildren } from "@/components/animation/stagger-children"
-import { GradientText } from "@/components/ui/gradient-text"
-import { ProjectCard } from "./project-card"
-import type { Project } from "./project-card"
+import {useEffect, useRef, useState} from "react";
+import {gsap} from "@/lib/gsap";
+import {useReducedMotion} from "@/hooks/use-reduced-motion";
+import {Section} from "@/components/ui/section";
+import {BentoGridItem} from "@/components/ui/bento-grid";
+import {FadeIn} from "@/components/animation/fade-in";
+import {GradientText} from "@/components/ui/gradient-text";
+import {ProjectCard} from "./project-card";
+import type {Project} from "./project-card";
 
 interface ProjectGridOptions {
-  showTitle?: boolean
-  showDescription?: boolean
-  showTags?: boolean
+  showTitle?: boolean;
+  showDescription?: boolean;
+  showTags?: boolean;
 }
 
 interface ProjectGridProps {
-  projects: Project[]
-  columns?: 2 | 3 | 4
-  options?: ProjectGridOptions
+  projects: Project[];
+  columns?: 2 | 3 | 4;
+  options?: ProjectGridOptions;
 }
 
-type SortOrder = "latest" | "oldest"
+type SortOrder = "latest" | "oldest";
 
 /**
  * BentoGrid 레이아웃 규칙을 결정하는 함수.
@@ -29,55 +30,61 @@ type SortOrder = "latest" | "oldest"
  * - 이후 7번째마다: 2x1 (와이드 카드)
  * - 나머지: 1x1 (일반 카드)
  */
-function getGridSize(index: number): { colSpan: 1 | 2; rowSpan: 1 | 2 } {
-  // 첫 번째 프로젝트는 2x2
+function getGridSize(index: number): {colSpan: 1 | 2; rowSpan: 1 | 2} {
   if (index === 0) {
-    return { colSpan: 2, rowSpan: 2 }
+    return {colSpan: 2, rowSpan: 2};
   }
-
-  // 7번째마다 2x1 (와이드 카드)
   if (index % 7 === 0) {
-    return { colSpan: 2, rowSpan: 1 }
+    return {colSpan: 2, rowSpan: 1};
   }
-
-  // 나머지는 1x1
-  return { colSpan: 1, rowSpan: 1 }
+  return {colSpan: 1, rowSpan: 1};
 }
 
 /**
  * 프로젝트 그리드 섹션 컴포넌트.
- * BentoGrid 레이아웃으로 프로젝트 카드를 규칙적으로 배치한다.
- * 날짜 기준 최신순/오래된순 정렬을 지원한다.
- *
- * **레이아웃 규칙**:
- * - 첫 번째: 2x2 (featured)
- * - 7번째마다: 2x1 (wide)
- * - 나머지: 1x1 (normal)
- *
- * @param props.projects - 프로젝트 데이터 배열
- * @param props.columns - 그리드 열 수 (2/3/4, 기본: 3)
- * @param props.options - 카드 표시 옵션
+ * 각 카드가 스크롤 위치에 따라 개별적으로 등장하는 stagger 애니메이션을 적용한다.
  */
-export function ProjectGrid({
-  projects,
-  columns = 3,
-  options,
-}: ProjectGridProps) {
-  const {
-    showTitle = true,
-    showDescription = true,
-    showTags = true,
-  } = options ?? {}
+export function ProjectGrid({projects, options}: ProjectGridProps) {
+  const {showTitle = true, showDescription = true, showTags = true} = options ?? {};
+  const [sortOrder, setSortOrder] = useState<SortOrder>("latest");
+  const gridRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
-  const [sortOrder, setSortOrder] = useState<SortOrder>("latest")
-
-  // 정렬된 프로젝트 목록
   const sortedProjects = [...projects].sort((a, b) => {
-    if (sortOrder === "latest") {
-      return b.year - a.year
-    }
-    return a.year - b.year
-  })
+    if (sortOrder === "latest") return b.year - a.year;
+    return a.year - b.year;
+  });
+
+  useEffect(() => {
+    if (!gridRef.current || reducedMotion) return;
+
+    const cards = gridRef.current.querySelectorAll("[data-project-card]");
+    if (cards.length === 0) return;
+
+    const ctx = gsap.context(() => {
+      cards.forEach((card, i) => {
+        gsap.fromTo(
+          card,
+          {opacity: 0, y: 40, scale: 0.95},
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            delay: (i % 3) * 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 92%",
+              toggleActions: "play none none none",
+            },
+          },
+        );
+      });
+    });
+
+    return () => ctx.revert();
+  }, [reducedMotion, sortOrder]);
 
   return (
     <Section spacing="lg" container>
@@ -120,30 +127,29 @@ export function ProjectGrid({
         </FadeIn>
       </div>
 
-      {/* BentoGrid를 StaggerChildren으로 감싸서 카드들이 순차적으로 등장 */}
-      <StaggerChildren
-        stagger={0.12}
-        delay={0.2}
-        animation="scaleUp"
+      <div
+        ref={gridRef}
         className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 auto-rows-[minmax(200px,auto)]"
       >
         {sortedProjects.map((project, i) => {
-          const { colSpan, rowSpan } = getGridSize(i)
-          const isFeatured = colSpan === 2 && rowSpan === 2
+          const {colSpan, rowSpan} = getGridSize(i);
+          const isFeatured = colSpan === 2 && rowSpan === 2;
 
           return (
             <BentoGridItem key={project.slug} colSpan={colSpan} rowSpan={rowSpan}>
-              <ProjectCard
-                project={project}
-                featured={isFeatured}
-                showTitle={showTitle}
-                showDescription={showDescription}
-                showTags={showTags}
-              />
+              <div data-project-card>
+                <ProjectCard
+                  project={project}
+                  featured={isFeatured}
+                  showTitle={showTitle}
+                  showDescription={showDescription}
+                  showTags={showTags}
+                />
+              </div>
             </BentoGridItem>
-          )
+          );
         })}
-      </StaggerChildren>
+      </div>
     </Section>
-  )
+  );
 }

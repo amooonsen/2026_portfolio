@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -34,33 +34,30 @@ export function Magnetic({
   const isActive = !disabled && !reducedMotion
 
   /** 마우스 위치와 요소 중심 간 거리를 계산하여 이동량을 결정한다. */
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!ref.current || !isActive) return
-      const rect = ref.current.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-      const distX = e.clientX - centerX
-      const distY = e.clientY - centerY
-      const distance = Math.sqrt(distX * distX + distY * distY)
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!ref.current || !isActive) return
+    const rect = ref.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const distX = e.clientX - centerX
+    const distY = e.clientY - centerY
+    const distance = Math.sqrt(distX * distX + distY * distY)
 
-      if (distance < radius) {
-        const factor = 1 - distance / radius
-        setTransform({
-          x: distX * strength * factor,
-          y: distY * strength * factor,
-        })
-      } else {
-        setTransform({ x: 0, y: 0 })
-      }
-    },
-    [isActive, strength, radius]
-  )
+    if (distance < radius) {
+      const factor = 1 - distance / radius
+      setTransform({
+        x: distX * strength * factor,
+        y: distY * strength * factor,
+      })
+    } else {
+      setTransform({ x: 0, y: 0 })
+    }
+  }
 
   /** 마우스 이탈 시 스프링 애니메이션으로 원위치 복귀한다. */
-  const handleMouseLeave = useCallback(() => {
+  function handleMouseLeave() {
     setTransform({ x: 0, y: 0 })
-  }, [])
+  }
 
   return (
     <div
