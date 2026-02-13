@@ -133,7 +133,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
         {/* 중앙 세로선 — 스크롤 연동 드로우 */}
         <div
           ref={lineRef}
-          className="absolute left-4 top-0 hidden h-full w-px origin-top bg-gradient-to-b from-indigo-500/50 via-purple-500/50 to-pink-500/50 md:left-1/2 md:block md:-translate-x-px"
+          className="absolute left-4 top-0 hidden h-full w-px origin-top bg-gradient-to-b from-gradient-accent-from/50 via-gradient-accent-via/50 to-gradient-accent-to/50 md:left-1/2 md:block md:-translate-x-px"
         />
 
         <div className="space-y-16 md:space-y-20">
@@ -146,7 +146,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                   data-timeline-year
                   className="absolute left-4 -top-4 z-10 md:left-1/2 md:-translate-x-1/2 md:-top-5"
                 >
-                  <span className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300 backdrop-blur-sm">
+                  <span className="rounded-full border border-accent-indigo-muted bg-accent-indigo-subtle px-3 py-1 text-xs font-medium text-accent-indigo backdrop-blur-sm">
                     {item.year}
                   </span>
                 </div>
@@ -154,9 +154,9 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                 {/* 타임라인 도트 */}
                 <div
                   data-timeline-dot
-                  className="absolute top-8 left-4 hidden h-4 w-4 rounded-full border-2 border-indigo-400 bg-background shadow-[0_0_12px_rgba(99,102,241,0.4)] md:left-1/2 md:-translate-x-1/2 md:block"
+                  className="absolute top-8 left-4 hidden h-4 w-4 rounded-full border-2 border-accent-indigo bg-background shadow-[0_0_12px_var(--accent-indigo-muted)] md:left-1/2 md:-translate-x-1/2 md:block"
                 >
-                  <div className="absolute inset-1 rounded-full bg-indigo-400" />
+                  <div className="absolute inset-1 rounded-full bg-accent-indigo" />
                 </div>
 
                 {/* 카드 */}
@@ -189,7 +189,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                             key={j}
                             className="flex items-start gap-2 text-sm text-muted-foreground"
                           >
-                            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400/60" />
+                            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-indigo/60" />
                             {achievement}
                           </li>
                         ))}

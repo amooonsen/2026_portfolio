@@ -4,7 +4,7 @@ const gradientMap = {
   primary:
     "from-foreground via-foreground/80 to-muted-foreground",
   accent:
-    "from-indigo-400 via-purple-400 to-pink-400",
+    "from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to",
   rainbow:
     "from-red-400 via-yellow-400 to-blue-400",
   custom: "",

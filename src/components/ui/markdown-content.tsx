@@ -35,7 +35,7 @@ let highlighter: Highlighter | null = null;
 async function ensureHighlighter(): Promise<Highlighter> {
   if (!highlighter) {
     highlighter = await createHighlighter({
-      themes: ["github-dark-dimmed"],
+      themes: ["github-dark-dimmed", "github-light"],
       langs: [
         "typescript",
         "javascript",
@@ -98,7 +98,7 @@ function createMarkedInstance(): Marked {
       code(token: Tokens.Code) {
         const lang = token.lang || "";
         const langLabel = lang
-          ? `<span class="absolute top-2 right-3 z-10 text-[10px] font-mono uppercase tracking-wider text-white/30 select-none">${lang}</span>`
+          ? `<span class="absolute top-2 right-3 z-10 text-[10px] font-mono uppercase tracking-wider text-muted-foreground/50 select-none">${lang}</span>`
           : "";
 
         // shiki 하이라이팅 (highlighter가 초기화된 경우)
@@ -106,7 +106,10 @@ function createMarkedInstance(): Marked {
           try {
             const html = highlighter.codeToHtml(token.text, {
               lang,
-              theme: "github-dark-dimmed",
+              themes: {
+                dark: "github-dark-dimmed",
+                light: "github-light",
+              },
             });
             return (
               `<div class="relative mt-4 mb-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border/50 [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_code]:font-mono">` +
@@ -124,8 +127,8 @@ function createMarkedInstance(): Marked {
           .replace(/>/g, "&gt;");
         return (
           `<div class="relative mt-4 mb-4">${langLabel}` +
-          `<pre class="overflow-x-auto rounded-lg bg-[#22272e] border border-border/50 p-4 text-sm leading-relaxed">` +
-          `<code class="font-mono text-[#adbac7]">${escaped}</code>` +
+          `<pre class="overflow-x-auto rounded-lg bg-muted border border-border/50 p-4 text-sm leading-relaxed">` +
+          `<code class="font-mono text-foreground">${escaped}</code>` +
           `</pre></div>`
         );
       },
@@ -144,11 +147,11 @@ function createMarkedInstance(): Marked {
       },
       link(token: Tokens.Link) {
         const text = this.parser.parseInline(token.tokens);
-        return `<a href="${token.href}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors">${text}</a>`;
+        return `<a href="${token.href}" target="_blank" rel="noopener noreferrer" class="text-accent-indigo hover:opacity-80 underline underline-offset-2 transition-colors">${text}</a>`;
       },
       blockquote(token: Tokens.Blockquote) {
         const text = this.parser.parse(token.tokens);
-        return `<blockquote class="border-l-2 border-indigo-400/40 pl-4 italic text-muted-foreground">${text}</blockquote>`;
+        return `<blockquote class="border-l-2 border-accent-indigo-muted pl-4 italic text-muted-foreground">${text}</blockquote>`;
       },
       table(token: Tokens.Table) {
         const headerCells = token.header
@@ -186,7 +189,7 @@ export async function MarkdownContent({content, className}: MarkdownContentProps
 
   return (
     <div
-      className={cn("prose prose-invert max-w-none", className)}
+      className={cn("prose dark:prose-invert max-w-none", className)}
       dangerouslySetInnerHTML={{__html: html}}
     />
   );

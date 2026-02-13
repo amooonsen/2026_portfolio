@@ -7,6 +7,7 @@ import {ExternalLink, Menu} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Container} from "@/components/ui/container";
 import {MobileNav} from "./mobile-nav";
+import {ThemeToggle} from "./theme-toggle";
 import {useMediaQuery} from "@/hooks/use-media-query";
 
 interface NavItem {
@@ -123,6 +124,7 @@ export function Header({items, className}: HeaderProps) {
             </nav>
 
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <button
                 className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted transition-colors"
                 onClick={() => setIsMobileNavOpen(true)}

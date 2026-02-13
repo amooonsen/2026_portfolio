@@ -44,10 +44,78 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  /* Glass semantic colors */
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-hover-bg: var(--glass-hover-bg);
+  --color-glass-hover-border: var(--glass-hover-border);
+  --color-glass-shadow: var(--glass-shadow);
+  /* Scene background */
+  --color-scene-bg: var(--scene-bg);
+  /* Accent indigo */
+  --color-accent-indigo: var(--accent-indigo);
+  --color-accent-indigo-muted: var(--accent-indigo-muted);
+  --color-accent-indigo-subtle: var(--accent-indigo-subtle);
+  /* Gradient accent */
+  --color-gradient-accent-from: var(--gradient-accent-from);
+  --color-gradient-accent-via: var(--gradient-accent-via);
+  --color-gradient-accent-to: var(--gradient-accent-to);
 }
 
+/* Light theme (default) — Warm White */
 :root {
   --radius: 0.625rem;
+  --background: oklch(0.98 0.005 80);
+  --foreground: oklch(0.15 0.01 260);
+  --card: oklch(0.95 0.005 80);
+  --card-foreground: oklch(0.15 0.01 260);
+  --popover: oklch(0.97 0.004 80);
+  --popover-foreground: oklch(0.15 0.01 260);
+  --primary: oklch(0.25 0.01 260);
+  --primary-foreground: oklch(0.98 0.005 80);
+  --secondary: oklch(0.93 0.005 80);
+  --secondary-foreground: oklch(0.25 0.01 260);
+  --muted: oklch(0.93 0.005 80);
+  --muted-foreground: oklch(0.45 0.01 260);
+  --accent: oklch(0.93 0.005 80);
+  --accent-foreground: oklch(0.25 0.01 260);
+  --destructive: oklch(0.55 0.2 25);
+  --border: oklch(0 0 0 / 8%);
+  --input: oklch(0 0 0 / 10%);
+  --ring: oklch(0.5 0.15 270);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.96 0.005 80);
+  --sidebar-foreground: oklch(0.15 0.01 260);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.98 0.005 80);
+  --sidebar-accent: oklch(0.93 0.005 80);
+  --sidebar-accent-foreground: oklch(0.25 0.01 260);
+  --sidebar-border: oklch(0 0 0 / 8%);
+  --sidebar-ring: oklch(0.5 0.15 270);
+  /* Glass */
+  --glass-bg: oklch(0 0 0 / 3%);
+  --glass-border: oklch(0 0 0 / 8%);
+  --glass-hover-bg: oklch(0 0 0 / 5%);
+  --glass-hover-border: oklch(0 0 0 / 12%);
+  --glass-shadow: oklch(0 0 0 / 5%);
+  /* Scene */
+  --scene-bg: oklch(0.96 0.005 80);
+  /* Accent indigo */
+  --accent-indigo: oklch(0.52 0.2 270);
+  --accent-indigo-muted: oklch(0.52 0.2 270 / 30%);
+  --accent-indigo-subtle: oklch(0.52 0.2 270 / 10%);
+  /* Gradient accent */
+  --gradient-accent-from: oklch(0.52 0.2 270);
+  --gradient-accent-via: oklch(0.55 0.2 300);
+  --gradient-accent-to: oklch(0.6 0.2 340);
+}
+
+/* Dark theme */
+.dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
@@ -66,11 +134,6 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.552 0.016 285.938);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -79,6 +142,22 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  /* Glass */
+  --glass-bg: oklch(1 0 0 / 5%);
+  --glass-border: oklch(1 0 0 / 10%);
+  --glass-hover-bg: oklch(1 0 0 / 10%);
+  --glass-hover-border: oklch(1 0 0 / 20%);
+  --glass-shadow: oklch(1 0 0 / 5%);
+  /* Scene */
+  --scene-bg: #030014;
+  /* Accent indigo */
+  --accent-indigo: oklch(0.7 0.17 270);
+  --accent-indigo-muted: oklch(0.7 0.17 270 / 30%);
+  --accent-indigo-subtle: oklch(0.7 0.17 270 / 15%);
+  /* Gradient accent */
+  --gradient-accent-from: oklch(0.7 0.17 270);
+  --gradient-accent-via: oklch(0.72 0.17 300);
+  --gradient-accent-to: oklch(0.72 0.2 340);
 }
 
 @layer base {
@@ -107,6 +186,8 @@
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    line-height: 1.7;
+    word-break: keep-all;
   }
 }
 
@@ -168,6 +249,18 @@
 }
 
 @utility text-accent-highlight {
-  color: var(--color-indigo-400, #818cf8);
+  color: var(--accent-indigo);
   font-weight: 500;
+}
+
+/* Shiki dual theme support — light/dark switching */
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+html:not(.dark) .shiki,
+html:not(.dark) .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
 }

@@ -280,7 +280,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         createPortal(
           <div
             ref={introRef}
-            className="fixed inset-0 z-[9999] h-screen bg-[#030014]"
+            className="fixed inset-0 z-[9999] h-screen bg-scene-bg"
             aria-hidden={!showIntroOverlay}
           >
             {/* 앰비언트 그라디언트 오브 */}
@@ -294,14 +294,14 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
             <div className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center gap-4">
               <h1
                 ref={titleRef}
-                className="text-5xl font-bold tracking-tight text-white md:text-6xl [perspective:1000px]"
+                className="text-5xl font-bold tracking-tight text-foreground md:text-6xl [perspective:1000px]"
                 style={{transformStyle: "preserve-3d"}}
               >
                 Portfolio
               </h1>
               <p
                 ref={subtitleRef}
-                className="text-sm text-white/60 tracking-[0.3em] uppercase font-light"
+                className="text-sm text-muted-foreground tracking-[0.3em] uppercase font-light"
               >
                 Frontend Developer
               </p>
@@ -312,15 +312,15 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
               <div ref={counterGroupRef} className="flex items-baseline gap-1">
                 <span
                   ref={counterRef}
-                  className="text-7xl font-bold text-white tabular-nums tracking-tighter md:text-8xl"
+                  className="text-7xl font-bold text-foreground tabular-nums tracking-tighter md:text-8xl"
                 >
                   0
                 </span>
-                <span className="text-xl font-light text-white/40 md:text-2xl">%</span>
+                <span className="text-xl font-light text-muted-foreground md:text-2xl">%</span>
               </div>
 
               <div ref={progressGroupRef} className="mt-8 w-64 md:w-80">
-                <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
+                <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                   <div
                     ref={progressBarRef}
                     className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.5)]"
@@ -338,7 +338,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         createPortal(
           <div
             ref={loadingRef}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#030014]"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-scene-bg"
             aria-hidden={!showLoadingOverlay}
           >
             {/* 앰비언트 그라디언트 (단순화) */}
@@ -349,7 +349,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
 
             {/* 미니멀 프로그레스 바 */}
             <div className="relative z-10 w-48 md:w-56">
-              <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
+              <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                 <div
                   ref={loadingBarRef}
                   className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_12px_rgba(139,92,246,0.4)]"

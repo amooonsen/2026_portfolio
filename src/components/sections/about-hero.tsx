@@ -52,13 +52,13 @@ export function AboutHero({text, className}: AboutHeroProps) {
         <div className="mx-auto max-w-5xl px-6">
           <p ref={textRef} className="text-3xl font-bold leading-relaxed md:text-5xl lg:text-6xl">
             {reducedMotion ? (
-              <span className="text-white">{text}</span>
+              <span className="text-foreground">{text}</span>
             ) : (
               words.map((word, i) => (
                 <span
                   key={i}
                   data-word
-                  className="mr-[0.25em] inline-block text-white"
+                  className="mr-[0.25em] inline-block text-foreground"
                   style={{opacity: 0.15}}
                 >
                   {word}

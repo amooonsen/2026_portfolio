@@ -19,21 +19,21 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
         {items.map((item, i) => (
           <FadeIn key={item.year} delay={i * 0.1}>
             <article
-              className="group relative grid gap-4 border-l border-white/10 py-8 pl-8 md:grid-cols-5 md:gap-8"
+              className="group relative grid gap-4 border-l border-glass-border py-8 pl-8 md:grid-cols-5 md:gap-8"
               role="listitem"
             >
               <div
-                className="absolute -left-[5px] top-10 h-2.5 w-2.5 rounded-full border-2 border-indigo-400/60 bg-background transition-colors group-hover:border-indigo-400 group-hover:bg-indigo-400/20"
+                className="absolute -left-[5px] top-10 h-2.5 w-2.5 rounded-full border-2 border-accent-indigo/60 bg-background transition-colors group-hover:border-accent-indigo group-hover:bg-accent-indigo-subtle"
                 aria-hidden="true"
               />
 
               <div className="md:col-span-1">
-                <time className="text-sm font-mono font-medium text-indigo-400">{item.year}</time>
-                <h3 className="mt-1 text-lg font-semibold text-white">{item.title}</h3>
+                <time className="text-sm font-mono font-medium text-accent-indigo">{item.year}</time>
+                <h3 className="mt-1 text-lg font-semibold text-foreground">{item.title}</h3>
               </div>
 
               <div className="md:col-span-4">
-                <p className="text-white/70 leading-relaxed">{item.description}</p>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
 
                 {item.projects && item.projects.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -41,7 +41,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
                       <Link
                         key={project.slug}
                         href={`/projects/${project.slug}`}
-                        className="inline-flex items-center gap-1 rounded-full border border-white/10 px-3 py-1 text-xs font-medium text-white/60 transition-colors hover:border-indigo-400/40 hover:text-indigo-400"
+                        className="inline-flex items-center gap-1 rounded-full border border-glass-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-accent-indigo-muted hover:text-accent-indigo"
                       >
                         {project.name}
                         <ArrowUpRight className="h-3 w-3" />

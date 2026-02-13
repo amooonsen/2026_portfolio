@@ -76,7 +76,7 @@ export function TableOfContents({headings}: TableOfContentsProps) {
                   "block w-full cursor-pointer border-l-2 py-1 text-left text-sm transition-colors",
                   heading.level === 3 ? "pl-6" : "pl-4",
                   activeId === heading.id
-                    ? "border-indigo-400 font-medium text-indigo-400"
+                    ? "border-accent-indigo font-medium text-accent-indigo"
                     : "border-transparent text-muted-foreground hover:text-foreground",
                 )}
               >

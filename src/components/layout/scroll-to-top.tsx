@@ -29,10 +29,10 @@ export function ScrollToTop() {
       tabIndex={visible ? 0 : -1}
       className={cn(
         "fixed right-8 bottom-8 z-50 flex h-12 w-12 items-center justify-center rounded-full",
-        "bg-indigo-500/90 text-white backdrop-blur-sm",
+        "bg-accent-indigo/90 text-white backdrop-blur-sm",
         "transition-all duration-200 ease-out",
-        "hover:bg-indigo-500 hover:scale-110",
-        "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400",
+        "hover:bg-accent-indigo hover:scale-110",
+        "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-indigo",
         visible
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-4 opacity-0 pointer-events-none",

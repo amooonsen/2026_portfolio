@@ -11,6 +11,7 @@ import { SmoothScroll } from "@/components/layout/smooth-scroll"
 import { Footer } from "@/components/layout/footer"
 import { RouteAnnouncer } from "@/components/layout/route-announcer"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
+import { ThemeProvider } from "@/components/layout/theme-provider"
 import { PersonSchema, WebsiteSchema } from "@/components/seo/json-ld"
 import { navItems } from "@/data/portfolio-data"
 import { socials } from "@/data/socials"
@@ -100,25 +101,27 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className="dark">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <PersonSchema />
         <WebsiteSchema />
       </head>
       <body className={`${pretendard.variable} ${geistMono.variable} font-sans antialiased`}>
-        <SmoothScroll />
-        <SkipNav />
-        <ScrollProgress />
-        <Header items={navItems} />
+        <ThemeProvider>
+          <SmoothScroll />
+          <SkipNav />
+          <ScrollProgress />
+          <Header items={navItems} />
 
-        <main id="main-content" tabIndex={-1} className="min-h-screen pt-16 outline-none">
-          {children}
-        </main>
+          <main id="main-content" tabIndex={-1} className="min-h-screen pt-16 outline-none">
+            {children}
+          </main>
 
-        <Footer socials={socials} />
-        <FloatingNav items={navItems} />
-        <ScrollToTop />
-        <RouteAnnouncer />
+          <Footer socials={socials} />
+          <FloatingNav items={navItems} />
+          <ScrollToTop />
+          <RouteAnnouncer />
+        </ThemeProvider>
       </body>
     </html>
   )

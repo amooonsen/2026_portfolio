@@ -103,19 +103,19 @@ export function OverviewCard({
                 "shadow-lg",
               )}
             >
-              <Icon className="size-6 text-white" />
+              <Icon className="size-6 text-white dark:text-white" />
             </div>
           </div>
 
           {/* 텍스트 */}
           <div>
-            <h3 className="text-xl font-bold text-white">{title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-white/70">{description}</p>
+            <h3 className="text-xl font-bold text-foreground">{title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="relative z-10 mt-6 flex items-center gap-2 text-sm font-medium text-white/60 transition-colors group-hover:text-white">
+        <div className="relative z-10 mt-6 flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
           <span>{external ? "방문하기" : "자세히 보기"}</span>
           {external ? (
             <ExternalLink className="size-4 transition-transform group-hover:-translate-y-1" />

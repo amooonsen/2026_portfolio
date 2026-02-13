@@ -69,15 +69,15 @@ export function SkillBars({ skills }: SkillBarsProps) {
       {skills.map((skill) => (
         <div key={skill.name}>
           <div data-skill-label className="mb-2 flex justify-between">
-            <span className="text-sm font-medium text-white">{skill.name}</span>
-            <span className="text-sm tabular-nums text-white/40">
+            <span className="text-sm font-medium text-foreground">{skill.name}</span>
+            <span className="text-sm tabular-nums text-muted-foreground">
               {skill.level}%
             </span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
+          <div className="h-1.5 overflow-hidden rounded-full bg-glass-bg">
             <div
               data-skill-bar
-              className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+              className="h-full rounded-full bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to"
               style={{ width: `${skill.level}%` }}
             />
           </div>
