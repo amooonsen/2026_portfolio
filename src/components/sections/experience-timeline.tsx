@@ -148,7 +148,7 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
         </p>
       </FadeIn>
 
-      <div ref={containerRef} className="relative mt-16">
+      <div ref={containerRef} className="relative mt-16 overflow-hidden">
         {/* 중앙 세로선 — 스크롤 연동 드로우 */}
         <div
           ref={lineRef}

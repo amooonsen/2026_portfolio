@@ -84,42 +84,48 @@ const philosophies = [
 
 const skillsLeft = [
   { name: "React / Next.js", level: 95 },
-  { name: "TypeScript", level: 90 },
-  { name: "CSS / Tailwind CSS", level: 92 },
-  { name: "애니메이션 (GSAP / Framer Motion)", level: 85 },
+  { name: "TypeScript / JavaScript", level: 92 },
+  { name: "Vue.js", level: 80 },
+  { name: "CSS / Tailwind CSS / SCSS", level: 90 },
 ]
 
 const skillsRight = [
-  { name: "테스트 (Vitest / Playwright)", level: 80 },
-  { name: "성능 최적화", level: 88 },
-  { name: "접근성 (WCAG)", level: 78 },
-  { name: "백엔드 연동 (REST / GraphQL)", level: 75 },
+  { name: "인터랙션 (GSAP / Lottie.js)", level: 88 },
+  { name: "데이터 시각화 (Amcharts / Chart.js)", level: 85 },
+  { name: "성능 최적화 (Core Web Vitals)", level: 90 },
+  { name: "웹 접근성 (WCAG 2.1)", level: 82 },
 ]
 
 const journeyItems = [
   {
     year: "2021",
-    title: "첫 발걸음",
+    title: "입사 & 데이터 시각화",
     description:
-      "에이전시에서 다양한 클라이언트 프로젝트를 경험하며 웹 개발의 기초를 다졌습니다. HTML, CSS, JavaScript부터 Vue.js까지 빠르게 성장했습니다.",
+      "이트라이브에 입사하여 RISE ETF 데이터 시각화 프로젝트를 담당했습니다. Amcharts로 5종 이상의 차트를 설계하고, WCAG 2.1 가이드라인을 적용하여 웹 접근성 인증 마크를 획득했습니다.",
   },
   {
     year: "2022",
-    title: "React 생태계",
+    title: "엔터프라이즈 프로젝트",
     description:
-      "React와 TypeScript를 주력으로 전환하며 대규모 SPA 개발에 참여했습니다. 컴포넌트 설계, 상태 관리, 테스트 자동화의 중요성을 깨달았습니다.",
+      "메리츠화재, 호텔롯데, 삼성카드, 이트라이브 자사 홈페이지 등 대형 고객사 프로젝트를 연달아 수행했습니다. GSAP, Lottie.js 기반 인터랙션 구현과 레거시 코드 리팩토링 경험을 쌓았고, Lerp 기반 스무스 스크롤 엔진을 직접 설계했습니다.",
   },
   {
     year: "2023",
-    title: "풀스택 확장",
+    title: "웹뷰 & 크로스 플랫폼",
     description:
-      "React Native로 모바일 앱 개발 경험을 쌓고, 디자인 시스템 구축을 주도했습니다. Storybook 기반 컴포넌트 문서화 체계를 수립했습니다.",
+      "래미안 홈플랫폼 홈닉의 Vue.js 기반 웹뷰를 개발하며 네이티브 앱과의 통신 인터페이스를 구축했습니다. Chart.js로 관리비 데이터를 시각화하고, iOS/Android 크로스 플랫폼 호환성을 확보했습니다.",
   },
   {
     year: "2024",
-    title: "깊이 있는 성장",
+    title: "FE 리드 & AI 솔루션",
     description:
-      "프론트엔드 아키텍처 설계에 적극적으로 참여하고 있습니다. 성능 최적화, 인터랙티브 웹, 3D 그래픽스에 깊이를 더하며 기술적 영향력을 넓히고 있습니다.",
+      "KPMG, FunETF 등 프로젝트와 함께, 사내 스타트업 AI CARAMEL의 FE/BE를 리드하여 삼성·롯데 대상 AI 분석 통합 솔루션을 개발했습니다. ThunderJob 채용 플랫폼도 기획부터 배포까지 End-to-End로 리딩했습니다.",
+  },
+  {
+    year: "2025",
+    title: "성능 최적화 전문성",
+    description:
+      "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화를 수행하며 대규모 시스템에서의 성능 전문성을 심화하고 있습니다.",
   },
 ]
 
@@ -131,7 +137,7 @@ export default function AboutPage() {
   return (
     <>
       {/* 스크롤 리빌 텍스트 */}
-      <AboutHero text="안녕하세요, 조경문입니다. 사용자의 경험을 최우선으로 생각하는 프론트엔드 개발자입니다. 세밀한 인터랙션과 최적화된 성능으로 웹의 가능성을 확장합니다." />
+      <AboutHero text="안녕하세요, 조경문입니다. 4년 5개월간 대형 고객사 대상 프론트엔드 개발을 수행 및 리드하고 있습니다. Core Web Vitals 최적화와 인터랙션 UI로 정량적 성과를 만들어냅니다." />
 
       {/* 자기소개 */}
       <Section spacing="lg" container>
@@ -149,26 +155,25 @@ export default function AboutPage() {
 
             <FadeIn delay={0.1}>
               <p className="mt-6 text-lg leading-relaxed text-white/80">
-                안녕하세요, <span className="text-indigo-400 font-medium">4년차 프론트엔드 개발자</span> 조경문입니다.
-                에이전시에서 시작하여 IT 기업, 스타트업까지 다양한
-                환경에서 웹 애플리케이션을 설계하고 개발해 왔습니다.
+                안녕하세요, <span className="text-indigo-400 font-medium">4년 5개월차 프론트엔드 개발자</span> 조경문입니다.
+                대형 고객사 대상 <span className="text-indigo-400 font-medium">Next.js/React, TypeScript</span> 기반
+                프론트엔드 개발을 수행 및 리드하고 있습니다.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.2}>
               <p className="mt-4 text-lg leading-relaxed text-white/80">
-                <span className="text-indigo-400 font-medium">React</span>와 <span className="text-indigo-400 font-medium">Next.js</span>를 주력으로, TypeScript와 Tailwind CSS로 타입
-                안전하고 일관된 UI를 구축합니다. <span className="text-indigo-400 font-medium">GSAP</span>과 <span className="text-indigo-400 font-medium">Three.js</span>를 활용한
-                인터랙티브 웹 경험 제작에도 깊은 관심을 갖고 있습니다.
+                <span className="text-indigo-400 font-medium">Core Web Vitals 최적화</span>와 대규모 폼 시스템 설계 등
+                정량적 성과를 달성해 왔으며, <span className="text-indigo-400 font-medium">GSAP/Lottie.js</span> 활용
+                인터랙션 UI와 <span className="text-indigo-400 font-medium">Amcharts</span> 기반 금융 데이터 시각화 경험이 있습니다.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.3}>
               <p className="mt-4 text-lg leading-relaxed text-white/80">
-                현재는 B2B SaaS 제품의 프론트엔드 개발에 참여하며,
-                <span className="text-indigo-400 font-medium"> 디자인 시스템 구축</span>과 <span className="text-indigo-400 font-medium">성능 최적화</span>에 집중하고 있습니다.
-                개발 생산성을 높이는 도구와 워크플로우를 설계하는 것을
-                즐깁니다.
+                삼성, 롯데, LG CNS 등 <span className="text-indigo-400 font-medium">엔터프라이즈 고객사</span>와의 직접 대응 경험을 바탕으로,
+                현업 피드백을 신속히 반영하고 비즈니스 가치를 실현하는 개발을 추구합니다.
+                레거시 환경 개선부터 AI 솔루션까지 다양한 도메인을 경험했습니다.
               </p>
             </FadeIn>
           </div>
@@ -179,11 +184,11 @@ export default function AboutPage() {
                 <h3 className="text-lg font-semibold text-white">Quick Info</h3>
                 <dl className="space-y-3 text-sm">
                   {[
-                    { dt: "역할", dd: "프론트엔드 개발자" },
-                    { dt: "경력", dd: "4년+" },
-                    { dt: "위치", dd: "서울, 대한민국" },
-                    { dt: "관심 분야", dd: "인터랙티브 웹, 성능" },
-                    { dt: "학력", dd: "컴퓨터공학 전공" },
+                    { dt: "역할", dd: "FE Developer / 매니저" },
+                    { dt: "경력", dd: "4년 5개월" },
+                    { dt: "소속", dd: "주식회사이트라이브" },
+                    { dt: "강점", dd: "성능 최적화, 인터랙션 UI" },
+                    { dt: "학력", dd: "수원과학대학교 전자과" },
                   ].map(({ dt, dd }) => (
                     <div key={dt} className="flex justify-between">
                       <dt className="text-muted-foreground">{dt}</dt>

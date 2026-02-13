@@ -33,11 +33,11 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
         "fixed bottom-6 left-1/2 -translate-x-1/2 z-50",
         "bg-background/80 backdrop-blur-xl",
         "border border-border/50 rounded-full",
-        "px-2 py-1.5 shadow-2xl",
+        "px-1.5 py-1.5 shadow-2xl sm:px-2",
         className
       )}
     >
-      <ul className="flex items-center gap-1">
+      <ul className="flex items-center gap-0.5 sm:gap-1">
         {items.map((item) => {
           if (item.external) {
             return (
@@ -46,10 +46,10 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200"
+                  className="flex items-center gap-1.5 px-2.5 py-2 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200 sm:gap-2 sm:px-3 sm:text-sm"
                 >
                   {item.icon && <span className="shrink-0">{item.icon}</span>}
-                  <span className="hidden sm:inline">{item.label}</span>
+                  <span>{item.label}</span>
                 </a>
               </li>
             )
@@ -65,7 +65,7 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
               <Link
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200",
+                  "flex items-center gap-1.5 px-2.5 py-2 rounded-full text-xs font-medium transition-colors duration-200 sm:gap-2 sm:px-3 sm:text-sm",
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -74,7 +74,7 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
                 {item.icon && (
                   <span className="shrink-0">{item.icon}</span>
                 )}
-                <span className="hidden sm:inline">{item.label}</span>
+                <span>{item.label}</span>
               </Link>
             </li>
           )

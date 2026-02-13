@@ -57,10 +57,10 @@ export function MobileNav({ items, isOpen, onClose }: MobileNavProps) {
       <div className="flex justify-end p-4">
         <button
           onClick={onClose}
-          className="inline-flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted transition-colors"
+          className="inline-flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted transition-colors"
           aria-label="메뉴 닫기"
         >
-          <X className="size-5" />
+          <X className="size-6" />
         </button>
       </div>
 
