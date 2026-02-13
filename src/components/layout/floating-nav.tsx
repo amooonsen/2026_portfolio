@@ -23,6 +23,7 @@ interface FloatingNavProps {
  * 화면 하단 중앙에 떠있는 플로팅 네비게이션.
  * 스크롤 다운 시 표시, 스크롤 업(헤더 노출) 시 숨김.
  * scale + blur 애니메이션으로 중앙에서 수축/확장된다.
+ * 모바일에서는 표시되지 않는다 (데스크톱 전용).
  */
 export function FloatingNav({ items, className }: FloatingNavProps) {
   const pathname = usePathname()
@@ -95,6 +96,7 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
         "border border-border/50 rounded-full",
         "px-1.5 py-1.5 shadow-2xl sm:px-2",
         "origin-center",
+        "hidden md:block",
         className
       )}
     >

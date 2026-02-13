@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Magnetic } from "@/components/ui/magnetic"
 import { gsap } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 
 interface HeroSectionProps {
@@ -23,6 +24,7 @@ interface HeroSectionProps {
  * Hero 섹션 컴포넌트.
  * 3D 배경 위에 SplitText 스타일 타이틀, CTA 버튼, 스크롤 인디케이터를 표시한다.
  * GSAP 타임라인으로 순차적 인트로 애니메이션을 실행한다.
+ * 모바일에서는 간소화된 애니메이션으로 성능을 최적화한다.
  * @param props.title - 메인 타이틀 (그라디언트)
  * @param props.subtitle - 서브 타이틀 (SplitText char 애니메이션)
  * @param props.description - 설명 텍스트
@@ -47,6 +49,7 @@ export function HeroSection({
   const ctaRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
+  const isMobile = useMediaQuery("(max-width: 767px)")
 
   useEffect(() => {
     if (!heroRef.current || reducedMotion) return
@@ -54,35 +57,60 @@ export function HeroSection({
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.3 })
 
-      // 서브타이틀: 글자별 SplitText 슬라이드업
-      const chars = subtitleRef.current?.querySelectorAll("[data-char]")
-      if (chars?.length) {
-        gsap.set(chars, { yPercent: 110, opacity: 0 })
-        tl.to(chars, {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.03,
-          ease: "power3.out",
-        })
-      }
+      // 모바일에서는 간소화된 애니메이션
+      if (isMobile) {
+        // 서브타이틀: 전체 페이드인 (글자별 애니메이션 비활성화)
+        if (subtitleRef.current) {
+          gsap.set(subtitleRef.current, { opacity: 0, y: 20 })
+          tl.to(subtitleRef.current, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        }
 
-      // 타이틀: 단어별 블러 리빌
-      const words = titleRef.current?.querySelectorAll("[data-word]")
-      if (words?.length) {
-        gsap.set(words, { yPercent: 100, opacity: 0, filter: "blur(8px)" })
-        tl.to(
-          words,
-          {
+        // 타이틀: 전체 페이드인 (단어별 애니메이션 비활성화)
+        if (titleRef.current) {
+          gsap.set(titleRef.current, { opacity: 0, y: 20 })
+          tl.to(
+            titleRef.current,
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+            "-=0.3"
+          )
+        }
+      } else {
+        // 데스크톱: 기존 복잡한 애니메이션
+        // 서브타이틀: 글자별 SplitText 슬라이드업
+        const chars = subtitleRef.current?.querySelectorAll("[data-char]")
+        if (chars?.length) {
+          gsap.set(chars, { yPercent: 110, opacity: 0 })
+          tl.to(chars, {
             yPercent: 0,
             opacity: 1,
-            filter: "blur(0px)",
             duration: 0.7,
-            stagger: 0.12,
-            ease: "power2.out",
-          },
-          "-=0.3"
-        )
+            stagger: 0.03,
+            ease: "power3.out",
+          })
+        }
+
+        // 타이틀: 단어별 블러 리빌
+        const words = titleRef.current?.querySelectorAll("[data-word]")
+        if (words?.length) {
+          gsap.set(words, { yPercent: 100, opacity: 0, filter: "blur(8px)" })
+          tl.to(
+            words,
+            {
+              yPercent: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+              duration: 0.7,
+              stagger: 0.12,
+              ease: "power2.out",
+            },
+            "-=0.3"
+          )
+        }
       }
 
       // 설명 텍스트 페이드인
@@ -129,7 +157,7 @@ export function HeroSection({
     }, heroRef)
 
     return () => ctx.revert()
-  }, [reducedMotion])
+  }, [reducedMotion, isMobile])
 
   /** 텍스트를 글자별 span으로 분할 (SplitText 효과용) */
   function splitChars(text: string) {
@@ -172,26 +200,26 @@ export function HeroSection({
         className="relative flex min-h-[calc(100vh-4rem)] items-center"
       >
         <div className="relative z-10 w-full">
-          {/* 서브타이틀 — 글자별 SplitText */}
+          {/* 서브타이틀 — 글자별 SplitText (데스크톱) / 전체 텍스트 (모바일) */}
           <h1
             ref={subtitleRef}
             className="text-5xl font-bold tracking-tight text-white md:text-7xl"
             aria-label={subtitle}
           >
-            {reducedMotion ? subtitle : splitChars(subtitle)}
+            {reducedMotion || isMobile ? subtitle : splitChars(subtitle)}
           </h1>
 
-          {/* 타이틀 — 단어별 블러 리빌 + 그라디언트 */}
+          {/* 타이틀 — 단어별 블러 리빌 + 그라디언트 (데스크톱) / 전체 텍스트 (모바일) */}
           <p
             ref={titleRef}
             className={cn(
               "mt-4 text-3xl font-bold md:text-5xl",
-              reducedMotion &&
-                "bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
+              (reducedMotion || isMobile) &&
+                "bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
             )}
             aria-label={title}
           >
-            {reducedMotion ? title : splitWords(title)}
+            {reducedMotion || isMobile ? title : splitWords(title)}
           </p>
 
           {/* 설명 */}
