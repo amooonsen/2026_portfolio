@@ -22,37 +22,37 @@ interface TechStackProps {
   categories: TechCategory[]
 }
 
-/** 카테고리별 액센트 색상 매핑 */
+/** 카테고리별 액센트 색상 매핑 — 라이트: 600, 다크: 400 */
 const categoryColors: Record<string, { border: string; bg: string; text: string; glow: string }> = {
   Frontend: {
-    border: "border-indigo-400/30",
-    bg: "bg-indigo-400/5",
-    text: "text-indigo-400",
-    glow: "group-hover:shadow-indigo-400/20",
+    border: "border-indigo-500/20 dark:border-indigo-400/30",
+    bg: "bg-indigo-500/5 dark:bg-indigo-400/5",
+    text: "text-indigo-600 dark:text-indigo-400",
+    glow: "group-hover:shadow-indigo-500/15 dark:group-hover:shadow-indigo-400/20",
   },
   "State & Form": {
-    border: "border-violet-400/30",
-    bg: "bg-violet-400/5",
-    text: "text-violet-400",
-    glow: "group-hover:shadow-violet-400/20",
+    border: "border-violet-500/20 dark:border-violet-400/30",
+    bg: "bg-violet-500/5 dark:bg-violet-400/5",
+    text: "text-violet-600 dark:text-violet-400",
+    glow: "group-hover:shadow-violet-500/15 dark:group-hover:shadow-violet-400/20",
   },
   "Animation & Visualization": {
-    border: "border-pink-400/30",
-    bg: "bg-pink-400/5",
-    text: "text-pink-400",
-    glow: "group-hover:shadow-pink-400/20",
+    border: "border-pink-500/20 dark:border-pink-400/30",
+    bg: "bg-pink-500/5 dark:bg-pink-400/5",
+    text: "text-pink-600 dark:text-pink-400",
+    glow: "group-hover:shadow-pink-500/15 dark:group-hover:shadow-pink-400/20",
   },
   "Backend & Infra": {
-    border: "border-emerald-400/30",
-    bg: "bg-emerald-400/5",
-    text: "text-emerald-400",
-    glow: "group-hover:shadow-emerald-400/20",
+    border: "border-emerald-500/20 dark:border-emerald-400/30",
+    bg: "bg-emerald-500/5 dark:bg-emerald-400/5",
+    text: "text-emerald-600 dark:text-emerald-400",
+    glow: "group-hover:shadow-emerald-500/15 dark:group-hover:shadow-emerald-400/20",
   },
   Tools: {
-    border: "border-amber-400/30",
-    bg: "bg-amber-400/5",
-    text: "text-amber-400",
-    glow: "group-hover:shadow-amber-400/20",
+    border: "border-amber-500/20 dark:border-amber-400/30",
+    bg: "bg-amber-500/5 dark:bg-amber-400/5",
+    text: "text-amber-600 dark:text-amber-400",
+    glow: "group-hover:shadow-amber-500/15 dark:group-hover:shadow-amber-400/20",
   },
 }
 

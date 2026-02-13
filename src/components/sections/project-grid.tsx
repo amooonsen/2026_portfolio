@@ -20,6 +20,7 @@ interface ProjectGridProps {
   projects: Project[];
   columns?: 2 | 3 | 4;
   options?: ProjectGridOptions;
+  excludeSlugs?: string[];
 }
 
 type SortOrder = "latest" | "oldest";
@@ -44,13 +45,17 @@ function getGridSize(index: number): {colSpan: 1 | 2; rowSpan: 1 | 2} {
  * 프로젝트 그리드 섹션 컴포넌트.
  * 각 카드가 스크롤 위치에 따라 개별적으로 등장하는 stagger 애니메이션을 적용한다.
  */
-export function ProjectGrid({projects, options}: ProjectGridProps) {
+export function ProjectGrid({projects, options, excludeSlugs}: ProjectGridProps) {
   const {showTitle = true, showDescription = true, showTags = true} = options ?? {};
   const [sortOrder, setSortOrder] = useState<SortOrder>("latest");
   const gridRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
-  const sortedProjects = [...projects].sort((a, b) => {
+  const filteredProjects = excludeSlugs
+    ? projects.filter((p) => !excludeSlugs.includes(p.slug))
+    : projects;
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
     if (sortOrder === "latest") return b.year - a.year;
     return a.year - b.year;
   });

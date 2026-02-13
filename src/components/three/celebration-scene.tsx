@@ -14,10 +14,10 @@ const BURST_COUNT = 4;
 const PARTICLE_COUNT = SPARKS_PER_BURST * BURST_COUNT;
 
 /** 중력 */
-const GRAVITY = -3;
+const GRAVITY = -6;
 
 /** 파티클 수명 */
-const LIFETIME = 4;
+const LIFETIME = 2;
 
 /** 폭죽 색상 팔레트 — 각 폭죽마다 하나의 테마 색상 */
 const BURST_PALETTES = [
@@ -67,7 +67,7 @@ function createBursts(): BurstData[] {
       directions,
       speeds,
       paletteIdx: b % BURST_PALETTES.length,
-      delay: b * 0.4 + Math.random() * 0.3,
+      delay: b * 0.15 + Math.random() * 0.1,
     });
   }
 
@@ -129,11 +129,11 @@ function FireworkParticles({active}: {active: boolean}) {
           continue;
         }
 
-        const life = LIFETIME + (burst.speeds[i] / 7) * 1.5;
+        const life = LIFETIME + (burst.speeds[i] / 7) * 0.5;
         const progress = Math.min(t / life, 1);
 
         // 속도 감쇠 (공기저항 시뮬레이션)
-        const damping = Math.exp(-t * 0.8);
+        const damping = Math.exp(-t * 1.5);
         const speed = burst.speeds[i] * damping;
 
         const dx = burst.directions[i * 3];
@@ -206,7 +206,7 @@ function SparkTrails({active}: {active: boolean}) {
         velocitiesRef.current[i * 3 + 1] = Math.random() * 2;
         velocitiesRef.current[i * 3 + 2] = Math.sin(angle) * speed;
 
-        delaysRef.current[i] = Math.random() * 1.5;
+        delaysRef.current[i] = Math.random() * 0.6;
 
         const palette = BURST_PALETTES[Math.floor(Math.random() * BURST_PALETTES.length)];
         const color = palette[0];
@@ -238,12 +238,12 @@ function SparkTrails({active}: {active: boolean}) {
         continue;
       }
 
-      const damping = Math.exp(-t * 1.2);
+      const damping = Math.exp(-t * 2);
       const px = positionsRef.current[i * 3] + velocitiesRef.current[i * 3] * t * damping;
       const py =
         positionsRef.current[i * 3 + 1] +
         velocitiesRef.current[i * 3 + 1] * t * damping +
-        0.5 * GRAVITY * 0.4 * t * t;
+        0.5 * GRAVITY * 0.5 * t * t;
       const pz = positionsRef.current[i * 3 + 2] + velocitiesRef.current[i * 3 + 2] * t * damping;
 
       posAttr.setXYZ(i, px, py, pz);
@@ -295,7 +295,7 @@ export function CelebrationScene({active, className}: CelebrationSceneProps) {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 50,
+        zIndex: 40,
         pointerEvents: "none",
         opacity: active ? 1 : 0,
         transition: "opacity 0.5s ease-in-out",

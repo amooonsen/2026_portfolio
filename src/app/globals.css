@@ -97,11 +97,11 @@
   --sidebar-border: oklch(0 0 0 / 8%);
   --sidebar-ring: oklch(0.5 0.15 270);
   /* Glass */
-  --glass-bg: oklch(0 0 0 / 3%);
-  --glass-border: oklch(0 0 0 / 8%);
-  --glass-hover-bg: oklch(0 0 0 / 5%);
-  --glass-hover-border: oklch(0 0 0 / 12%);
-  --glass-shadow: oklch(0 0 0 / 5%);
+  --glass-bg: oklch(0 0 0 / 4%);
+  --glass-border: oklch(0 0 0 / 10%);
+  --glass-hover-bg: oklch(0 0 0 / 7%);
+  --glass-hover-border: oklch(0 0 0 / 15%);
+  --glass-shadow: oklch(0 0 0 / 8%);
   /* Scene */
   --scene-bg: oklch(0.96 0.005 80);
   /* Accent indigo */
