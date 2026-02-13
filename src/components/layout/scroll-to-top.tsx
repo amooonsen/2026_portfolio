@@ -51,7 +51,7 @@ export function ScrollToTop() {
         gsap.to(btnRef.current, {
           scale: 0.6,
           opacity: 0,
-          duration: reducedMotion ? 0 : 0.5,
+          duration: reducedMotion ? 0 : 0.8,
           ease: "power2.inOut",
           overwrite: true,
           onComplete: () => {

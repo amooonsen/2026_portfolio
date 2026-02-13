@@ -23,15 +23,49 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
 
 /**
  * 간단한 마크다운을 HTML로 변환한다.
- * h2, h3, p, ul/li, strong, code 태그를 지원한다.
+ * h2, h3, p, ul/li, strong, code, fenced code block 태그를 지원한다.
  */
 function parseMarkdown(md: string): string {
   const lines = md.trim().split("\n")
   const result: string[] = []
   let inList = false
+  let inCodeBlock = false
+  let codeLines: string[] = []
+  let codeLang = ""
 
   for (const line of lines) {
     const trimmed = line.trim()
+
+    // fenced code block 처리
+    if (trimmed.startsWith("```")) {
+      if (!inCodeBlock) {
+        if (inList) { result.push("</ul>"); inList = false }
+        inCodeBlock = true
+        codeLang = trimmed.slice(3).trim()
+        codeLines = []
+      } else {
+        const escaped = codeLines.join("\n")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+        const langAttr = codeLang ? ` data-lang="${codeLang}"` : ""
+        result.push(
+          `<div class="relative mt-4 mb-4">` +
+          (codeLang ? `<span class="absolute top-2 right-3 text-[10px] font-mono uppercase tracking-wider text-muted-foreground/50">${codeLang}</span>` : "") +
+          `<pre class="overflow-x-auto rounded-lg bg-muted/50 border border-border/50 p-4 text-sm leading-relaxed"${langAttr}>` +
+          `<code class="font-mono text-muted-foreground">${escaped}</code>` +
+          `</pre></div>`
+        )
+        inCodeBlock = false
+        codeLang = ""
+      }
+      continue
+    }
+
+    if (inCodeBlock) {
+      codeLines.push(line)
+      continue
+    }
 
     if (!trimmed) {
       if (inList) {
