@@ -146,9 +146,9 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                   data-timeline-year
                   className="absolute left-4 -top-4 z-10 md:left-1/2 md:-translate-x-1/2 md:-top-5"
                 >
-                  <span className="rounded-full border border-accent-indigo-muted bg-accent-indigo-subtle px-3 py-1 text-xs font-medium text-accent-indigo backdrop-blur-sm">
+                  <time dateTime={item.year.toString()} className="rounded-full border border-accent-indigo-muted bg-accent-indigo-subtle px-3 py-1 text-xs font-medium text-accent-indigo backdrop-blur-sm">
                     {item.year}
-                  </span>
+                  </time>
                 </div>
 
                 {/* 타임라인 도트 */}
@@ -174,7 +174,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                         <h3 className="text-xl font-semibold">{item.role}</h3>
                         <p className="text-sm text-muted-foreground">{item.company}</p>
                       </div>
-                      <span className="shrink-0 text-sm text-muted-foreground">{item.period}</span>
+                      <time className="shrink-0 text-sm text-muted-foreground">{item.period}</time>
                     </div>
 
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

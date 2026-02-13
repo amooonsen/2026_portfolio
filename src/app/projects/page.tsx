@@ -1,4 +1,3 @@
-import type {Metadata} from "next";
 import Link from "next/link";
 import {ArrowRight, Sparkles, Rocket} from "lucide-react";
 import {ProjectGrid} from "@/components/sections/project-grid";
@@ -6,12 +5,14 @@ import {getAllProjects} from "@/lib/projects";
 import {Section} from "@/components/ui/section";
 import {FadeIn} from "@/components/animation/fade-in";
 import {TechBadge} from "@/components/ui/tech-badge";
+import {createMetadata} from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createMetadata({
   title: "프로젝트",
   description:
     "조경문이 진행한 프론트엔드 개발 프로젝트들입니다. React, Next.js, TypeScript를 활용한 다양한 웹 애플리케이션을 확인하세요.",
-};
+  path: "/projects",
+});
 
 /**
  * 프로젝트 페이지.
@@ -62,9 +63,9 @@ export default function ProjectsPage() {
 
                       {/* 텍스트 영역 */}
                       <div className="min-w-0 flex-1">
-                        <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
                           {featuredProject.title}
-                        </h2>
+                        </h1>
                         <p className="mt-1 text-xs font-medium text-muted-foreground/60 font-mono">
                           {featuredProject.period}
                         </p>

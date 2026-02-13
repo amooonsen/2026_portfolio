@@ -86,7 +86,7 @@ export function Header({items, className}: HeaderProps) {
               Portfolio
             </Link>
 
-            <nav className="hidden md:flex items-center gap-1">
+            <nav aria-label="메인 내비게이션" className="hidden md:flex items-center gap-1">
               {items.map((item) => {
                 if (item.external) {
                   return (

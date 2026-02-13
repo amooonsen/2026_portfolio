@@ -109,6 +109,7 @@ export function ProjectGrid({projects, options, excludeSlugs}: ProjectGridProps)
             <div className="flex gap-2">
               <button
                 onClick={() => setSortOrder("latest")}
+                aria-pressed={sortOrder === "latest"}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   sortOrder === "latest"
                     ? "bg-accent-indigo-subtle text-accent-indigo"
@@ -119,6 +120,7 @@ export function ProjectGrid({projects, options, excludeSlugs}: ProjectGridProps)
               </button>
               <button
                 onClick={() => setSortOrder("oldest")}
+                aria-pressed={sortOrder === "oldest"}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   sortOrder === "oldest"
                     ? "bg-accent-indigo-subtle text-accent-indigo"

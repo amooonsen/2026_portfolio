@@ -26,7 +26,7 @@ export function Footer({socials = [], className}: FooterProps) {
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
             {/* 소셜 링크 */}
             {socials.length > 0 && (
-              <div className="flex gap-2">
+              <nav aria-label="소셜 미디어" className="flex gap-2">
                 {socials.map((social) => (
                   <IconButton
                     key={social.platform}
@@ -36,7 +36,7 @@ export function Footer({socials = [], className}: FooterProps) {
                     variant="ghost"
                   />
                 ))}
-              </div>
+              </nav>
             )}
 
             {/* 이메일 + 저작권 */}

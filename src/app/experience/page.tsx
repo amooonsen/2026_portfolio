@@ -1,16 +1,17 @@
-import type {Metadata} from "next";
 import {Section} from "@/components/ui/section";
 import {GradientText} from "@/components/ui/gradient-text";
 import {FadeIn} from "@/components/animation/fade-in";
 import {ExperienceTabs} from "@/components/sections/experience-tabs";
 import {experiences} from "@/data/portfolio-data";
 import {journeyItems} from "@/data/constants/home";
+import {createMetadata} from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createMetadata({
   title: "Experience",
   description:
     "조경문의 4년 프론트엔드 개발 경력입니다. 삼성, 롯데, LG CNS 등 대형 고객사 프로젝트 경험을 확인하세요.",
-};
+  path: "/experience",
+});
 
 /**
  * Experience 페이지.
@@ -20,7 +21,7 @@ export default function ExperiencePage() {
   return (
     <Section spacing="lg" container>
       <FadeIn>
-        <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
+        <GradientText as="h1" gradient="primary" className="text-3xl font-bold">
           Experience
         </GradientText>
         <FadeIn delay={0.3}>
