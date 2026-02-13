@@ -112,13 +112,13 @@ export function Header({ items, className }: HeaderProps) {
 
             <div className="flex items-center gap-2">
               <button
-                className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted transition-colors"
+                className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted transition-colors"
                 onClick={() => setIsMobileNavOpen(true)}
                 aria-label="메뉴 열기"
                 aria-expanded={isMobileNavOpen}
                 aria-controls="mobile-nav"
               >
-                <Menu className="size-5" />
+                <Menu className="size-6" />
               </button>
             </div>
           </div>
