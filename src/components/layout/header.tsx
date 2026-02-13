@@ -36,6 +36,15 @@ export function Header({ items, className }: HeaderProps) {
   const pathname = usePathname()
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
+  // 초기 로딩 시 레이아웃 시프트로 인한 false hide 방지용 grace period
+  const isReadyRef = useRef(false)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      isReadyRef.current = true
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
   /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. 모바일에서는 항상 표시. */
   const handleScroll = useCallback(() => {
     const currentY = window.scrollY
@@ -44,8 +53,9 @@ export function Header({ items, className }: HeaderProps) {
       setIsVisible(true)
       setIsScrolled(false)
     } else {
+      // 초기화 완료 전에는 항상 표시 (레이아웃 시프트 false hide 방지)
       // 모바일에서는 항상 visible, 데스크톱에서만 스크롤 방향에 따라 숨김/표시
-      setIsVisible(!isDesktop || currentY < lastScrollY.current)
+      setIsVisible(!isReadyRef.current || !isDesktop || currentY < lastScrollY.current)
       setIsScrolled(true)
     }
 

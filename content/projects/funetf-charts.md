@@ -23,6 +23,106 @@ links:
 
 1000개 이상의 데이터 포인트를 실시간으로 렌더링하면서 부드러운 인터랙션을 유지하기 위해 lazy loading과 캐싱 전략을 적용한 것이 핵심 과제였습니다.
 
+금융 차트는 일반적인 데이터 시각화와 달리 정확성에 대한 요구가 매우 높았습니다. ETF 수익률, NAV(순자산가치), 거래량 등의 데이터가 소수점 이하 자릿수까지 정확하게 표현되어야 했고, 차트 간 시간축 동기화도 필수였습니다. 여러 차트가 동일한 시간 범위를 공유하면서 사용자가 한 차트에서 줌/패닝을 수행하면 다른 차트도 동기화되는 연동 로직을 구현했습니다.
+
+대용량 데이터를 한 번에 로드하면 초기 렌더링에 수 초가 걸리는 문제가 있었습니다. 기간별 데이터 분할 로딩(최근 1개월은 일별, 1년은 주별, 전체는 월별)과 뷰포트 기반 데이터 간소화(화면에 표시할 수 있는 픽셀 수를 초과하는 데이터 포인트는 샘플링)를 적용하여 체감 성능을 개선했습니다.
+
+Amcharts5의 번들 사이즈가 상당히 큰(약 500KB gzipped) 편이었기 때문에, 차트 유형별로 코드 스플리팅을 적용하여 사용자가 실제로 보는 차트 모듈만 로드되도록 했습니다.
+
+## 기술적 의사결정 및 근거
+
+### 차트 라이브러리: Amcharts5 vs D3.js vs Chart.js
+
+**Amcharts5 채택.** 금융 차트 특화 기능(캔들스틱, 비교 차트, 줌/패닝, 시간축 동기화)과 개발 생산성 사이의 균형에서 최적의 선택이었습니다. D3.js는 가장 강력한 저수준 라이브러리이지만, 4개월 일정 내에 20개 이상의 금융 차트를 직접 구현하기에는 리소스가 부족했습니다. Chart.js는 가볍지만(약 60KB) 캔들스틱과 시간축 동기화를 지원하지 않고 1000개 이상의 데이터 포인트에서 성능 한계가 있었습니다. Amcharts5는 Canvas 기반 렌더링으로 대용량 데이터 성능이 우수했고, 번들 사이즈(약 500KB gzip) 문제는 코드 스플리팅으로 보완했습니다.
+
+### 서버 상태 관리: React Query vs SWR
+
+**React Query(TanStack Query) 채택.** 금융 데이터는 차별화된 캐싱 전략이 핵심입니다. 시장 데이터는 장 마감 후 변경되지 않으므로 긴 `staleTime`을 설정하고, 관리자가 수정한 데이터는 즉시 무효화해야 합니다. SWR은 더 가벼운 번들 사이즈(약 4KB vs 약 13KB)를 제공하지만, 캐시 무효화 전략이 React Query만큼 세밀하지 않았습니다. React Query의 `queryKey` 기반 무효화와 `staleTime`/`gcTime` 세밀 제어가 이 요구사항에 정확히 부합했습니다.
+
+### Amcharts5 번들 최적화를 위한 코드 스플리팅
+
+Amcharts5의 번들 사이즈(약 500KB gzip)가 초기 로딩에 직접적인 영향을 주는 문제가 있었습니다. 사용자가 보지 않는 차트 유형까지 모두 다운로드하는 것은 불필요한 비용이므로, 차트 유형별 동적 임포트를 적용하여 각 차트(라인, 캔들스틱, 파이 등)를 별도 청크로 분리했습니다. 초기 로드 시에는 메인 페이지에 보이는 라인 차트만 로드하고, 나머지 차트는 Intersection Observer와 결합하여 사용자가 해당 탭을 클릭하거나 스크롤로 접근할 때 로드하도록 지연 로딩을 적용했습니다.
+
+```typescript
+// 차트 모듈별 코드 스플리팅 + 데이터 가상화 패턴
+import { useQuery, useQueries } from '@tanstack/react-query';
+import { lazy, Suspense, useRef, useEffect, useState } from 'react';
+
+// 차트 유형별 동적 임포트 (각각 별도 청크로 분리)
+const LineChart = lazy(() => import('./charts/LineChart'));
+const CandlestickChart = lazy(() => import('./charts/CandlestickChart'));
+const PieChart = lazy(() => import('./charts/PieChart'));
+
+// 기간별 데이터 분할 로딩: 데이터 양을 기간에 따라 조절
+function useETFChartData(etfCode: string, period: ChartPeriod) {
+  return useQuery({
+    queryKey: ['etf', 'chart', etfCode, period],
+    queryFn: () => fetchETFData(etfCode, period),
+    staleTime: getStaleTime(period), // 기간별 캐시 수명 차별화
+    select: (data) => downsampleData(data, period), // 화면 크기에 맞게 샘플링
+  });
+}
+
+// 기간별 캐시 수명 정책
+function getStaleTime(period: ChartPeriod): number {
+  switch (period) {
+    case '1D': return 1000 * 60 * 5;      // 일별: 5분 (장중 변동)
+    case '1M': return 1000 * 60 * 60;     // 월별: 1시간
+    case '1Y': return 1000 * 60 * 60 * 24; // 연별: 24시간
+    case 'ALL': return Infinity;           // 전체: 변경 없음
+  }
+}
+
+// 뷰포트 기반 데이터 다운샘플링
+// 화면에 표시할 수 있는 픽셀 수를 초과하는 데이터 포인트는 샘플링
+function downsampleData(data: DataPoint[], period: ChartPeriod): DataPoint[] {
+  const maxVisiblePoints = window.innerWidth; // 화면 너비만큼의 포인트면 충분
+  if (data.length <= maxVisiblePoints) return data;
+
+  const step = Math.ceil(data.length / maxVisiblePoints);
+  return data.filter((_, index) => index % step === 0);
+}
+
+// Intersection Observer로 차트 지연 로딩
+function LazyChart({ type, etfCode }: { type: ChartType; etfCode: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect(); // 한 번 로드되면 관찰 중단
+        }
+      },
+      { rootMargin: '200px' } // 뷰포트 200px 전에 미리 로드
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const ChartComponent = {
+    line: LineChart,
+    candlestick: CandlestickChart,
+    pie: PieChart,
+  }[type];
+
+  return (
+    <div ref={ref} style={{ minHeight: 400 }}>
+      {isVisible ? (
+        <Suspense fallback={<ChartSkeleton />}>
+          <ChartComponent etfCode={etfCode} />
+        </Suspense>
+      ) : (
+        <ChartSkeleton />
+      )}
+    </div>
+  );
+}
+```
+
 ## 담당 기간
 
 2024.01 - 2024.05 | 프론트엔드 개발 매니저

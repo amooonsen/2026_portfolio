@@ -74,7 +74,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
         filter: "blur(0px)",
         duration: 0.6,
         ease: "power3.out",
-        onComplete: () => ScrollTrigger.refresh(),
+        onComplete: () => {
+          // filter: blur(0px)가 인라인 스타일에 남으면 새로운 containing block이 생성되어
+          // 하위 요소의 position: sticky가 깨짐 → "none"으로 명시 제거
+          if (ref.current) {
+            ref.current.style.filter = "none"
+            ref.current.style.transform = "none"
+          }
+          ScrollTrigger.refresh()
+        },
       }
     )
   }, [reducedMotion, isMobile])
