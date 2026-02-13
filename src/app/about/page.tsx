@@ -1,17 +1,17 @@
-import type { Metadata } from "next"
-import { Section } from "@/components/ui/section"
-import { GlassCard } from "@/components/ui/glass-card"
-import { GradientText } from "@/components/ui/gradient-text"
-import { FadeIn } from "@/components/animation/fade-in"
-import { StaggerChildren } from "@/components/animation/stagger-children"
-import { TechStack } from "@/components/sections/tech-stack"
-import { AboutHero } from "@/components/sections/about-hero"
-import { SkillBars } from "@/components/sections/skill-bars"
-import { techCategories } from "@/data/portfolio-data"
+import type {Metadata} from "next";
+import {Section} from "@/components/ui/section";
+import {GlassCard} from "@/components/ui/glass-card";
+import {GradientText} from "@/components/ui/gradient-text";
+import {FadeIn} from "@/components/animation/fade-in";
+import {StaggerChildren} from "@/components/animation/stagger-children";
+import {TechStack} from "@/components/sections/tech-stack";
+import {AboutHero} from "@/components/sections/about-hero";
+import {SkillBars} from "@/components/sections/skill-bars";
+import {techCategories} from "@/data/portfolio-data";
 
 export const metadata: Metadata = {
   title: "소개",
-}
+};
 
 const philosophies = [
   {
@@ -80,21 +80,21 @@ const philosophies = [
       "새로운 프레임워크와 도구 PoC 수행",
     ],
   },
-]
+];
 
 const skillsLeft = [
-  { name: "React / Next.js", level: 95 },
-  { name: "TypeScript / JavaScript", level: 92 },
-  { name: "Vue.js", level: 80 },
-  { name: "CSS / Tailwind CSS / SCSS", level: 90 },
-]
+  {name: "React / Next.js", level: 95},
+  {name: "TypeScript / JavaScript", level: 92},
+  {name: "Vue.js", level: 80},
+  {name: "CSS / Tailwind CSS / SCSS", level: 90},
+];
 
 const skillsRight = [
-  { name: "인터랙션 (GSAP / Lottie.js)", level: 88 },
-  { name: "데이터 시각화 (Amcharts / Chart.js)", level: 85 },
-  { name: "성능 최적화 (Core Web Vitals)", level: 90 },
-  { name: "웹 접근성 (WCAG 2.1)", level: 82 },
-]
+  {name: "인터랙션 (GSAP / Lottie.js)", level: 88},
+  {name: "데이터 시각화 (Amcharts / Chart.js)", level: 85},
+  {name: "성능 최적화 (Core Web Vitals)", level: 90},
+  {name: "웹 접근성 (WCAG 2.1)", level: 82},
+];
 
 const journeyItems = [
   {
@@ -127,7 +127,7 @@ const journeyItems = [
     description:
       "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화를 수행하며 대규모 시스템에서의 성능 전문성을 심화하고 있습니다.",
   },
-]
+];
 
 /**
  * 소개 페이지.
@@ -144,36 +144,37 @@ export default function AboutPage() {
         <div className="grid gap-12 lg:grid-cols-5">
           <div className="lg:col-span-3">
             <FadeIn>
-              <GradientText
-                as="h2"
-                gradient="primary"
-                className="text-3xl font-bold"
-              >
+              <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
                 About Me
               </GradientText>
             </FadeIn>
 
             <FadeIn delay={0.1}>
               <p className="mt-6 text-lg leading-relaxed text-white/80">
-                안녕하세요, <span className="text-indigo-400 font-medium">4년 5개월차 프론트엔드 개발자</span> 조경문입니다.
-                대형 고객사 대상 <span className="text-indigo-400 font-medium">Next.js/React, TypeScript</span> 기반
+                안녕하세요,{" "}
+                <span className="text-indigo-400 font-medium">4년 5개월차 프론트엔드 개발자</span>{" "}
+                조경문입니다. 대형 고객사 대상{" "}
+                <span className="text-indigo-400 font-medium">Next.js/React, TypeScript</span> 기반
                 프론트엔드 개발을 수행 및 리드하고 있습니다.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.2}>
               <p className="mt-4 text-lg leading-relaxed text-white/80">
-                <span className="text-indigo-400 font-medium">Core Web Vitals 최적화</span>와 대규모 폼 시스템 설계 등
-                정량적 성과를 달성해 왔으며, <span className="text-indigo-400 font-medium">GSAP/Lottie.js</span> 활용
-                인터랙션 UI와 <span className="text-indigo-400 font-medium">Amcharts</span> 기반 금융 데이터 시각화 경험이 있습니다.
+                <span className="text-indigo-400 font-medium">Core Web Vitals 최적화</span>와 대규모
+                폼 시스템 설계 등 정량적 성과를 달성해 왔으며,{" "}
+                <span className="text-indigo-400 font-medium">GSAP/Lottie.js</span> 활용 인터랙션
+                UI와 <span className="text-indigo-400 font-medium">Amcharts</span> 기반 금융 데이터
+                시각화 경험이 있습니다.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.3}>
               <p className="mt-4 text-lg leading-relaxed text-white/80">
-                삼성, 롯데, LG CNS 등 <span className="text-indigo-400 font-medium">엔터프라이즈 고객사</span>와의 직접 대응 경험을 바탕으로,
-                현업 피드백을 신속히 반영하고 비즈니스 가치를 실현하는 개발을 추구합니다.
-                레거시 환경 개선부터 AI 솔루션까지 다양한 도메인을 경험했습니다.
+                삼성, 롯데, LG CNS 등{" "}
+                <span className="text-indigo-400 font-medium">엔터프라이즈 고객사</span>와의 직접
+                대응 경험을 바탕으로, 현업 피드백을 신속히 반영하고 비즈니스 가치를 실현하는 개발을
+                추구합니다. 레거시 환경 개선부터 AI 솔루션까지 다양한 도메인을 경험했습니다.
               </p>
             </FadeIn>
           </div>
@@ -184,12 +185,12 @@ export default function AboutPage() {
                 <h3 className="text-lg font-semibold text-white">Quick Info</h3>
                 <dl className="space-y-3 text-sm">
                   {[
-                    { dt: "역할", dd: "FE Developer / 매니저" },
-                    { dt: "경력", dd: "4년 5개월" },
-                    { dt: "소속", dd: "주식회사이트라이브" },
-                    { dt: "강점", dd: "성능 최적화, 인터랙션 UI" },
-                    { dt: "학력", dd: "수원과학대학교 전자과" },
-                  ].map(({ dt, dd }) => (
+                    {dt: "역할", dd: "FE Developer / 매니저"},
+                    {dt: "경력", dd: "4년 5개월"},
+                    {dt: "소속", dd: "주식회사이트라이브"},
+                    {dt: "강점", dd: "성능 최적화, 인터랙션 UI"},
+                    {dt: "학력", dd: "수원과학대학교 전자과"},
+                  ].map(({dt, dd}) => (
                     <div key={dt} className="flex justify-between">
                       <dt className="text-muted-foreground">{dt}</dt>
                       <dd className="font-medium text-white">{dd}</dd>
@@ -205,16 +206,10 @@ export default function AboutPage() {
       {/* 개발 여정 */}
       <Section spacing="lg" container>
         <FadeIn>
-          <GradientText
-            as="h2"
-            gradient="primary"
-            className="text-3xl font-bold"
-          >
+          <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
             Journey
           </GradientText>
-          <p className="mt-2 text-white/60">
-            프론트엔드 개발자로서의 성장 과정입니다.
-          </p>
+          <p className="mt-2 text-white/60">프론트엔드 개발자로서의 성장 과정입니다.</p>
         </FadeIn>
 
         <div className="relative mt-10">
@@ -229,15 +224,11 @@ export default function AboutPage() {
                     <span className="text-sm font-mono font-medium text-indigo-400">
                       {item.year}
                     </span>
-                    <p className="mt-1 text-lg font-semibold text-white">
-                      {item.title}
-                    </p>
+                    <p className="mt-1 text-lg font-semibold text-white">{item.title}</p>
                   </div>
 
                   <div className="md:col-span-4">
-                    <p className="text-white/70 leading-relaxed">
-                      {item.description}
-                    </p>
+                    <p className="text-white/70 leading-relaxed">{item.description}</p>
                   </div>
                 </div>
               </FadeIn>
@@ -249,36 +240,21 @@ export default function AboutPage() {
       {/* 개발 철학 */}
       <Section spacing="lg" container>
         <FadeIn>
-          <GradientText
-            as="h2"
-            gradient="primary"
-            className="text-3xl font-bold"
-          >
+          <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
             Philosophy
           </GradientText>
-          <p className="mt-2 text-white/60">
-            개발할 때 가장 중요하게 생각하는 가치들입니다.
-          </p>
+          <p className="mt-2 text-white/60">개발할 때 가장 중요하게 생각하는 가치들입니다.</p>
         </FadeIn>
 
         <StaggerChildren className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {philosophies.map((item) => (
             <GlassCard key={item.title} padding="lg" hover>
-              <span className="text-sm font-mono font-semibold text-indigo-400">
-                {item.number}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold text-white">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/70">
-                {item.description}
-              </p>
+              <span className="text-sm font-mono font-semibold text-indigo-400">{item.number}</span>
+              <h3 className="mt-3 text-lg font-semibold text-white">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/70">{item.description}</p>
               <ul className="mt-4 space-y-2">
                 {item.details.map((detail) => (
-                  <li
-                    key={detail}
-                    className="flex items-start gap-2 text-xs text-white/60"
-                  >
+                  <li key={detail} className="flex items-start gap-2 text-xs text-white/60">
                     <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60" />
                     {detail}
                   </li>
@@ -289,33 +265,8 @@ export default function AboutPage() {
         </StaggerChildren>
       </Section>
 
-      {/* 핵심 역량 */}
-      <Section spacing="lg" container>
-        <FadeIn>
-          <GradientText
-            as="h2"
-            gradient="primary"
-            className="text-3xl font-bold"
-          >
-            Core Skills
-          </GradientText>
-          <p className="mt-2 text-white/60">
-            주요 기술 역량과 숙련도입니다.
-          </p>
-        </FadeIn>
-
-        <div className="mt-10 grid gap-12 md:grid-cols-2">
-          <FadeIn>
-            <SkillBars skills={skillsLeft} />
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <SkillBars skills={skillsRight} />
-          </FadeIn>
-        </div>
-      </Section>
-
       {/* 기술 스택 */}
       <TechStack categories={techCategories} />
     </>
-  )
+  );
 }
