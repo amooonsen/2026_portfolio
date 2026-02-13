@@ -9,7 +9,7 @@ import { ArrowRight, Home } from "lucide-react"
 
 /**
  * 연락 전송 성공 시 표시되는 애니메이션 컴포넌트.
- * GSAP 타임라인으로 체크마크 드로우 → 텍스트 리빌 → 버튼 등장 순서의 연출을 수행한다.
+ * GSAP 타임라인으로 체크마크 드로우 → 스파클 → 텍스트 리빌 → 버튼 등장을 빠르게 연출한다.
  */
 export function ContactSuccess() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -30,155 +30,119 @@ export function ContactSuccess() {
         y: 0,
         scale: 1,
       })
-      if (circleRef.current) {
-        circleRef.current.style.strokeDashoffset = "0"
-      }
-      if (checkRef.current) {
-        checkRef.current.style.strokeDashoffset = "0"
-      }
+      if (circleRef.current) circleRef.current.style.strokeDashoffset = "0"
+      if (checkRef.current) checkRef.current.style.strokeDashoffset = "0"
       return
     }
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } })
 
-      // 1단계: 컨테이너 페이드인
+      // 컨테이너 페이드인
       tl.fromTo(
         containerRef.current,
         { opacity: 0, scale: 0.9 },
-        { opacity: 1, scale: 1, duration: 0.5 },
+        { opacity: 1, scale: 1, duration: 0.3 },
       )
 
-      // 2단계: 원 드로우 애니메이션
+      // 원 드로우
       if (circleRef.current) {
         const circumference = 2 * Math.PI * 40
         gsap.set(circleRef.current, {
           strokeDasharray: circumference,
           strokeDashoffset: circumference,
         })
-        tl.to(
-          circleRef.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: "power2.inOut",
-          },
-          "-=0.1",
-        )
+        tl.to(circleRef.current, {
+          strokeDashoffset: 0,
+          duration: 0.45,
+          ease: "power2.inOut",
+        }, "-=0.05")
       }
 
-      // 3단계: 체크마크 드로우
+      // 체크마크 드로우
       if (checkRef.current) {
         const checkLength = checkRef.current.getTotalLength()
         gsap.set(checkRef.current, {
           strokeDasharray: checkLength,
           strokeDashoffset: checkLength,
         })
-        tl.to(
-          checkRef.current,
-          {
-            strokeDashoffset: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          },
-          "-=0.2",
-        )
+        tl.to(checkRef.current, {
+          strokeDashoffset: 0,
+          duration: 0.25,
+          ease: "power2.out",
+        }, "-=0.1")
       }
 
-      // 4단계: 스파클 파티클 폭발
+      // 스파클 폭발
       if (sparklesRef.current) {
         const sparkles = sparklesRef.current.querySelectorAll("[data-sparkle]")
         gsap.set(sparkles, { scale: 0, opacity: 0 })
-        tl.to(
-          sparkles,
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.4,
-            stagger: { each: 0.04, from: "random" },
-            ease: "back.out(3)",
-          },
-          "-=0.3",
-        )
-        // 스파클 바깥으로 퍼지며 페이드아웃
-        tl.to(
-          sparkles,
-          {
-            opacity: 0,
-            scale: 0.5,
-            duration: 0.8,
-            stagger: { each: 0.03, from: "random" },
-            ease: "power2.in",
-          },
-          "+=0.3",
-        )
+        tl.to(sparkles, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.25,
+          stagger: { each: 0.02, from: "random" },
+          ease: "back.out(3)",
+        }, "-=0.15")
+        tl.to(sparkles, {
+          opacity: 0,
+          scale: 0.5,
+          duration: 0.4,
+          stagger: { each: 0.015, from: "random" },
+          ease: "power2.in",
+        }, "+=0.1")
       }
 
-      // 5단계: 원 + 체크 펄스 효과
-      tl.to(
-        "[data-check-group]",
-        {
-          scale: 1.1,
+      // 펄스 효과
+      tl.to("[data-check-group]", {
+        scale: 1.1,
+        duration: 0.12,
+        ease: "power2.in",
+      }, "-=0.4")
+        .to("[data-check-group]", {
+          scale: 1,
           duration: 0.2,
-          ease: "power2.in",
-        },
-        "-=0.8",
-      ).to("[data-check-group]", {
-        scale: 1,
-        duration: 0.3,
-        ease: "elastic.out(1.2, 0.5)",
-      })
+          ease: "elastic.out(1.2, 0.5)",
+        })
 
-      // 6단계: 타이틀 워드별 리빌
+      // 타이틀 글자별 리빌
       if (titleRef.current) {
         const words = titleRef.current.querySelectorAll("[data-word]")
         gsap.set(words, { yPercent: 100, opacity: 0 })
-        tl.to(
-          words,
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.6,
-            stagger: 0.08,
-            ease: "power3.out",
-          },
-          "-=0.5",
-        )
+        tl.to(words, {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.3,
+          stagger: 0.04,
+          ease: "power3.out",
+        }, "-=0.25")
       }
 
-      // 7단계: 설명 텍스트
+      // 설명 텍스트
       if (descRef.current) {
-        gsap.set(descRef.current, { opacity: 0, y: 15 })
-        tl.to(
-          descRef.current,
-          { opacity: 1, y: 0, duration: 0.5 },
-          "-=0.2",
-        )
+        gsap.set(descRef.current, { opacity: 0, y: 10 })
+        tl.to(descRef.current, { opacity: 1, y: 0, duration: 0.3 }, "-=0.1")
       }
 
-      // 8단계: 버튼 등장
+      // 버튼 등장
       if (buttonsRef.current) {
         const buttons = buttonsRef.current.querySelectorAll("[data-btn]")
-        gsap.set(buttons, { opacity: 0, y: 20, scale: 0.95 })
-        tl.to(
-          buttons,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.5,
-            stagger: 0.12,
-            ease: "back.out(1.5)",
-          },
-          "-=0.1",
-        )
+        gsap.set(buttons, { opacity: 0, y: 15, scale: 0.95 })
+        tl.to(buttons, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.3,
+          stagger: 0.08,
+          ease: "back.out(1.5)",
+        }, "-=0.05")
       }
     }, containerRef)
 
     return () => ctx.revert()
   }, [reducedMotion])
 
-  // 스파클 위치 데이터 (원 주변 12개)
+  // 스파클 위치 (원 주변 12개)
   const sparklePositions = Array.from({ length: 12 }, (_, i) => {
     const angle = (i / 12) * Math.PI * 2
     const radius = 60 + Math.random() * 20
@@ -197,9 +161,8 @@ export function ContactSuccess() {
       className="flex flex-col items-center py-8"
       style={{ opacity: reducedMotion ? 1 : 0 }}
     >
-      {/* 체크마크 + 스파클 영역 */}
+      {/* 체크마크 + 스파클 */}
       <div className="relative mb-8 flex items-center justify-center" style={{ width: 140, height: 140 }}>
-        {/* 스파클 파티클 */}
         <div ref={sparklesRef} className="absolute inset-0">
           {sparklePositions.map((pos, i) => (
             <span
@@ -210,19 +173,13 @@ export function ContactSuccess() {
                 width: pos.size,
                 height: pos.size,
                 transform: `translate(${pos.x}px, ${pos.y}px)`,
-                background:
-                  i % 3 === 0
-                    ? "#818cf8"
-                    : i % 3 === 1
-                      ? "#a78bfa"
-                      : "#f472b6",
+                background: i % 3 === 0 ? "#818cf8" : i % 3 === 1 ? "#a78bfa" : "#f472b6",
                 boxShadow: `0 0 ${pos.size * 2}px currentColor`,
               }}
             />
           ))}
         </div>
 
-        {/* 원 + 체크마크 SVG */}
         <svg
           data-check-group
           width="100"
@@ -262,27 +219,17 @@ export function ContactSuccess() {
         </svg>
       </div>
 
-      {/* 타이틀 — 워드별 리빌 */}
-      <h3
-        ref={titleRef}
-        className="mb-3 text-2xl font-bold text-white"
-        aria-label={titleText}
-      >
+      {/* 타이틀 */}
+      <h3 ref={titleRef} className="mb-3 text-2xl font-bold text-white" aria-label={titleText}>
         {titleText.split("").map((char, i) => (
           <span key={i} className="inline-block overflow-hidden">
-            <span data-word className="inline-block">
-              {char}
-            </span>
+            <span data-word className="inline-block">{char}</span>
           </span>
         ))}
       </h3>
 
       {/* 설명 */}
-      <p
-        ref={descRef}
-        data-anim
-        className="mb-8 max-w-sm text-center text-sm leading-relaxed text-muted-foreground"
-      >
+      <p ref={descRef} data-anim className="mb-8 max-w-sm text-center text-sm leading-relaxed text-muted-foreground">
         메시지가 성공적으로 전송되었습니다.
         <br />
         빠른 시일 내에 답변 드리겠습니다.

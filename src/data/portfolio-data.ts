@@ -6,9 +6,9 @@ import type {TechCategory} from "@/components/sections/tech-stack";
 export const navItems = [
   {label: "홈", href: "/"},
   {label: "프로젝트", href: "/projects"},
-  {label: "경력", href: "/experience"},
+  {label: "Experience", href: "/experience"},
   // { label: "블로그", href: "https://blog.example.com", external: true },
-  {label: "연락처", href: "/contact"},
+  {label: "Contact", href: "/contact"},
 ];
 
 /* ─── 경력 (최신순, 핵심 스텝만 노출) ─── */
@@ -147,6 +147,6 @@ export const techCategories: TechCategory[] = [
   },
 ];
 
-/* ─── 연락처 ─── */
+/* ─── Contact ─── */
 
 export const contactEmail = "chonghocho72@gmail.com";

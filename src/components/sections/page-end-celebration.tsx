@@ -1,38 +1,38 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import Link from "next/link"
-import dynamic from "next/dynamic"
-import { PartyPopper, ArrowRight } from "lucide-react"
-import { ScrollTrigger } from "@/lib/gsap"
-import { useReducedMotion } from "@/hooks/use-reduced-motion"
-import { GradientText } from "@/components/ui/gradient-text"
-import { cn } from "@/lib/utils"
+import {useEffect, useRef, useState} from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import {PartyPopper, ArrowRight} from "lucide-react";
+import {ScrollTrigger} from "@/lib/gsap";
+import {useReducedMotion} from "@/hooks/use-reduced-motion";
+import {GradientText} from "@/components/ui/gradient-text";
+import {cn} from "@/lib/utils";
 
 const CelebrationScene = dynamic(
   () => import("@/components/three/celebration-scene").then((mod) => mod.CelebrationScene),
-  { ssr: false },
-)
+  {ssr: false},
+);
 
 /**
  * 페이지 최하단 축하 애니메이션 컴포넌트.
  * 스크롤이 트리거 영역에 도달하면 3D 컨페티 파티클과 감사 메시지를 표시한다.
- * 폭죽 애니메이션 종료 후 연락처 CTA 버튼이 자연스럽게 교차 등장한다.
+ * 폭죽 애니메이션 종료 후 Contact CTA 버튼이 자연스럽게 교차 등장한다.
  */
 export function PageEndCelebration() {
-  const triggerRef = useRef<HTMLDivElement>(null)
-  const reducedMotion = useReducedMotion()
-  const [celebrating, setCelebrating] = useState(false)
-  const [showScene, setShowScene] = useState(false)
-  const [sceneFading, setSceneFading] = useState(false)
-  const [showCta, setShowCta] = useState(false)
-  const celebratedRef = useRef(false)
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const [celebrating, setCelebrating] = useState(false);
+  const [showScene, setShowScene] = useState(false);
+  const [sceneFading, setSceneFading] = useState(false);
+  const [showCta, setShowCta] = useState(false);
+  const celebratedRef = useRef(false);
 
   useEffect(() => {
     if (!triggerRef.current || reducedMotion) {
       // reduced motion 환경에서는 즉시 CTA 표시
-      if (reducedMotion) setShowCta(true)
-      return
+      if (reducedMotion) setShowCta(true);
+      return;
     }
 
     const st = ScrollTrigger.create({
@@ -40,22 +40,22 @@ export function PageEndCelebration() {
       start: "top 80%",
       once: true,
       onEnter: () => {
-        if (celebratedRef.current) return
-        celebratedRef.current = true
-        setShowScene(true)
-        setCelebrating(true)
+        if (celebratedRef.current) return;
+        celebratedRef.current = true;
+        setShowScene(true);
+        setCelebrating(true);
         // 폭죽 종료 시점에서 CTA 교차 등장
-        setTimeout(() => setShowCta(true), 4500)
-        setTimeout(() => setCelebrating(false), 6000)
+        setTimeout(() => setShowCta(true), 4500);
+        setTimeout(() => setCelebrating(false), 6000);
         // 페이드아웃 시작 (1초간 opacity 0으로 전환)
-        setTimeout(() => setSceneFading(true), 7000)
+        setTimeout(() => setSceneFading(true), 7000);
         // 페이드아웃 완료 후 언마운트
-        setTimeout(() => setShowScene(false), 8000)
+        setTimeout(() => setShowScene(false), 8000);
       },
-    })
+    });
 
-    return () => st.kill()
-  }, [reducedMotion])
+    return () => st.kill();
+  }, [reducedMotion]);
 
   return (
     <>
@@ -76,13 +76,11 @@ export function PageEndCelebration() {
           </p>
         </div>
 
-        {/* 연락처 CTA — 폭죽 종료 후 교차 등장 */}
+        {/* Contact CTA — 폭죽 종료 후 교차 등장 (z-[60]으로 폭죽 위에 배치) */}
         <div
           className={cn(
-            "mt-6 transition-all duration-1000 ease-out",
-            showCta
-              ? "translate-y-0 opacity-100"
-              : "translate-y-6 opacity-0 pointer-events-none",
+            "relative z-[60] mt-6 transition-all duration-1000 ease-out",
+            showCta ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none",
           )}
         >
           <Link
@@ -108,5 +106,5 @@ export function PageEndCelebration() {
         </div>
       )}
     </>
-  )
+  );
 }

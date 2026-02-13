@@ -29,7 +29,7 @@ export const overviewItems: OverviewItem[] = [
   },
   {
     href: "/contact",
-    title: "연락처",
+    title: "Contact",
     description: "새로운 프로젝트나 협업에 관심이 있으시다면 연락해 주세요.",
     icon: Mail,
     color: "from-indigo-500 to-violet-500",

@@ -468,7 +468,7 @@ interface FooterProps {
 ```
 <footer>
   <Container>
-    <div>                   ← 상단: 소셜 링크 + 연락처
+    <div>                   ← 상단: 소셜 링크 + Contact
       <SocialLinks />
       <ContactInfo />
     </div>
@@ -1084,7 +1084,7 @@ FloatingNav의 활성 상태 표시에 사용.
 function useGsapContext(
   ref: React.RefObject<HTMLElement>,
   callback: () => void,
-  deps?: React.DependencyList
+  deps?: React.DependencyList,
 ): void;
 ```
 
@@ -1104,6 +1104,7 @@ GSAP context 생성 + 자동 cleanup 관리.
 ## 6. Dependency Summary
 
 ### 설치 완료 (Runtime)
+
 - `next@16.1.6`, `react@19.2.3`, `react-dom@19.2.3`
 - `gsap@3.14.2` — 애니메이션 (ScrollTrigger 포함)
 - `three@0.182.0`, `@react-three/fiber@9.5.0`, `@react-three/drei@10.7.7` — 3D
@@ -1114,10 +1115,12 @@ GSAP context 생성 + 자동 cleanup 관리.
 - `babel-plugin-react-compiler@1.0.0` — React Compiler
 
 ### 설치 완료 (Dev)
+
 - `typescript@5`, `tailwindcss@4`, `eslint@9`
 - `shadcn@3.8.4`, `tw-animate-css@1.4.0`
 
 ### 미설치 (계획 변경)
+
 - ~~`framer-motion`~~ — GSAP으로 대체, 설치 불필요
 - ~~`@gsap/react`~~ — 자체 `useGsapContext` 훅으로 대체
 
@@ -1127,26 +1130,26 @@ GSAP context 생성 + 자동 cleanup 관리.
 
 | Component                     | Type          | Rendering         | 상태 |
 | ----------------------------- | ------------- | ----------------- | ---- |
-| Container, Section, GlassCard | Server        | Static            | ✅ |
-| BentoGrid, BentoGridItem      | Server        | Static            | ✅ |
-| GradientText, TechBadge       | Server        | Static            | ✅ |
-| IconButton, SkipNav, Footer   | Server        | Static            | ✅ |
-| OverviewCard, MarkdownContent | Server        | Static            | 🆕 |
-| Header, FloatingNav           | Client        | Interactive       | ✅ |
-| MobileNav                     | Client        | Interactive       | ✅ |
-| ScrollProgress, ScrollToTop   | Client        | Interactive       | ✅ |
-| IntroLoader                   | Client        | Loading animation  | 🆕 |
-| SmoothScroll (Lenis)          | Client        | Scroll management  | 🆕 |
-| RouteAnnouncer                | Client        | A11y              | 🆕 |
-| Magnetic, Spotlight           | Client        | Interactive       | ✅ |
-| FadeIn, SlideUp, Stagger      | Client        | Animation         | ✅ |
-| Parallax, TextReveal, CountUp | Client        | Animation         | ✅ |
-| HeroScene, CosmicScene        | Client + Lazy | 3D                | ✅ |
-| ProjectCard                   | Client        | Hover interaction | ✅ |
-| ExperienceTimeline            | Client        | Scroll animation  | ✅ |
-| ContactSection                | Client        | Form state        | ✅ |
-| AboutHero, SkillBars          | Client        | Scroll animation  | 🆕 |
-| ProjectGallery                | Client        | Gallery view      | 🆕 |
+| Container, Section, GlassCard | Server        | Static            | ✅   |
+| BentoGrid, BentoGridItem      | Server        | Static            | ✅   |
+| GradientText, TechBadge       | Server        | Static            | ✅   |
+| IconButton, SkipNav, Footer   | Server        | Static            | ✅   |
+| OverviewCard, MarkdownContent | Server        | Static            | 🆕   |
+| Header, FloatingNav           | Client        | Interactive       | ✅   |
+| MobileNav                     | Client        | Interactive       | ✅   |
+| ScrollProgress, ScrollToTop   | Client        | Interactive       | ✅   |
+| IntroLoader                   | Client        | Loading animation | 🆕   |
+| SmoothScroll (Lenis)          | Client        | Scroll management | 🆕   |
+| RouteAnnouncer                | Client        | A11y              | 🆕   |
+| Magnetic, Spotlight           | Client        | Interactive       | ✅   |
+| FadeIn, SlideUp, Stagger      | Client        | Animation         | ✅   |
+| Parallax, TextReveal, CountUp | Client        | Animation         | ✅   |
+| HeroScene, CosmicScene        | Client + Lazy | 3D                | ✅   |
+| ProjectCard                   | Client        | Hover interaction | ✅   |
+| ExperienceTimeline            | Client        | Scroll animation  | ✅   |
+| ContactSection                | Client        | Form state        | ✅   |
+| AboutHero, SkillBars          | Client        | Scroll animation  | 🆕   |
+| ProjectGallery                | Client        | Gallery view      | 🆕   |
 
 ---
 

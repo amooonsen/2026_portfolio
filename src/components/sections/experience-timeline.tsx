@@ -3,11 +3,8 @@
 import {useEffect, useRef} from "react";
 import {gsap} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
-import {Section} from "@/components/ui/section";
 import {GlassCard} from "@/components/ui/glass-card";
 import {TechBadge} from "@/components/ui/tech-badge";
-import {GradientText} from "@/components/ui/gradient-text";
-import {FadeIn} from "@/components/animation/fade-in";
 import {cn} from "@/lib/utils";
 
 interface TimelineItem {
@@ -132,15 +129,8 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
   }, [reducedMotion]);
 
   return (
-    <Section spacing="lg" container>
-      <FadeIn>
-        <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
-          Experience
-        </GradientText>
-        <p className="mt-2 text-muted-foreground">성장하며 쌓아온 경험들입니다.</p>
-      </FadeIn>
-
-      <div ref={containerRef} className="relative mt-16 overflow-hidden">
+    <div className="pt-8">
+      <div ref={containerRef} className="relative overflow-hidden">
         {/* 중앙 세로선 — 스크롤 연동 드로우 */}
         <div
           ref={lineRef}
@@ -223,7 +213,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
         </div>
 
       </div>
-    </Section>
+    </div>
   );
 }
 
