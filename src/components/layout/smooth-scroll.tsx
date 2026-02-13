@@ -13,6 +13,14 @@ import { setLenisInstance } from "@/lib/lenis-store"
 export function SmoothScroll() {
   const lenisRef = useRef<Lenis | null>(null)
 
+  // 새로고침 시 항상 최상단에서 시작
+  useEffect(() => {
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual"
+    }
+    window.scrollTo(0, 0)
+  }, [])
+
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"

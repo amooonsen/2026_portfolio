@@ -9,7 +9,7 @@ import {StaggerChildren} from "@/components/animation/stagger-children";
 import {TechStack} from "@/components/sections/tech-stack";
 import {PageEndCelebration} from "@/components/sections/page-end-celebration";
 import {techCategories} from "@/data/portfolio-data";
-import {philosophies, journeyItems} from "@/data/constants/home";
+import {philosophies} from "@/data/constants/home";
 
 /**
  * 메인 페이지 컴포넌트.
@@ -35,107 +35,6 @@ export default function Home() {
 성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
       />
 
-      {/* 자기소개 */}
-      <Section spacing="lg" container>
-        <article className="grid gap-12 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            <FadeIn>
-              <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
-                About Me
-              </GradientText>
-            </FadeIn>
-
-            <FadeIn delay={0.1}>
-              <p className="mt-6 text-lg leading-relaxed text-white/80">
-                개발, 더 나아가 제품을 만들 때 가장 중요한 것은
-                <span className="text-indigo-400 font-medium"> "왜?"라는 질문</span>이라고
-                생각합니다.
-                <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
-                이유가 있을 때,
-                <br />
-                <span className="text-indigo-400 font-medium">
-                  {" "}
-                  확장 가능하고 유지보수하기 쉬운 시스템
-                </span>
-                이 만들어집니다.
-              </p>
-            </FadeIn>
-          </div>
-
-          <aside className="lg:col-span-2">
-            <FadeIn delay={0.2}>
-              <GlassCard padding="lg" className="space-y-4">
-                <h3 className="text-lg font-semibold text-white">Quick Info</h3>
-                <dl className="space-y-3 text-sm">
-                  {[
-                    {dt: "역할", dd: "Frontend Developer"},
-                    {dt: "경력", dd: "4년 (2021~)"},
-                    {dt: "소속", dd: "주식회사이트라이브"},
-                    {dt: "핵심역량", dd: "설계·성능·협업"},
-                    {dt: "주요성과", dd: "LCP 40%↓, 폼시스템 설계"},
-                  ].map(({dt, dd}) => (
-                    <div key={dt} className="flex justify-between">
-                      <dt className="text-muted-foreground">{dt}</dt>
-                      <dd className="font-medium text-white">{dd}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </GlassCard>
-            </FadeIn>
-          </aside>
-        </article>
-      </Section>
-
-      {/* 개발 여정 */}
-      <Section spacing="lg" container>
-        <FadeIn>
-          <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
-            Journey
-          </GradientText>
-          <FadeIn delay={0.3}>
-            <p className="mt-6 text-lg leading-relaxed text-white/80">
-              <span className="text-indigo-400 font-medium">Next.js, TypeScript, React</span>를
-              기반으로 엔터프라이즈급 웹 애플리케이션을 구축합니다.
-              <br /> 다수의{" "}
-              <span className="text-indigo-400 font-medium">React Hook Form + Zod</span>로 타입
-              안전한 폼 시스템 설계 경험이 있습니다. <br />{" "}
-              <span className="text-indigo-400 font-medium">Gsap</span>를 주로 사용하고,{" "}
-              <span className="text-indigo-400 font-medium">Chart.js 및 Amcharts</span>로 금융
-              데이터를 시각화해왔습니다.
-            </p>
-          </FadeIn>
-        </FadeIn>
-
-        <div className="relative mt-10" role="list" aria-label="개발 여정">
-          <div className="space-y-0">
-            {journeyItems.map((item, i) => (
-              <FadeIn key={item.year} delay={i * 0.1}>
-                <article
-                  className="group relative grid gap-4 border-l border-white/10 py-8 pl-8 md:grid-cols-5 md:gap-8"
-                  role="listitem"
-                >
-                  <div
-                    className="absolute -left-[5px] top-10 h-2.5 w-2.5 rounded-full border-2 border-indigo-400/60 bg-background transition-colors group-hover:border-indigo-400 group-hover:bg-indigo-400/20"
-                    aria-hidden="true"
-                  />
-
-                  <div className="md:col-span-1">
-                    <time className="text-sm font-mono font-medium text-indigo-400">
-                      {item.year}
-                    </time>
-                    <h3 className="mt-1 text-lg font-semibold text-white">{item.title}</h3>
-                  </div>
-
-                  <div className="md:col-span-4">
-                    <p className="text-white/70 leading-relaxed">{item.description}</p>
-                  </div>
-                </article>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </Section>
-
       {/* 개발 철학 */}
       <Section spacing="lg" container>
         <FadeIn>
@@ -145,28 +44,23 @@ export default function Home() {
           <FadeIn delay={0.1}>
             <p className="mt-6 text-lg leading-relaxed text-white/80">
               개발, 더 나아가 제품을 만들 때 가장 중요한 것은
-              <span className="text-indigo-400 font-medium"> "왜?"라는 질문</span>이라고 생각합니다.
+              <span className="text-accent-highlight"> "왜?"라는 질문</span>이라고 생각합니다.
               <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
               이유가 있을 때,
               <br />
-              <span className="text-indigo-400 font-medium">
-                {" "}
-                확장 가능하고 유지보수하기 쉬운 시스템
-              </span>
+              <span className="text-accent-highlight"> 확장 가능하고 유지보수하기 쉬운 시스템</span>
               이 만들어집니다.
             </p>
           </FadeIn>
           <FadeIn delay={0.4}>
             <p className="mt-4 text-lg leading-relaxed text-white/80">
               기술적 의사결정뿐만 아니라{" "}
-              <span className="text-indigo-400 font-medium">팀과 함께 성장하는 것</span>을 중요하게
+              <span className="text-accent-highlight">팀과 함께 성장하는 것</span>을 중요하게
               생각합니다.
               <br /> 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화 하였습니다.
               <br />
               개발자는 코드만 작성하는 사람이 아니라,
-              <span className="text-indigo-400 font-medium">
-                문제를 해결하고 가치를 만드는 사람
-              </span>
+              <span className="text-accent-highlight">문제를 해결하고 가치를 만드는 사람</span>
               이라고 믿습니다.
             </p>
           </FadeIn>
