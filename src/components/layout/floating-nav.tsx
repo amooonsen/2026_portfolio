@@ -1,7 +1,10 @@
 "use client"
 
+import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import gsap from "gsap"
+import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
 interface FloatingNavItem {
@@ -18,22 +21,80 @@ interface FloatingNavProps {
 
 /**
  * 화면 하단 중앙에 떠있는 플로팅 네비게이션.
- * 현재 라우트 경로에 따라 활성 상태를 표시한다.
- * 외부 링크는 새 탭으로 연다.
- * @param props.items - 네비게이션 항목 배열 (label, href, icon, external)
- * @param props.className - 추가 CSS 클래스
+ * 스크롤 다운 시 표시, 스크롤 업(헤더 노출) 시 숨김.
+ * scale + blur 애니메이션으로 중앙에서 수축/확장된다.
  */
 export function FloatingNav({ items, className }: FloatingNavProps) {
   const pathname = usePathname()
+  const navRef = useRef<HTMLElement>(null)
+  const lastScrollY = useRef(0)
+  const [isVisible, setIsVisible] = useState(false)
+  const reducedMotion = useReducedMotion()
+
+  const handleScroll = useCallback(() => {
+    const currentY = window.scrollY
+
+    if (currentY < 50) {
+      // 최상단: 헤더가 보이므로 FloatingNav 숨김
+      setIsVisible(false)
+    } else {
+      // 스크롤 다운 → 표시, 스크롤 업 → 숨김
+      setIsVisible(currentY > lastScrollY.current)
+    }
+
+    lastScrollY.current = currentY
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [handleScroll])
+
+  useEffect(() => {
+    if (!navRef.current) return
+
+    if (reducedMotion) {
+      navRef.current.style.visibility = isVisible ? "visible" : "hidden"
+      navRef.current.style.opacity = isVisible ? "1" : "0"
+      return
+    }
+
+    if (isVisible) {
+      gsap.set(navRef.current, { visibility: "visible" })
+      gsap.to(navRef.current, {
+        scale: 1,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.35,
+        ease: "back.out(1.5)",
+      })
+    } else {
+      gsap.to(navRef.current, {
+        scale: 0,
+        opacity: 0,
+        filter: "blur(8px)",
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          if (navRef.current) {
+            navRef.current.style.visibility = "hidden"
+          }
+        },
+      })
+    }
+  }, [isVisible, reducedMotion])
 
   return (
     <nav
+      ref={navRef}
       aria-label="플로팅 네비게이션"
+      style={{ visibility: "hidden", opacity: 0, scale: 0 }}
       className={cn(
         "fixed bottom-6 left-1/2 -translate-x-1/2 z-50",
         "bg-background/80 backdrop-blur-xl",
         "border border-border/50 rounded-full",
         "px-1.5 py-1.5 shadow-2xl sm:px-2",
+        "origin-center",
         className
       )}
     >
