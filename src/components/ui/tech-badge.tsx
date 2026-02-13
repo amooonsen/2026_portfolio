@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils"
 
 const variantMap = {
-  default: "bg-muted text-muted-foreground",
-  outline: "border border-border text-muted-foreground",
-  ghost: "text-muted-foreground hover:bg-muted",
+  default: "bg-muted text-foreground/70",
+  outline: "border border-foreground/15 text-foreground/65",
+  ghost: "text-foreground/65 hover:bg-muted",
 } as const
 
 const sizeMap = {
