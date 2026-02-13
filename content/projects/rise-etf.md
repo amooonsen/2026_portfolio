@@ -3,6 +3,7 @@ title: "RISE ETF 데이터 시각화"
 description: "Amcharts 활용 5종 이상의 데이터 시각화 차트 설계 및 구현. WCAG 2.1 준수 웹 접근성 인증 마크를 획득했습니다."
 tags: ["JavaScript", "Amcharts4", "SCSS", "WAI-ARIA"]
 year: 2021
+period: "2021.10 — 2021.12"
 links:
   live: "https://www.riseetf.co.kr/"
 ---

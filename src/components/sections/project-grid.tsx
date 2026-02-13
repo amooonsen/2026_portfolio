@@ -106,8 +106,8 @@ export function ProjectGrid({projects, options}: ProjectGridProps) {
                 onClick={() => setSortOrder("latest")}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   sortOrder === "latest"
-                    ? "bg-indigo-500/20 text-indigo-400"
-                    : "text-muted-foreground hover:text-white"
+                    ? "bg-accent-indigo-subtle text-accent-indigo"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 최신순
@@ -116,8 +116,8 @@ export function ProjectGrid({projects, options}: ProjectGridProps) {
                 onClick={() => setSortOrder("oldest")}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   sortOrder === "oldest"
-                    ? "bg-indigo-500/20 text-indigo-400"
-                    : "text-muted-foreground hover:text-white"
+                    ? "bg-accent-indigo-subtle text-accent-indigo"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 오래된순

@@ -57,11 +57,10 @@ export function PageEndCelebration() {
         });
         // CTA 교차 등장
         setTimeout(() => setShowCta(true), 2500);
-        setTimeout(() => setCelebrating(false), 4000);
-        // 페이드아웃 시작
-        setTimeout(() => setSceneFading(true), 4500);
-        // 페이드아웃 완료 후 언마운트
-        setTimeout(() => setShowScene(false), 5500);
+        // 30초 후 자동 언마운트
+        setTimeout(() => setCelebrating(false), 28000);
+        setTimeout(() => setSceneFading(true), 29000);
+        setTimeout(() => setShowScene(false), 30000);
       },
     });
 
@@ -78,7 +77,7 @@ export function PageEndCelebration() {
             showMessage ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
           )}
         >
-          <PartyPopper className="mx-auto h-10 w-10 text-indigo-400" strokeWidth={1.5} />
+          <PartyPopper className="mx-auto h-10 w-10 text-accent-indigo" strokeWidth={1.5} />
           <GradientText as="p" gradient="primary" className="mt-2 text-xl font-bold">
             여기까지 봐주셔서 감사합니다!
           </GradientText>
@@ -96,9 +95,9 @@ export function PageEndCelebration() {
         >
           <Link
             href="/contact"
-            className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-indigo-400/30 bg-indigo-500/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-indigo-400/60 hover:bg-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-accent-indigo-muted bg-accent-indigo-subtle px-8 py-4 text-lg font-semibold text-foreground backdrop-blur-sm transition-all duration-300 hover:border-accent-indigo/60 hover:bg-accent-indigo-subtle hover:shadow-lg hover:shadow-accent-indigo-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-indigo-400/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-accent-indigo/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
             <span className="relative">연락하기</span>
             <ArrowRight className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>

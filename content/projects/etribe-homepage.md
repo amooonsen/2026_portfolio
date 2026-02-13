@@ -3,6 +3,7 @@ title: "이트라이브 홈페이지 리뉴얼"
 description: "Lerp 기반 스무스 스크롤 엔진 자체 설계, 커스텀 커서 인터랙션, GPU 가속 60fps 렌더링 최적화를 구현한 프리미엄 웹 경험."
 tags: ["JavaScript", "GSAP", "Lottie.js", "SCSS"]
 year: 2022
+period: "2022.08 — 2022.10"
 links:
   live: "https://www.etribe.co.kr/"
 ---
@@ -42,102 +43,22 @@ Safari에서는 `wheel` 이벤트의 `deltaY` 값이 다른 브라우저와 다�
 에이전시 특성상 디자이너의 수정 요청이 빈번한 환경에서, 스크롤 감속 계수, 속도, 임계값 등을 로직 내에 하드코딩하면 매번 코드 전체를 이해하고 수정해야 하는 유지보수 부담이 발생합니다. 이를 해결하기 위해 설정 객체로 분리하는 파라미터 기반 구조를 설계했습니다. 실제로 프로젝트 기간 동안 디자이너로부터 스크롤 감속 느낌을 미세 조정해달라는 요청이 수십 차례 있었는데, 파라미터 기반 구조 덕분에 매번 수 초 내에 대응할 수 있었고 이후 다른 프로젝트에 재사용할 때도 설정만 변경하여 적용 가능했습니다.
 
 ```javascript
-// Lerp 기반 스무스 스크롤 엔진 핵심 구현
+// Lerp 기반 스무스 스크롤 엔진 (파라미터 기반 설정)
 class SmoothScroll {
   constructor(options = {}) {
-    // 파라미터 기반 설정 시스템 - 디자이너 요청 시 값만 변경
     this.config = {
-      ease: options.ease || 0.075,        // 감속 계수 (0에 가까울수록 부드러움)
-      threshold: options.threshold || 0.5, // 목표 도달 임계값 (px)
-      touchMultiplier: options.touchMultiplier || 2, // 터치 스크롤 배율
-      wheelMultiplier: options.wheelMultiplier || 1, // 휠 스크롤 배율
+      ease: options.ease || 0.075,   // 감속 계수
+      threshold: options.threshold || 0.5,
     };
-
-    this.targetY = 0;   // 목표 스크롤 위치 (사용자 입력에 의해 갱신)
-    this.currentY = 0;  // 현재 보간 중인 위치 (매 프레임 Lerp로 갱신)
-    this.isRunning = false;
-    this.listeners = []; // 스크롤 위치 변경 리스너 (parallax 등)
-
-    this.init();
   }
 
-  init() {
-    // 네이티브 스크롤 비활성화
-    document.body.style.overflow = 'hidden';
-    document.body.style.height = '100%';
-
-    // 콘텐츠 래퍼에 will-change 적용 (GPU 레이어 프로모션)
-    this.content = document.querySelector('[data-scroll-container]');
-    this.content.style.willChange = 'transform';
-
-    this.bindEvents();
-    this.startLoop();
-  }
-
-  // Lerp (Linear Interpolation): 현재 값에서 목표 값으로 일정 비율만큼 이동
-  // current + (target - current) * ease
-  lerp(current, target, ease) {
-    return current + (target - current) * ease;
-  }
-
-  onWheel(e) {
-    e.preventDefault();
-    // 브라우저별 deltaY 정규화
-    const delta = this.normalizeDelta(e.deltaY) * this.config.wheelMultiplier;
-    this.targetY = Math.max(0, Math.min(this.targetY + delta, this.maxScroll));
-  }
-
-  // Safari의 가속 deltaY를 정규화
-  normalizeDelta(deltaY) {
-    return Math.sign(deltaY) * Math.min(Math.abs(deltaY), 150);
-  }
-
-  // 매 프레임 실행: Lerp로 현재 위치를 목표 위치에 점진적으로 수렴
+  // Lerp: current + (target - current) * ease
   update() {
     this.currentY = this.lerp(this.currentY, this.targetY, this.config.ease);
-
-    // 임계값 이내면 목표 도달로 판단 (부동소수점 오차 방지)
-    if (Math.abs(this.currentY - this.targetY) < this.config.threshold) {
-      this.currentY = this.targetY;
-    }
-
-    // GPU 가속 transform으로 콘텐츠 이동
     this.content.style.transform = `translate3d(0, ${-this.currentY}px, 0)`;
-
-    // 등록된 리스너에 현재 스크롤 값 전달 (parallax, fade-in 등)
-    this.listeners.forEach(fn => fn(this.currentY));
-
-    this.raf = requestAnimationFrame(() => this.update());
-  }
-
-  // 접근성: prefers-reduced-motion 대응
-  checkReducedMotion() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      this.destroy();
-      document.body.style.overflow = '';
-    }
-  }
-
-  destroy() {
-    cancelAnimationFrame(this.raf);
-    this.content.style.willChange = '';
-    this.content.style.transform = '';
-    document.body.style.overflow = '';
+    requestAnimationFrame(() => this.update());
   }
 }
-
-// 사용 예시: 파라미터만 변경하여 스크롤 느낌 조정
-const scroll = new SmoothScroll({
-  ease: 0.06,           // 더 부드러운 감속
-  threshold: 0.3,
-  touchMultiplier: 2.5, // 모바일에서 더 큰 스크롤 폭
-});
-
-// 스크롤 위치를 구독하여 parallax 효과 적용
-scroll.listeners.push((scrollY) => {
-  const parallaxEl = document.querySelector('.hero-bg');
-  parallaxEl.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-});
 ```
 
 ## 담당 기간

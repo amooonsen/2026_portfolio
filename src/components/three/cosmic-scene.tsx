@@ -7,10 +7,13 @@ import * as THREE from "three"
 import { gsap } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { useSceneColors } from "@/hooks/use-theme-colors"
+
+import type { SceneColors } from "@/hooks/use-theme-colors"
 
 /* ─── 별 필드 ─── */
 
-function StarField({ count = 600, isMobile = false }: { count?: number; isMobile?: boolean }) {
+function StarField({ count = 600, isMobile = false, color }: { count?: number; isMobile?: boolean; color: string }) {
   const ref = useRef<THREE.Points>(null)
 
   const positionsRef = useRef<Float32Array | null>(null)
@@ -39,7 +42,7 @@ function StarField({ count = 600, isMobile = false }: { count?: number; isMobile
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#a78bfa"
+        color={color}
         size={0.25}
         sizeAttenuation
         depthWrite={false}
@@ -51,7 +54,7 @@ function StarField({ count = 600, isMobile = false }: { count?: number; isMobile
 
 /* ─── 네뷸라 파티클 ─── */
 
-function NebulaParticles({ count = 150, isMobile = false }: { count?: number; isMobile?: boolean }) {
+function NebulaParticles({ count = 150, isMobile = false, nebulaColors: colorHexes }: { count?: number; isMobile?: boolean; nebulaColors: readonly string[] }) {
   const ref = useRef<THREE.Points>(null)
 
   const dataRef = useRef<[Float32Array, Float32Array] | null>(null)
@@ -59,13 +62,7 @@ function NebulaParticles({ count = 150, isMobile = false }: { count?: number; is
     const pos = new Float32Array(count * 3)
     const col = new Float32Array(count * 3)
 
-    const nebulaColors = [
-      new THREE.Color("#7c3aed"),
-      new THREE.Color("#6366f1"),
-      new THREE.Color("#ec4899"),
-      new THREE.Color("#3b82f6"),
-      new THREE.Color("#8b5cf6"),
-    ]
+    const nebulaColors = colorHexes.map((c) => new THREE.Color(c))
 
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 8
@@ -151,38 +148,36 @@ function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
 
 /* ─── 메인 씬 내부 ─── */
 
-function CosmicSceneInner({ isMobile = false }: { isMobile?: boolean }) {
-  // 모바일에서 파티클 수 50% 감소
-  const starCount = isMobile ? 300 : 600
-  const nebulaCount = isMobile ? 75 : 150
+function CosmicSceneInner({ isMobile = false, colors }: { isMobile?: boolean; colors: SceneColors }) {
+  const starCount = isMobile ? 150 : 300
+  const nebulaCount = isMobile ? 38 : 75
 
   return (
     <>
-      <color attach="background" args={["#030014"]} />
-      <fog attach="fog" args={["#030014", 60, 220]} />
+      <color attach="background" args={[colors.background]} />
+      <fog attach="fog" args={[colors.fog, 60, 220]} />
 
       <ambientLight intensity={0.08} />
 
       <CameraRig isMobile={isMobile} />
-      <StarField count={starCount} isMobile={isMobile} />
-      <NebulaParticles count={nebulaCount} isMobile={isMobile} />
+      <StarField count={starCount} isMobile={isMobile} color={colors.star} />
+      <NebulaParticles count={nebulaCount} isMobile={isMobile} nebulaColors={colors.nebula} />
 
-      {/* 모바일에서 GlowOrb 2개만 표시 */}
-      <GlowOrb position={[-15, 5, -20]} color="#7c3aed" scale={isMobile ? 2 : 3} />
-      {!isMobile && <GlowOrb position={[20, -8, -15]} color="#ec4899" scale={2.5} />}
-      <GlowOrb position={[0, 10, -30]} color="#6366f1" scale={isMobile ? 3 : 4} />
+      <GlowOrb position={[-15, 5, -20]} color={colors.orb[0]} scale={isMobile ? 2 : 3} />
+      {!isMobile && <GlowOrb position={[20, -8, -15]} color={colors.orb[2]} scale={2.5} />}
+      <GlowOrb position={[0, 10, -30]} color={colors.orb[1]} scale={isMobile ? 3 : 4} />
     </>
   )
 }
 
 /* ─── 정적 fallback (reduced motion) ─── */
 
-function StaticBackground() {
+function StaticBackground({ colors }: { colors: SceneColors }) {
   return (
-    <div className="fixed inset-0 bg-[#030014]">
-      <div className="absolute -top-1/2 -left-1/4 h-[600px] w-[600px] rounded-full bg-purple-500/10 blur-[120px]" />
-      <div className="absolute -top-1/4 -right-1/4 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-[120px]" />
-      <div className="absolute -bottom-1/4 left-1/3 h-[550px] w-[550px] rounded-full bg-pink-500/10 blur-[120px]" />
+    <div className="fixed inset-0 bg-scene-bg">
+      <div className={`absolute -top-1/2 -left-1/4 h-[600px] w-[600px] rounded-full ${colors.staticOrbs[0].color} ${colors.staticOrbs[0].blur}`} />
+      <div className={`absolute -top-1/4 -right-1/4 h-[500px] w-[500px] rounded-full ${colors.staticOrbs[1].color} ${colors.staticOrbs[1].blur}`} />
+      <div className={`absolute -bottom-1/4 left-1/3 h-[550px] w-[550px] rounded-full ${colors.staticOrbs[2].color} ${colors.staticOrbs[2].blur}`} />
     </div>
   )
 }
@@ -216,6 +211,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
   const hasRevealedRef = useRef(false)
   const reducedMotion = useReducedMotion()
   const isMobile = useMediaQuery("(max-width: 767px)")
+  const colors = useSceneColors()
 
   // visible이 true가 되면 캔버스 컨테이너를 페이드인.
   // 0.5s 딜레이로 template.tsx 애니메이션(~0.6s) 완료 후 노출하여
@@ -238,7 +234,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
   }, [visible, reducedMotion])
 
   if (reducedMotion) {
-    return <StaticBackground />
+    return <StaticBackground colors={colors} />
   }
 
   return (
@@ -254,7 +250,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
         gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
         onCreated={onCreated}
       >
-        <CosmicSceneInner isMobile={isMobile} />
+        <CosmicSceneInner isMobile={isMobile} colors={colors} />
       </Canvas>
     </div>
   )

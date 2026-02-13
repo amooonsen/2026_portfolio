@@ -3,6 +3,7 @@ title: "래미안 홈플랫폼 홈닉"
 description: "Vue.js 기반 입주민 커뮤니티 웹뷰 개발. Chart.js 관리비 시각화, Lottie.js 마이크로 인터랙션, 웹뷰-네이티브 통신 연동을 구현했습니다."
 tags: ["Vue.js", "Vuex", "Axios", "Chart.js", "Lottie.js"]
 year: 2023
+period: "2023.02 — 2023.12"
 ---
 
 ## 프로젝트 개요

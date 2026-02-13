@@ -42,7 +42,7 @@ export default function Home() {
             Philosophy
           </GradientText>
           <FadeIn delay={0.1}>
-            <p className="mt-6 text-lg leading-relaxed text-white/80">
+            <p className="mt-6 text-lg leading-relaxed text-foreground/80">
               개발, 더 나아가 제품을 만들 때 가장 중요한 것은
               <span className="text-accent-highlight"> "왜?"라는 질문</span>이라고 생각합니다.
               <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
@@ -53,7 +53,7 @@ export default function Home() {
             </p>
           </FadeIn>
           <FadeIn delay={0.4}>
-            <p className="mt-4 text-lg leading-relaxed text-white/80">
+            <p className="mt-4 text-lg leading-relaxed text-foreground/80">
               기술적 의사결정뿐만 아니라{" "}
               <span className="text-accent-highlight">팀과 함께 성장하는 것</span>을 중요하게
               생각합니다.
@@ -73,18 +73,18 @@ export default function Home() {
           {philosophies.map((item) => (
             <GlassCard key={item.title} padding="lg" hover>
               <span
-                className="text-sm font-mono font-semibold text-indigo-400"
+                className="text-sm font-mono font-semibold text-accent-indigo"
                 aria-label={`철학 ${item.number}`}
               >
                 {item.number}
               </span>
-              <h3 className="mt-3 text-lg font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/70">{item.description}</p>
+              <h3 className="mt-3 text-lg font-semibold text-foreground">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
               <ul className="mt-4 space-y-2">
                 {item.details.map((detail) => (
-                  <li key={detail} className="flex items-start gap-2 text-xs text-white/60">
+                  <li key={detail} className="flex items-start gap-2 text-xs text-muted-foreground">
                     <span
-                      className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60"
+                      className="mt-1 h-1 w-1 shrink-0 rounded-full bg-accent-indigo/60"
                       aria-hidden="true"
                     />
                     {detail}

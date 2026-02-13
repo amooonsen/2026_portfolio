@@ -167,6 +167,20 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
                 </div>
               </FadeIn>
             )}
+
+            <FadeIn delay={0.45}>
+              <div className="mt-16 flex justify-center border-t border-border/30 pt-8">
+                <Button variant="outline" asChild>
+                  <Link
+                    href="/projects"
+                    className="inline-flex items-center gap-2"
+                  >
+                    <ArrowLeft className="size-4" aria-hidden="true" />
+                    목록으로
+                  </Link>
+                </Button>
+              </div>
+            </FadeIn>
           </div>
 
           {/* ToC 사이드바 — xl 이상에서만 표시 */}

@@ -57,10 +57,10 @@ const categoryColors: Record<string, { border: string; bg: string; text: string;
 }
 
 const defaultColor = {
-  border: "border-white/20",
-  bg: "bg-white/5",
-  text: "text-white/80",
-  glow: "group-hover:shadow-white/10",
+  border: "border-glass-hover-border",
+  bg: "bg-glass-bg",
+  text: "text-foreground/80",
+  glow: "group-hover:shadow-glass-shadow",
 }
 
 /**
@@ -142,7 +142,7 @@ export function TechStack({ categories }: TechStackProps) {
               data-tech-card
               className={cn(
                 "group relative rounded-2xl border backdrop-blur-xl p-6 transition-all duration-300",
-                "bg-white/[0.03] hover:bg-white/[0.07]",
+                "bg-glass-bg hover:bg-glass-hover-bg",
                 color.border,
                 "hover:shadow-lg",
                 color.glow,
@@ -178,8 +178,8 @@ export function TechStack({ categories }: TechStackProps) {
                     data-tech-badge
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all duration-200",
-                      "border-white/10 bg-white/[0.04] text-white/90",
-                      "hover:border-white/25 hover:bg-white/[0.08] hover:text-white",
+                      "border-glass-border bg-glass-bg text-foreground/90",
+                      "hover:border-glass-hover-border hover:bg-glass-hover-bg hover:text-foreground",
                       "hover:shadow-sm",
                     )}
                   >

@@ -182,7 +182,7 @@ export function HeroSection({
         <span className="inline-block overflow-hidden">
           <span
             data-word
-            className="inline-block will-change-[transform,opacity,filter] bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
+            className="inline-block will-change-[transform,opacity,filter] bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
           >
             {word}
           </span>
@@ -205,7 +205,7 @@ export function HeroSection({
             {/* 서브타이틀 — 글자별 SplitText (데스크톱) / 전체 텍스트 (모바일) */}
             <h1
               ref={subtitleRef}
-              className="text-5xl font-bold tracking-tight text-white md:text-7xl"
+              className="text-5xl font-bold tracking-tight text-foreground md:text-7xl"
               aria-label={subtitle}
             >
               {reducedMotion || isMobile ? subtitle : splitChars(subtitle)}
@@ -217,7 +217,7 @@ export function HeroSection({
               className={cn(
                 "mt-4 text-3xl font-bold md:text-5xl",
                 (reducedMotion || isMobile) &&
-                  "bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent",
+                  "bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent",
               )}
               aria-label={title}
             >
@@ -225,7 +225,7 @@ export function HeroSection({
             </p>
 
             {/* 설명 */}
-            <p ref={descRef} className="mt-6 max-w-2xl text-lg text-white/60 md:text-xl">
+            <p ref={descRef} className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
               {description}
             </p>
 
@@ -240,7 +240,7 @@ export function HeroSection({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-glass-hover-border text-foreground hover:bg-glass-hover-bg"
                   asChild
                 >
                   <Link href={secondaryHref}>{secondaryLabel}</Link>
@@ -260,11 +260,11 @@ export function HeroSection({
         {/* 스크롤 인디케이터 — GSAP 반복 애니메이션 */}
         <div ref={scrollRef} className="absolute bottom-[-25%] left-1/2 -translate-x-1/2">
           <div className="flex flex-col items-center gap-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-white/30">Scroll</span>
-            <div className="relative h-12 w-px bg-white/10">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground/50">Scroll</span>
+            <div className="relative h-12 w-px bg-border">
               <div
                 data-scroll-dot
-                className="absolute top-0 left-1/2 -translate-x-1/2 h-3 w-px rounded-full bg-white/60"
+                className="absolute top-0 left-1/2 -translate-x-1/2 h-3 w-px rounded-full bg-foreground/60"
               />
             </div>
           </div>

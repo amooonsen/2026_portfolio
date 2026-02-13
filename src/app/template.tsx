@@ -111,6 +111,7 @@ export default function Template({children}: {children: React.ReactNode}) {
             if (ref.current) {
               ref.current.style.filter = "none";
               ref.current.style.transform = "none";
+              ref.current.style.willChange = "auto";
             }
             ScrollTrigger.refresh();
           },
@@ -133,6 +134,7 @@ export default function Template({children}: {children: React.ReactNode}) {
           if (ref.current) {
             ref.current.style.filter = "none";
             ref.current.style.transform = "none";
+            ref.current.style.willChange = "auto";
           }
           ScrollTrigger.refresh();
         },
@@ -141,7 +143,14 @@ export default function Template({children}: {children: React.ReactNode}) {
   }, [reducedMotion, isMobile, pathname]);
 
   return (
-    <div ref={ref} style={{opacity: 0}}>
+    <div
+      ref={ref}
+      style={{
+        opacity: 0,
+        willChange: "transform, opacity, filter",
+        minHeight: "100dvh",
+      }}
+    >
       {children}
     </div>
   );

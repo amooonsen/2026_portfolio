@@ -3,6 +3,7 @@ title: "ThunderJob"
 description: "해외인턴십 채용 매칭 플랫폼. 기획부터 배포까지 End-to-End FE 개발 리딩, SSR/SSG 아키텍처 구축, 결제 모듈 연동까지 담당했습니다."
 tags: ["Next.js", "TypeScript", "React Hook Form", "Zod", "Zustand", "Sentry", "I18N"]
 year: 2024
+period: "2024.10 — 2026.02"
 links:
   live: "https://www.thunderjob.com/"
 ---
@@ -42,56 +43,14 @@ links:
 **Tosspayments 채택.** 단일 PG사만 사용하는 구조에서 PortOne(구 아임포트)의 멀티 PG 추상화는 불필요한 복잡성이었습니다. Tosspayments의 직접 연동은 서버 사이드 결제 승인 방식으로 금액 위변조 방지 구조가 명확하고, 웹훅 기반 상태 알림으로 네트워크 오류 시에도 안정적인 동기화가 가능했습니다. 해외인턴십 타겟 사용자의 모바일 이용률을 고려했을 때 결제 위젯 UI의 모바일 UX도 우수했고, 문제 발생 시 PG사와 직접 소통이 가능하다는 운영상 이점도 있었습니다.
 
 ```typescript
-// Tosspayments 결제 플로우: 클라이언트 요청 + 서버 승인 2단계 구조
-
+// Tosspayments: 클라이언트 요청 + 서버 승인 2단계 구조
 // 1단계: 클라이언트 - 결제 위젯으로 결제 요청
-async function requestPayment(orderData: OrderData) {
-  const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
-  const payment = tossPayments.payment({ customerKey: orderData.userId });
+await payment.requestPayment({ method: 'CARD', amount, orderId, successUrl, failUrl });
 
-  await payment.requestPayment({
-    method: 'CARD',
-    amount: { currency: 'KRW', value: orderData.amount },
-    orderId: orderData.orderId,
-    orderName: orderData.planName,
-    successUrl: `${window.location.origin}/payment/success`,
-    failUrl: `${window.location.origin}/payment/fail`,
-  });
-}
-
-// 2단계: 서버 - 결제 승인 (금액 위변조 방지)
-// /api/payment/confirm (서버 사이드)
-async function confirmPayment(req: NextRequest) {
-  const { paymentKey, orderId, amount } = await req.json();
-
-  // DB에서 주문 정보 조회하여 금액 일치 여부 검증
-  const order = await db.order.findUnique({ where: { orderId } });
-  if (!order || order.amount !== amount) {
-    return NextResponse.json({ error: '결제 금액 불일치' }, { status: 400 });
-  }
-
-  // Tosspayments 서버로 최종 승인 요청
-  const response = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${Buffer.from(`${TOSS_SECRET_KEY}:`).toString('base64')}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ paymentKey, orderId, amount }),
-  });
-
-  if (!response.ok) {
-    // 승인 실패 시 주문 상태를 FAILED로 업데이트
-    await db.order.update({ where: { orderId }, data: { status: 'FAILED' } });
-    return NextResponse.json({ error: '결제 승인 실패' }, { status: 400 });
-  }
-
-  // 승인 성공 시 주문 상태 업데이트 + 채용 공고 활성화
-  await db.order.update({ where: { orderId }, data: { status: 'PAID' } });
-  await activateJobPosting(order.jobPostingId);
-
-  return NextResponse.json({ success: true });
-}
+// 2단계: 서버 - DB 주문 금액 검증 후 Tosspayments 최종 승인
+const order = await db.order.findUnique({ where: { orderId } });
+if (order.amount !== amount) throw new Error('금액 불일치');
+await fetch('https://api.tosspayments.com/v1/payments/confirm', { body: JSON.stringify({ paymentKey, orderId, amount }) });
 ```
 
 ### 에러 모니터링: Sentry vs Datadog

@@ -220,7 +220,7 @@ export function ContactSuccess() {
       </div>
 
       {/* 타이틀 */}
-      <h3 ref={titleRef} className="mb-3 text-2xl font-bold text-white" aria-label={titleText}>
+      <h3 ref={titleRef} className="mb-3 text-2xl font-bold text-foreground" aria-label={titleText}>
         {titleText.split("").map((char, i) => (
           <span key={i} className="inline-block overflow-hidden">
             <span data-word className="inline-block">{char}</span>
@@ -238,7 +238,7 @@ export function ContactSuccess() {
       {/* 버튼 */}
       <div ref={buttonsRef} className="flex gap-4">
         <div data-btn>
-          <Button variant="outline" size="lg" className="gap-2 border-white/20 text-white hover:bg-white/10" asChild>
+          <Button variant="outline" size="lg" className="gap-2 border-glass-hover-border text-foreground hover:bg-glass-hover-bg" asChild>
             <Link href="/">
               <Home className="h-4 w-4" />
               홈으로

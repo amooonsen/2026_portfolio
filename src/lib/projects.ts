@@ -20,6 +20,7 @@ export function getProjectBySlug(slug: string): Project & { content: string } {
     description: data.description,
     tags: data.tags ?? [],
     year: data.year,
+    period: data.period,
     featured: data.featured ?? false,
     thumbnail: data.thumbnail,
     images: data.images,

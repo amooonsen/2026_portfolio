@@ -7,7 +7,7 @@
 - **프레임워크**: Next.js 16.1.6 (App Router, Turbopack, React Compiler)
 - **React**: 19.2.3 (Canary)
 - **언어**: TypeScript 5 (strict mode)
-- **스타일링**: Tailwind CSS 4 + CSS Variables
+- **스타일링**: Tailwind CSS 4 + CSS Variables + next-themes (다크/라이트 모드)
 - **애니메이션**: GSAP 3.14 + ScrollTrigger
 - **3D**: Three.js 0.182 + React Three Fiber 9.5
 - **스무스 스크롤**: Lenis 1.3
@@ -44,6 +44,16 @@
 - Client Component: `"use client"` 명시 (상태, 이벤트, 애니메이션 필요 시)
 - Three.js 컴포넌트: `next/dynamic`으로 `ssr: false` lazy load
 - React Compiler 활성화 → 수동 `useMemo`/`useCallback` 사용 금지
+
+### 테마 시스템: next-themes + CSS 변수
+
+- `next-themes`의 `ThemeProvider`가 `layout.tsx`에서 전체 앱을 래핑
+- `attribute="class"`, `defaultTheme="dark"`, `enableSystem` 설정
+- CSS 변수: `:root`(라이트), `.dark`(다크) 셀렉터로 분리
+- 시맨틱 변수: `--glass-bg/border`, `--scene-bg`, `--accent-indigo`, `--gradient-accent-*`
+- `ThemeToggle`: Header 우측, Sun/Moon 아이콘, hydration mismatch 방지 (mounted 체크)
+- Three.js 색상: `useSceneColors()` 훅으로 테마별 색상 세트 반환
+- Shiki 코드블록: `github-dark-dimmed` + `github-light` 듀얼 테마
 
 ### 콘텐츠 관리
 
@@ -112,7 +122,7 @@ button, container, section, bento-grid, glass-card, gradient-text, magnetic, spo
 
 ### Layout (`src/components/layout/`)
 
-header, floating-nav, mobile-nav, footer, skip-nav, scroll-progress, scroll-to-top, intro-loader, smooth-scroll, route-announcer
+header, floating-nav, mobile-nav, footer, skip-nav, scroll-progress, scroll-to-top, intro-loader, smooth-scroll, route-announcer, theme-provider, theme-toggle
 
 ### Sections (`src/components/sections/`)
 
@@ -128,7 +138,7 @@ hero-scene, cosmic-scene
 
 ### Hooks (`src/hooks/`)
 
-use-gsap, use-reduced-motion, use-media-query, use-scroll-progress, use-active-section, use-scroll-threshold
+use-gsap, use-reduced-motion, use-media-query, use-scroll-progress, use-active-section, use-scroll-threshold, use-theme-colors
 
 ### Lib (`src/lib/`)
 
@@ -147,7 +157,7 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 | Framer Motion    | Layer 3                      | 미사용 (GSAP으로 대체)  |
 | View Transitions | React 19.2 API               | template.tsx GSAP 전환  |
 | 스무스 스크롤    | 미계획                       | Lenis 도입              |
-| ThemeToggle      | 계획됨                       | 미구현 (다크 모드 고정) |
+| ThemeToggle      | 계획됨                       | 구현 완료 (next-themes + CSS 변수) |
 | 콘텐츠 파서      | MDX                          | gray-matter (Markdown)  |
 
 ---
@@ -159,6 +169,13 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 - **원인**: `template.tsx`에서 `window.scrollTo(0, 0)` 사용 → Lenis 내부 상태 미동기화
 - **해결**: `getLenisInstance().scrollTo(0, { immediate: true })` 사용
 - **교훈**: Lenis 사용 시 모든 스크롤 제어는 Lenis API를 통해야 함
+
+---
+
+## 절대 삭제 금지 코드
+
+- **Career 탭 / ExperienceTimeline**: `experience-tabs.tsx`의 Career 관련 코드(`showCareerTab`, `ExperienceTimeline`, `TabsTrigger value="career"` 등)를 절대 삭제하지 마세요. 현재 히든(`showCareerTab = false`) 상태이며, 경력이 쌓이면 다시 활성화합니다.
+- **Experience 페이지 (`/experience`)**: 라우트, 페이지 파일, 관련 컴포넌트를 삭제하지 마세요.
 
 ---
 

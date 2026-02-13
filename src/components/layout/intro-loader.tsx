@@ -13,8 +13,6 @@ import {getLenisInstance} from "@/lib/lenis-store";
 const INTRO_CACHE_KEY = "portfolio-intro-seen";
 /** 첫 방문 인트로 최소 표시 시간 (ms) */
 const MIN_DISPLAY_DURATION = 1200;
-/** 재방문 시 리소스 로딩 유예 시간 — 이 시간 내 완료 시 로더 생략 (ms) */
-const GRACE_PERIOD = 400;
 /** 100% 도달 후 종료 시퀀스까지 대기 시간 (ms) */
 const DISMISS_DELAY = 300;
 
@@ -36,10 +34,10 @@ interface IntroLoaderProps {
  * 오버레이를 body에 portal로 렌더링하여 template.tsx의 transform scope를 벗어난다.
  */
 export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderProps) {
-  type Mode = "grace" | "intro" | "loading" | "complete";
+  type Mode = "intro" | "loading" | "complete";
 
   const isFirstVisitRef = useRef(false);
-  const [mode, setMode] = useState<Mode>("grace");
+  const [mode, setMode] = useState<Mode>("loading");
   const [isMounted, setIsMounted] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -92,35 +90,18 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
 
     if (isFirstVisitRef.current) {
       setMode("intro");
-      document.body.style.overflow = "hidden";
+    } else {
+      // 재방문: 항상 미니멀 로더 표시
+      setMode("loading");
     }
-    // 재방문은 'grace' 유지 (SSR-safe default)
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = "";
     };
   }, []);
 
-  // ─── Grace period: 재방문 시 유예 시간 관리 ───
-  useEffect(() => {
-    if (mode !== "grace" || !isMounted) return;
-
-    // 유예 중 리소스 준비 완료 → 로더 없이 즉시 완료
-    if (isSceneReady) {
-      setIsContentVisible(true);
-      setMode("complete");
-      onCompleteRef.current?.();
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      // 유예 초과: 미니멀 로딩 오버레이 표시
-      setMode("loading");
-      document.body.style.overflow = "hidden";
-    }, GRACE_PERIOD);
-
-    return () => clearTimeout(timer);
-  }, [mode, isMounted, isSceneReady]);
+  // grace 모드는 더 이상 사용하지 않음 — 재방문 시 항상 loading 모드로 진입
 
   // ─── 종료 시퀀스 ───
   function dismiss() {
@@ -299,7 +280,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         createPortal(
           <div
             ref={introRef}
-            className="fixed inset-0 z-[9999] h-screen bg-[#030014]"
+            className="fixed inset-0 z-[9999] h-screen bg-scene-bg"
             aria-hidden={!showIntroOverlay}
           >
             {/* 앰비언트 그라디언트 오브 */}
@@ -313,14 +294,14 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
             <div className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center gap-4">
               <h1
                 ref={titleRef}
-                className="text-5xl font-bold tracking-tight text-white md:text-6xl [perspective:1000px]"
+                className="text-5xl font-bold tracking-tight text-foreground md:text-6xl [perspective:1000px]"
                 style={{transformStyle: "preserve-3d"}}
               >
                 Portfolio
               </h1>
               <p
                 ref={subtitleRef}
-                className="text-sm text-white/60 tracking-[0.3em] uppercase font-light"
+                className="text-sm text-muted-foreground tracking-[0.3em] uppercase font-light"
               >
                 Frontend Developer
               </p>
@@ -331,15 +312,15 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
               <div ref={counterGroupRef} className="flex items-baseline gap-1">
                 <span
                   ref={counterRef}
-                  className="text-7xl font-bold text-white tabular-nums tracking-tighter md:text-8xl"
+                  className="text-7xl font-bold text-foreground tabular-nums tracking-tighter md:text-8xl"
                 >
                   0
                 </span>
-                <span className="text-xl font-light text-white/40 md:text-2xl">%</span>
+                <span className="text-xl font-light text-muted-foreground md:text-2xl">%</span>
               </div>
 
               <div ref={progressGroupRef} className="mt-8 w-64 md:w-80">
-                <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
+                <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                   <div
                     ref={progressBarRef}
                     className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.5)]"
@@ -357,7 +338,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         createPortal(
           <div
             ref={loadingRef}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#030014]"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-scene-bg"
             aria-hidden={!showLoadingOverlay}
           >
             {/* 앰비언트 그라디언트 (단순화) */}
@@ -368,7 +349,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
 
             {/* 미니멀 프로그레스 바 */}
             <div className="relative z-10 w-48 md:w-56">
-              <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
+              <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                 <div
                   ref={loadingBarRef}
                   className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_12px_rgba(139,92,246,0.4)]"

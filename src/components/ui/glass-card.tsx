@@ -31,12 +31,12 @@ export function GlassCard({
   return (
     <Component
       className={cn(
-        "rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl",
+        "rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl",
         paddingMap[padding],
         hover && [
           "transition-all duration-300",
-          "hover:bg-white/10 hover:border-white/20",
-          "hover:shadow-lg hover:shadow-white/5",
+          "hover:bg-glass-hover-bg hover:border-glass-hover-border",
+          "hover:shadow-lg hover:shadow-glass-shadow",
         ],
         className
       )}

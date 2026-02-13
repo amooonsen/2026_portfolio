@@ -3,6 +3,7 @@ title: "호텔롯데 법인 홈페이지 리뉴얼"
 description: "Lottie.js 도입으로 애니메이션 리소스 70% 절감, GSAP ScrollTrigger 활용 가로 스크롤 및 풀페이지 애니메이션 구현."
 tags: ["JavaScript", "GSAP", "Lottie.js", "SCSS"]
 year: 2022
+period: "2022.06 — 2022.08"
 links:
   live: "https://www.hotellotte.com"
 ---

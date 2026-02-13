@@ -38,7 +38,7 @@ export default function AboutLoading() {
         <Skeleton className="mt-2 h-5 w-56" />
         <div className="mt-10 space-y-8">
           {Array.from({length: 4}).map((_, i) => (
-            <div key={i} className="grid gap-4 border-l border-white/10 py-6 pl-8 md:grid-cols-5">
+            <div key={i} className="grid gap-4 border-l border-glass-border py-6 pl-8 md:grid-cols-5">
               <div className="space-y-2 md:col-span-1">
                 <Skeleton className="h-4 w-12" />
                 <Skeleton className="h-5 w-24" />

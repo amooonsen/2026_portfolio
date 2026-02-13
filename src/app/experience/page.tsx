@@ -24,7 +24,7 @@ export default function ExperiencePage() {
           Experience
         </GradientText>
         <FadeIn delay={0.3}>
-          <p className="mt-6 text-lg leading-relaxed text-white/80">
+          <p className="mt-6 text-lg leading-relaxed text-foreground/80">
             <span className="text-accent-highlight">Next.js, TypeScript, React</span>를 기반으로
             엔터프라이즈급 웹 애플리케이션을 구축합니다.
             <br /> 다수의 <span className="text-accent-highlight">React Hook Form + Zod</span>로
