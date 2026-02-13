@@ -17,7 +17,7 @@ const PARTICLE_COUNT = SPARKS_PER_BURST * BURST_COUNT;
 const GRAVITY = -6;
 
 /** 파티클 수명 */
-const LIFETIME = 2;
+const LIFETIME = 3;
 
 /** 폭죽 색상 팔레트 — 각 폭죽마다 하나의 테마 색상 */
 const BURST_PALETTES = [
@@ -144,11 +144,11 @@ function FireworkParticles({active}: {active: boolean}) {
         const py = burst.center.y + dy * speed * t + 0.5 * GRAVITY * t * t;
         const pz = burst.center.z + dz * speed * t;
 
-        // 페이드 아웃: 수명 50% 이후 서서히 축소
-        const fadeOut = progress > 0.5 ? 1 - (progress - 0.5) / 0.5 : 1;
+        // 페이드 아웃: 수명 60% 이후 서서히 축소
+        const fadeOut = progress > 0.6 ? 1 - (progress - 0.6) / 0.4 : 1;
         // 깜빡임 효과
         const flicker = 0.7 + 0.3 * Math.sin(t * 15 + i * 2);
-        const scale = 0.03 * fadeOut * flicker;
+        const scale = 0.12 * fadeOut * flicker;
 
         dummy.current.position.set(px, py, pz);
         dummy.current.scale.setScalar(scale);
@@ -167,8 +167,8 @@ function FireworkParticles({active}: {active: boolean}) {
       frustumCulled={false}
       visible={active}
     >
-      <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial transparent opacity={0.9} side={THREE.DoubleSide} />
+      <sphereGeometry args={[1, 8, 8]} />
+      <meshBasicMaterial transparent opacity={0.9} depthWrite={false} toneMapped={false} />
     </instancedMesh>
   );
 }
@@ -260,10 +260,11 @@ function SparkTrails({active}: {active: boolean}) {
       <pointsMaterial
         vertexColors
         transparent
-        size={0.4}
+        size={0.6}
         sizeAttenuation
         depthWrite={false}
-        opacity={0.8}
+        opacity={0.9}
+        toneMapped={false}
         blending={THREE.AdditiveBlending}
       />
     </points>

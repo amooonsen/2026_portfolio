@@ -66,10 +66,10 @@ export const philosophies: Philosophy[] = [
     number: "06",
     title: "AI 시대의 개발자",
     description:
-      "Claude Code, Cursor, GitHub Copilot 등 AI 도구를 실무 워크플로우에 통합하여 개발 생산성을 극대화합니다. AI가 생성한 코드를 검증하고 최적화하는 것이 현대 개발자의 핵심 역량이라고 생각합니다.",
+      "Claude Code, Antigravity, GitHub Copilot 등 AI 도구를 실무 워크플로우에 통합하여 개발 생산성을 극대화합니다. AI가 생성한 코드를 검증하고 최적화하는 것이 현대 개발자의 핵심 역량이라고 생각합니다.",
     details: [
       "Claude Code로 코드 생성·리팩토링·디버깅 자동화",
-      "Cursor + Copilot 기반 AI 페어 프로그래밍",
+      "Antigravity + Copilot 기반 AI 페어 프로그래밍",
       "n8n + AI Agent로 반복 업무 자동화 파이프라인 구축",
     ],
   },
@@ -132,7 +132,7 @@ export const journeyItems: JourneyItem[] = [
     year: "2025",
     title: "성능 최적화 & AI 워크플로우",
     description:
-      "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화를 수행했습니다. Claude Code, Cursor 등 AI 도구를 개발 워크플로우 전반에 도입하여 코드 생성·리팩토링·디버깅 효율을 크게 높였습니다.",
+      "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화를 수행했습니다. Claude Code, Antigravity 등 AI 도구를 개발 워크플로우 전반에 도입하여 코드 생성·리팩토링·디버깅 효율을 크게 높였습니다.",
     projects: [{slug: "lgcns-recruitment", name: "LG CNS 채용 솔루션"}],
   },
 ];

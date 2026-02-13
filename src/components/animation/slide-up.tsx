@@ -1,5 +1,3 @@
-"use client"
-
 import { FadeIn } from "./fade-in"
 
 interface SlideUpProps {

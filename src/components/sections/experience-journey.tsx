@@ -33,7 +33,14 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
               </div>
 
               <div className="md:col-span-4">
-                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {item.description.split("\n").map((line, idx, arr) => (
+                    <span key={idx}>
+                      {line}
+                      {idx < arr.length - 1 && <br />}
+                    </span>
+                  ))}
+                </p>
 
                 {item.projects && item.projects.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">

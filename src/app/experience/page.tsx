@@ -34,7 +34,7 @@ export default function ExperiencePage() {
             <span className="text-accent-highlight">Chart.js</span>로 인터랙션과 데이터를
             시각화합니다.
             <br />{" "}
-            <span className="text-accent-highlight">Claude Code, Cursor</span> 등 AI 도구를
+            <span className="text-accent-highlight">Claude Code, Antigravity</span> 등 AI 도구를
             적극 활용하여 코드 생성부터 리팩토링, 디버깅까지 개발 전 과정의 생산성을 높이고 있습니다.
           </p>
         </FadeIn>

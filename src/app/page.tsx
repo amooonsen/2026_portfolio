@@ -22,7 +22,7 @@ export default function Home() {
       <HeroSection
         title="Frontend Developer"
         subtitle="조경문"
-        description="비즈니스 문제를 기술로 해결하는 4년차 프론트엔드 개발자입니다. React, Next.js, TypeScript를 기반으로 대규모 엔터프라이즈 웹 애플리케이션을 설계하고 구축합니다. Claude Code, Cursor 등 AI 도구를 실무에 적극 활용하여 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
+        description="비즈니스 문제를 기술로 해결하는 4년차 프론트엔드 개발자입니다. React, Next.js, TypeScript를 기반으로 대규모 엔터프라이즈 웹 애플리케이션을 설계하고 구축합니다. Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
         ctaLabel="프로젝트 보기"
         ctaHref="/projects"
         secondaryLabel="연락하기"
