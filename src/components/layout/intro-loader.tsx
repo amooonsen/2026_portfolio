@@ -13,8 +13,6 @@ import {getLenisInstance} from "@/lib/lenis-store";
 const INTRO_CACHE_KEY = "portfolio-intro-seen";
 /** 첫 방문 인트로 최소 표시 시간 (ms) */
 const MIN_DISPLAY_DURATION = 1200;
-/** 재방문 시 리소스 로딩 유예 시간 — 이 시간 내 완료 시 로더 생략 (ms) */
-const GRACE_PERIOD = 400;
 /** 100% 도달 후 종료 시퀀스까지 대기 시간 (ms) */
 const DISMISS_DELAY = 300;
 
@@ -36,10 +34,10 @@ interface IntroLoaderProps {
  * 오버레이를 body에 portal로 렌더링하여 template.tsx의 transform scope를 벗어난다.
  */
 export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderProps) {
-  type Mode = "grace" | "intro" | "loading" | "complete";
+  type Mode = "intro" | "loading" | "complete";
 
   const isFirstVisitRef = useRef(false);
-  const [mode, setMode] = useState<Mode>("grace");
+  const [mode, setMode] = useState<Mode>("loading");
   const [isMounted, setIsMounted] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -92,35 +90,18 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
 
     if (isFirstVisitRef.current) {
       setMode("intro");
-      document.body.style.overflow = "hidden";
+    } else {
+      // 재방문: 항상 미니멀 로더 표시
+      setMode("loading");
     }
-    // 재방문은 'grace' 유지 (SSR-safe default)
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = "";
     };
   }, []);
 
-  // ─── Grace period: 재방문 시 유예 시간 관리 ───
-  useEffect(() => {
-    if (mode !== "grace" || !isMounted) return;
-
-    // 유예 중 리소스 준비 완료 → 로더 없이 즉시 완료
-    if (isSceneReady) {
-      setIsContentVisible(true);
-      setMode("complete");
-      onCompleteRef.current?.();
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      // 유예 초과: 미니멀 로딩 오버레이 표시
-      setMode("loading");
-      document.body.style.overflow = "hidden";
-    }, GRACE_PERIOD);
-
-    return () => clearTimeout(timer);
-  }, [mode, isMounted, isSceneReady]);
+  // grace 모드는 더 이상 사용하지 않음 — 재방문 시 항상 loading 모드로 진입
 
   // ─── 종료 시퀀스 ───
   function dismiss() {

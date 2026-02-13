@@ -4,6 +4,7 @@ description: "LG CNS 대상 채용 솔루션 프론트엔드 고도화. 레거�
 tags: ["Next.js", "TypeScript", "React Hook Form", "Zod", "Zustand"]
 year: 2025
 featured: true
+period: "2025.08 — 2026.02"
 ---
 
 ## 프로젝트 개요
@@ -34,57 +35,14 @@ LG CNS 대상 채용 솔루션의 프론트엔드를 고도화하는 프로젝�
 
 ```typescript
 // React Hook Form + Zod: 비제어 방식으로 400+ 필드 최적화
-const recruitmentSchema = z.object({
-  personalInfo: z.object({
-    name: z.string().min(1, '이름을 입력해주세요'),
-    phone: z.string().regex(/^01[0-9]-\d{3,4}-\d{4}$/, '올바른 전화번호 형식이 아닙니다'),
-  }),
-  education: z.array(z.object({
-    school: z.string().min(1),
-    major: z.string().min(1),
-    graduationDate: z.string(),
-  })),
+const schema = z.object({
+  personalInfo: z.object({ name: z.string().min(1), phone: z.string().regex(/.../) }),
+  education: z.array(z.object({ school: z.string(), major: z.string() })),
   // ... 400+ 필드가 중첩 객체로 구성
-}).superRefine((data, ctx) => {
-  // 필드 간 교차 검증: 경력 기간이 졸업일 이전이면 에러
-  if (data.education[0]?.graduationDate > data.experience?.[0]?.startDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: '경력 시작일이 졸업일보다 이전입니다',
-      path: ['experience', 0, 'startDate'],
-    });
-  }
-});
+}).superRefine((data, ctx) => { /* 필드 간 교차 검증 */ });
 
-type RecruitmentForm = z.infer<typeof recruitmentSchema>;
-
-function RecruitmentFormPage() {
-  const { register, handleSubmit, control } = useForm<RecruitmentForm>({
-    resolver: zodResolver(recruitmentSchema),
-    mode: 'onBlur', // 포커스 해제 시에만 검증 실행 (키 입력마다 검증하지 않음)
-  });
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {/* register()로 비제어 방식 연결 - 입력 시 React 리렌더링 없음 */}
-      <input {...register('personalInfo.name')} />
-
-      {/* 조건부 필드: 특정 값만 구독하여 해당 섹션만 리렌더링 */}
-      <ConditionalFields control={control} />
-    </form>
-  );
-}
-
-// useWatch로 특정 필드만 구독하여 리렌더 범위 격리
-function ConditionalFields({ control }: { control: Control<RecruitmentForm> }) {
-  const employmentType = useWatch({ control, name: 'employmentType' });
-
-  // employmentType이 변경될 때만 이 컴포넌트만 리렌더링
-  if (employmentType === 'experienced') {
-    return <ExperienceFields control={control} />;
-  }
-  return null;
-}
+// useWatch로 조건부 필드만 구독 → 리렌더 범위 격리
+const employmentType = useWatch({ control, name: 'employmentType' });
 ```
 
 ### 상태 관리: Zustand vs Redux Toolkit vs Recoil

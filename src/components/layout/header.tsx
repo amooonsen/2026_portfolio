@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ExternalLink, Menu } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Container } from "@/components/ui/container"
-import { MobileNav } from "./mobile-nav"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import {useEffect, useRef, useState} from "react";
+import Link from "next/link";
+import {usePathname} from "next/navigation";
+import {ExternalLink, Menu} from "lucide-react";
+import {cn} from "@/lib/utils";
+import {Container} from "@/components/ui/container";
+import {MobileNav} from "./mobile-nav";
+import {useMediaQuery} from "@/hooks/use-media-query";
 
 interface NavItem {
-  label: string
-  href: string
-  external?: boolean
+  label: string;
+  href: string;
+  external?: boolean;
 }
 
 interface HeaderProps {
-  items: NavItem[]
-  className?: string
+  items: NavItem[];
+  className?: string;
 }
 
 /**
@@ -28,44 +28,44 @@ interface HeaderProps {
  * @param props.items - 네비게이션 링크 목록
  * @param props.className - 추가 CSS 클래스
  */
-export function Header({ items, className }: HeaderProps) {
-  const [isVisible, setIsVisible] = useState(true)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
-  const lastScrollY = useRef(0)
-  const pathname = usePathname()
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+export function Header({items, className}: HeaderProps) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const lastScrollY = useRef(0);
+  const pathname = usePathname();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   // 초기 로딩 시 레이아웃 시프트로 인한 false hide 방지용 grace period
-  const isReadyRef = useRef(false)
+  const isReadyRef = useRef(false);
   useEffect(() => {
     const timer = setTimeout(() => {
-      isReadyRef.current = true
-    }, 1200)
-    return () => clearTimeout(timer)
-  }, [])
+      isReadyRef.current = true;
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. 모바일에서는 항상 표시. */
     function handleScroll() {
-      const currentY = window.scrollY
+      const currentY = window.scrollY;
 
       if (currentY < 50) {
-        setIsVisible(true)
-        setIsScrolled(false)
+        setIsVisible(true);
+        setIsScrolled(false);
       } else {
         // 초기화 완료 전에는 항상 표시 (레이아웃 시프트 false hide 방지)
         // 모바일에서는 항상 visible, 데스크톱에서만 스크롤 방향에 따라 숨김/표시
-        setIsVisible(!isReadyRef.current || !isDesktop || currentY < lastScrollY.current)
-        setIsScrolled(true)
+        setIsVisible(!isReadyRef.current || !isDesktop || currentY < lastScrollY.current);
+        setIsScrolled(true);
       }
 
-      lastScrollY.current = currentY
+      lastScrollY.current = currentY;
     }
 
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [isDesktop])
+    window.addEventListener("scroll", handleScroll, {passive: true});
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isDesktop]);
 
   return (
     <>
@@ -76,7 +76,7 @@ export function Header({ items, className }: HeaderProps) {
           isScrolled
             ? "bg-background/80 backdrop-blur-xl border-b border-border/50"
             : "bg-transparent",
-          className
+          className,
         )}
       >
         <Container>
@@ -99,13 +99,11 @@ export function Header({ items, className }: HeaderProps) {
                       {item.label}
                       <ExternalLink className="size-3" />
                     </a>
-                  )
+                  );
                 }
 
                 const isActive =
-                  item.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(item.href)
+                  item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
                 return (
                   <Link
@@ -115,12 +113,12 @@ export function Header({ items, className }: HeaderProps) {
                       "px-4 py-2 text-sm font-medium transition-colors rounded-lg",
                       isActive
                         ? "text-foreground bg-muted"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
                     )}
                   >
                     {item.label}
                   </Link>
-                )
+                );
               })}
             </nav>
 
@@ -139,11 +137,7 @@ export function Header({ items, className }: HeaderProps) {
         </Container>
       </header>
 
-      <MobileNav
-        items={items}
-        isOpen={isMobileNavOpen}
-        onClose={() => setIsMobileNavOpen(false)}
-      />
+      <MobileNav items={items} isOpen={isMobileNavOpen} onClose={() => setIsMobileNavOpen(false)} />
     </>
-  )
+  );
 }

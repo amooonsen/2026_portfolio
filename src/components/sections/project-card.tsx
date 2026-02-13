@@ -13,6 +13,7 @@ interface Project {
   thumbnail?: string
   tags: string[]
   year: number
+  period?: string
   featured?: boolean
   images?: string[]
   content?: string
@@ -92,6 +93,11 @@ export function ProjectCard({
                 <h3 className={cn("font-semibold", featured ? "text-2xl" : "text-lg")}>
                   {project.title}
                 </h3>
+              )}
+              {project.period && (
+                <span className="mt-1 text-xs text-muted-foreground/70">
+                  {project.period}
+                </span>
               )}
               {showDescription && (
                 <p

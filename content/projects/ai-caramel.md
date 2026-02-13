@@ -4,6 +4,7 @@ description: "삼성, 롯데 등 대형 고객사 대상 AI Insight + 사이트 
 tags: ["Next.js", "TypeScript", "Zustand", "Supabase", "Fastify", "n8n"]
 year: 2024
 featured: true
+period: "2024.08 — 2026.02"
 ---
 
 ## 프로젝트 개요
@@ -42,49 +43,16 @@ n8n workflow와 AI Agent를 결합하여 데이터 수집부터 분석까지 자
 **n8n(자체 호스팅) 채택.** 커스텀 엔진(Bull Queue + Node.js)은 완전한 로직 제어가 가능하지만, 워크플로우 시각화 UI, 에러 핸들링, 재시도 로직, 모니터링을 모두 직접 구현해야 하는 부담이 있었습니다. n8n의 비주얼 에디터는 비개발자(기획자, PM)도 워크플로우를 이해하고 수정할 수 있어, 고객사 미팅 후 즉시 워크플로우를 변경하여 다음 데모에 반영하는 것이 가능했습니다. 자체 호스팅으로 고객사 데이터 보안도 확보했으며, 이러한 빠른 대응력은 수주 성공에 직접적으로 기여했습니다.
 
 ```typescript
-// Supabase Realtime 구독 패턴: 고객사별 데이터 격리 및 안전한 정리
-import { supabase } from '@/lib/supabase';
-import { useEffect, useRef } from 'react';
-import { RealtimeChannel } from '@supabase/supabase-js';
+// Supabase Realtime: 고객사별 채널 격리 + 안전한 구독 정리
+const channel = supabase
+  .channel(`monitoring:${clientId}`)
+  .on('postgres_changes', { event: 'INSERT', table: 'monitoring_logs', filter: `client_id=eq.${clientId}` },
+    (payload) => onUpdate(payload.new)
+  )
+  .subscribe();
 
-function useMonitoringRealtime(clientId: string, onUpdate: (payload: MonitoringData) => void) {
-  const channelRef = useRef<RealtimeChannel | null>(null);
-
-  useEffect(() => {
-    // 고객사별 독립 채널로 데이터 격리
-    const channel = supabase
-      .channel(`monitoring:${clientId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'monitoring_logs',
-          filter: `client_id=eq.${clientId}`, // RLS와 별개로 채널 레벨 필터링
-        },
-        (payload) => {
-          onUpdate(payload.new as MonitoringData);
-        }
-      )
-      .subscribe((status) => {
-        if (status === 'CHANNEL_ERROR') {
-          // 채널 에러 시 재연결 (다른 고객사 채널에 영향 없음)
-          console.error(`Realtime channel error for client: ${clientId}`);
-          channel.unsubscribe();
-        }
-      });
-
-    channelRef.current = channel;
-
-    // 컴포넌트 언마운트 시 구독 정리 (메모리 누수 방지)
-    return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
-    };
-  }, [clientId, onUpdate]);
-}
+// 언마운트 시 구독 정리 (메모리 누수 방지)
+return () => supabase.removeChannel(channel);
 ```
 
 ## 담당 기간

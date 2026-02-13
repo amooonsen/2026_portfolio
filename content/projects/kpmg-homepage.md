@@ -3,6 +3,7 @@ title: "삼정회계법인 KPMG 홈페이지"
 description: "React 기반 SPA 아키텍처로 구축한 기업 홈페이지. 멀티 스텝 폼, 무한 스크롤, 스크롤 인터랙션 등을 구현했습니다."
 tags: ["React", "React Query", "Zustand", "React Hook Form", "Zod", "I18N"]
 year: 2024
+period: "2024.05 — 2024.07"
 links:
   live: "https://kpmgmnacenter.com"
 ---
@@ -45,103 +46,16 @@ links:
 이를 해결하기 위해 단계별로 독립적인 Zod 스키마를 분리하되, 최종 제출 시 `z.merge`로 통합 검증하는 구조를 설계했습니다. 단계 전환 시에는 Zustand(persist 미들웨어)에 중간 데이터를 저장하여 브라우저 새로고침에도 데이터가 유지됩니다. 이 구조 덕분에 단계 추가/삭제/순서 변경이 용이하고, 에러 메시지도 현재 단계에 한정되어 사용자에게 명확한 피드백을 줄 수 있었습니다.
 
 ```typescript
-// 멀티 스텝 폼 패턴: 단계별 스키마 분리 + Zustand 중간 저장
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-// 단계별 Zod 스키마 정의
-const step1Schema = z.object({
-  email: z.string().email('올바른 이메일 형식이 아닙니다'),
-  verificationCode: z.string().length(6, '인증번호 6자리를 입력해주세요'),
-});
-
-const step2Schema = z.object({
-  company: z.string().min(1, '회사명을 입력해주세요'),
-  department: z.string().min(1, '부서명을 입력해주세요'),
-  position: z.string().min(1, '직책을 입력해주세요'),
-});
-
-const step3Schema = z.object({
-  agreeTOS: z.literal(true, { errorMap: () => ({ message: '이용약관 동의가 필요합니다' }) }),
-  agreePrivacy: z.literal(true, { errorMap: () => ({ message: '개인정보처리방침 동의가 필요합니다' }) }),
-});
-
-// 최종 제출 시 전체 통합 스키마
+// 멀티 스텝 폼: 단계별 Zod 스키마 분리 + Zustand 중간 저장
+const step1Schema = z.object({ email: z.string().email(), verificationCode: z.string().length(6) });
+const step2Schema = z.object({ company: z.string().min(1), department: z.string().min(1) });
 const fullSchema = step1Schema.merge(step2Schema).merge(step3Schema);
-type FullFormData = z.infer<typeof fullSchema>;
 
-// 스키마 배열로 단계별 접근
-const stepSchemas = [step1Schema, step2Schema, step3Schema] as const;
-
-// Zustand: 중간 데이터 저장 (새로고침에도 유지)
-interface FormStore {
-  currentStep: number;
-  formData: Partial<FullFormData>;
-  setStep: (step: number) => void;
-  updateFormData: (data: Partial<FullFormData>) => void;
-  resetForm: () => void;
-}
-
-const useFormStore = create<FormStore>()(
-  persist(
-    (set) => ({
-      currentStep: 0,
-      formData: {},
-      setStep: (step) => set({ currentStep: step }),
-      updateFormData: (data) =>
-        set((state) => ({ formData: { ...state.formData, ...data } })),
-      resetForm: () => set({ currentStep: 0, formData: {} }),
-    }),
-    { name: 'kpmg-registration-form' } // sessionStorage에 저장
-  )
-);
-
-// 각 단계 컴포넌트: 해당 단계의 스키마만 사용
-function StepForm({ stepIndex }: { stepIndex: number }) {
-  const { formData, updateFormData, setStep } = useFormStore();
-  const schema = stepSchemas[stepIndex];
-
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: formData, // 이전에 저장된 데이터로 초기화
-  });
-
-  const onNext = (data: Record<string, unknown>) => {
-    updateFormData(data);                // Zustand에 중간 저장
-    setStep(stepIndex + 1);              // 다음 단계로 이동
-  };
-
-  const onBack = () => setStep(stepIndex - 1);
-
-  return (
-    <form onSubmit={handleSubmit(onNext)}>
-      {/* 단계별 필드 렌더링 */}
-      {stepIndex > 0 && <button type="button" onClick={onBack}>이전</button>}
-      <button type="submit">
-        {stepIndex === stepSchemas.length - 1 ? '제출' : '다음'}
-      </button>
-    </form>
-  );
-}
-
-// 최종 제출: 모든 단계의 데이터를 통합 스키마로 검증
-async function submitFullForm() {
-  const { formData, resetForm } = useFormStore.getState();
-  const result = fullSchema.safeParse(formData);
-
-  if (!result.success) {
-    // 어느 단계의 데이터가 누락/오류인지 식별하여 해당 단계로 이동
-    const firstErrorPath = result.error.issues[0].path[0];
-    // ... 해당 단계로 네비게이션
-    return;
-  }
-
-  await api.submitRegistration(result.data);
-  resetForm(); // 제출 성공 시 저장된 데이터 초기화
-}
+// Zustand persist로 새로고침에도 중간 데이터 유지
+const useFormStore = create(persist((set) => ({
+  currentStep: 0, formData: {},
+  updateFormData: (data) => set((s) => ({ formData: { ...s.formData, ...data } })),
+}), { name: 'kpmg-form' }));
 ```
 
 ## 담당 기간

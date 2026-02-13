@@ -3,6 +3,7 @@ title: "삼성카드 쇼핑몰&복지 통합플랫폼"
 description: "레거시 환경에서 공통 코드 리팩토링과 비즈니스 로직 모듈화를 수행하여 사용자 이탈률 15% 감소를 달성했습니다."
 tags: ["jQuery", "Thymeleaf"]
 year: 2022
+period: "2022.10 — 2023.01"
 links:
   live: "https://shopping.samsungcard.com/"
 ---

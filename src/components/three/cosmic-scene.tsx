@@ -152,9 +152,9 @@ function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
 /* ─── 메인 씬 내부 ─── */
 
 function CosmicSceneInner({ isMobile = false }: { isMobile?: boolean }) {
-  // 모바일에서 파티클 수 50% 감소
-  const starCount = isMobile ? 300 : 600
-  const nebulaCount = isMobile ? 75 : 150
+  // 가독성을 위해 파티클 수 절반 적용
+  const starCount = isMobile ? 150 : 300
+  const nebulaCount = isMobile ? 38 : 75
 
   return (
     <>

@@ -162,6 +162,13 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 
 ---
 
+## 절대 삭제 금지 코드
+
+- **Career 탭 / ExperienceTimeline**: `experience-tabs.tsx`의 Career 관련 코드(`showCareerTab`, `ExperienceTimeline`, `TabsTrigger value="career"` 등)를 절대 삭제하지 마세요. 현재 히든(`showCareerTab = false`) 상태이며, 경력이 쌓이면 다시 활성화합니다.
+- **Experience 페이지 (`/experience`)**: 라우트, 페이지 파일, 관련 컴포넌트를 삭제하지 마세요.
+
+---
+
 ## 개발 규칙
 
 ### 코드 스타일

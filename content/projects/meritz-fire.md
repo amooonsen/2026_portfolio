@@ -3,6 +3,7 @@ title: "메리츠화재 홈페이지 유지운영"
 description: "WCAG 2.1 가이드라인 적용으로 웹 접근성 인증 마크 획득, 이미지 최적화를 통한 랜딩 페이지 로딩 속도 20% 개선을 달성했습니다."
 tags: ["AngularJS", "jQuery", "CSS", "HTML"]
 year: 2022
+period: "2022.01 — 2022.06"
 links:
   live: "https://www.meritzfire.com"
 ---

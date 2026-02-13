@@ -57,11 +57,10 @@ export function PageEndCelebration() {
         });
         // CTA 교차 등장
         setTimeout(() => setShowCta(true), 2500);
-        setTimeout(() => setCelebrating(false), 4000);
-        // 페이드아웃 시작
-        setTimeout(() => setSceneFading(true), 4500);
-        // 페이드아웃 완료 후 언마운트
-        setTimeout(() => setShowScene(false), 5500);
+        // 30초 후 자동 언마운트
+        setTimeout(() => setCelebrating(false), 28000);
+        setTimeout(() => setSceneFading(true), 29000);
+        setTimeout(() => setShowScene(false), 30000);
       },
     });
 

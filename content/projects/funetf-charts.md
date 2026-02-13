@@ -3,6 +3,7 @@ title: "삼성자산운용 FunETF"
 description: "Amcharts 기반 전체 차트 시스템 리뉴얼 및 React 관리자 페이지 개발. 대용량 데이터셋 렌더링 최적화를 수행했습니다."
 tags: ["JavaScript", "Amcharts5", "React", "React Query", "Tailwind CSS"]
 year: 2024
+period: "2024.01 — 2024.05"
 links:
   live: "https://www.funetf.co.kr/"
 ---
@@ -44,82 +45,15 @@ Amcharts5의 번들 사이즈가 상당히 큰(약 500KB gzipped) 편이었기 �
 Amcharts5의 번들 사이즈(약 500KB gzip)가 초기 로딩에 직접적인 영향을 주는 문제가 있었습니다. 사용자가 보지 않는 차트 유형까지 모두 다운로드하는 것은 불필요한 비용이므로, 차트 유형별 동적 임포트를 적용하여 각 차트(라인, 캔들스틱, 파이 등)를 별도 청크로 분리했습니다. 초기 로드 시에는 메인 페이지에 보이는 라인 차트만 로드하고, 나머지 차트는 Intersection Observer와 결합하여 사용자가 해당 탭을 클릭하거나 스크롤로 접근할 때 로드하도록 지연 로딩을 적용했습니다.
 
 ```typescript
-// 차트 모듈별 코드 스플리팅 + 데이터 가상화 패턴
-import { useQuery, useQueries } from '@tanstack/react-query';
-import { lazy, Suspense, useRef, useEffect, useState } from 'react';
-
-// 차트 유형별 동적 임포트 (각각 별도 청크로 분리)
+// 차트 유형별 코드 스플리팅 + 기간별 캐싱 전략
 const LineChart = lazy(() => import('./charts/LineChart'));
-const CandlestickChart = lazy(() => import('./charts/CandlestickChart'));
-const PieChart = lazy(() => import('./charts/PieChart'));
 
-// 기간별 데이터 분할 로딩: 데이터 양을 기간에 따라 조절
 function useETFChartData(etfCode: string, period: ChartPeriod) {
   return useQuery({
     queryKey: ['etf', 'chart', etfCode, period],
-    queryFn: () => fetchETFData(etfCode, period),
     staleTime: getStaleTime(period), // 기간별 캐시 수명 차별화
-    select: (data) => downsampleData(data, period), // 화면 크기에 맞게 샘플링
+    select: (data) => downsampleData(data, period), // 뷰포트 크기에 맞게 샘플링
   });
-}
-
-// 기간별 캐시 수명 정책
-function getStaleTime(period: ChartPeriod): number {
-  switch (period) {
-    case '1D': return 1000 * 60 * 5;      // 일별: 5분 (장중 변동)
-    case '1M': return 1000 * 60 * 60;     // 월별: 1시간
-    case '1Y': return 1000 * 60 * 60 * 24; // 연별: 24시간
-    case 'ALL': return Infinity;           // 전체: 변경 없음
-  }
-}
-
-// 뷰포트 기반 데이터 다운샘플링
-// 화면에 표시할 수 있는 픽셀 수를 초과하는 데이터 포인트는 샘플링
-function downsampleData(data: DataPoint[], period: ChartPeriod): DataPoint[] {
-  const maxVisiblePoints = window.innerWidth; // 화면 너비만큼의 포인트면 충분
-  if (data.length <= maxVisiblePoints) return data;
-
-  const step = Math.ceil(data.length / maxVisiblePoints);
-  return data.filter((_, index) => index % step === 0);
-}
-
-// Intersection Observer로 차트 지연 로딩
-function LazyChart({ type, etfCode }: { type: ChartType; etfCode: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect(); // 한 번 로드되면 관찰 중단
-        }
-      },
-      { rootMargin: '200px' } // 뷰포트 200px 전에 미리 로드
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const ChartComponent = {
-    line: LineChart,
-    candlestick: CandlestickChart,
-    pie: PieChart,
-  }[type];
-
-  return (
-    <div ref={ref} style={{ minHeight: 400 }}>
-      {isVisible ? (
-        <Suspense fallback={<ChartSkeleton />}>
-          <ChartComponent etfCode={etfCode} />
-        </Suspense>
-      ) : (
-        <ChartSkeleton />
-      )}
-    </div>
-  );
 }
 ```
 

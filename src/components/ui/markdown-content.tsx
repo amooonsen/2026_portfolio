@@ -1,4 +1,5 @@
 import {Marked, type Tokens} from "marked";
+import {createHighlighter, type Highlighter} from "shiki";
 import {cn} from "@/lib/utils";
 
 export interface TocHeading {
@@ -27,10 +28,35 @@ function stripInline(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`(.+?)`/g, "$1");
 }
 
-/**
- * marked 기반 커스텀 렌더러를 생성한다.
- * heading에 id 속성과 포트폴리오 스타일 클래스를 적용한다.
- */
+// ── Shiki highlighter 싱글톤 ──
+
+let highlighter: Highlighter | null = null;
+
+async function ensureHighlighter(): Promise<Highlighter> {
+  if (!highlighter) {
+    highlighter = await createHighlighter({
+      themes: ["github-dark-dimmed"],
+      langs: [
+        "typescript",
+        "javascript",
+        "tsx",
+        "jsx",
+        "html",
+        "css",
+        "json",
+        "bash",
+        "shell",
+        "python",
+        "yaml",
+        "markdown",
+      ],
+    });
+  }
+  return highlighter;
+}
+
+// ── Marked 인스턴스 ──
+
 function createMarkedInstance(): Marked {
   const marked = new Marked();
 
@@ -39,7 +65,6 @@ function createMarkedInstance(): Marked {
       heading(token: Tokens.Heading) {
         const plain = token.text.replace(/<[^>]*>/g, "");
         const id = slugify(plain);
-        // token.tokens에서 인라인 렌더링된 텍스트 사용
         const renderedText = this.parser.parseInline(token.tokens);
         if (token.depth === 2) {
           return `<h2 id="${id}" class="text-xl font-semibold mt-8 mb-3 first:mt-0 scroll-mt-24">${renderedText}</h2>`;
@@ -73,18 +98,48 @@ function createMarkedInstance(): Marked {
       code(token: Tokens.Code) {
         const lang = token.lang || "";
         const langLabel = lang
-          ? `<span class="absolute top-2 right-3 text-[10px] font-mono uppercase tracking-wider text-muted-foreground/50">${lang}</span>`
+          ? `<span class="absolute top-2 right-3 z-10 text-[10px] font-mono uppercase tracking-wider text-white/30 select-none">${lang}</span>`
           : "";
-        const langAttr = lang ? ` data-lang="${lang}"` : "";
+
+        // shiki 하이라이팅 (highlighter가 초기화된 경우)
+        if (highlighter && lang) {
+          try {
+            const html = highlighter.codeToHtml(token.text, {
+              lang,
+              theme: "github-dark-dimmed",
+            });
+            return (
+              `<div class="relative mt-4 mb-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border/50 [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_code]:font-mono">` +
+              `${langLabel}${html}</div>`
+            );
+          } catch {
+            // 알 수 없는 언어 — 폴백
+          }
+        }
+
+        // 폴백: 플레인 코드
         const escaped = token.text
           .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;");
         return (
           `<div class="relative mt-4 mb-4">${langLabel}` +
-          `<pre class="overflow-x-auto rounded-lg bg-muted/50 border border-border/50 p-4 text-sm leading-relaxed"${langAttr}>` +
-          `<code class="font-mono text-muted-foreground">${escaped}</code>` +
+          `<pre class="overflow-x-auto rounded-lg bg-[#22272e] border border-border/50 p-4 text-sm leading-relaxed">` +
+          `<code class="font-mono text-[#adbac7]">${escaped}</code>` +
           `</pre></div>`
+        );
+      },
+      image(token: Tokens.Image) {
+        const alt = token.text || "";
+        const src = token.href || "";
+        const title = token.title || "";
+        return (
+          `<figure class="my-6">` +
+          `<img src="${src}" alt="${alt}" class="rounded-lg border border-border/30 w-full" loading="lazy" />` +
+          (title
+            ? `<figcaption class="mt-2 text-center text-sm text-muted-foreground">${title}</figcaption>`
+            : "") +
+          `</figure>`
         );
       },
       link(token: Tokens.Link) {
@@ -122,10 +177,11 @@ function createMarkedInstance(): Marked {
 const markedInstance = createMarkedInstance();
 
 /**
- * marked 기반 마크다운 렌더링 컴포넌트.
- * Server Component에서 안정적으로 동작한다.
+ * marked + shiki 기반 마크다운 렌더링 컴포넌트.
+ * Server Component에서 async로 동작하며, 코드 블록에 구문 하이라이팅을 적용한다.
  */
-export function MarkdownContent({content, className}: MarkdownContentProps) {
+export async function MarkdownContent({content, className}: MarkdownContentProps) {
+  await ensureHighlighter();
   const html = markedInstance.parse(content) as string;
 
   return (
