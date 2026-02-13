@@ -11,6 +11,8 @@ import {techCategories} from "@/data/portfolio-data";
 
 export const metadata: Metadata = {
   title: "소개",
+  description:
+    "조경문 프론트엔드 개발자의 소개 페이지입니다. 4년 5개월간의 경력과 개발 철학, 기술 스택을 확인하세요.",
 };
 
 const philosophies = [
@@ -141,10 +143,10 @@ export default function AboutPage() {
 
       {/* 자기소개 */}
       <Section spacing="lg" container>
-        <div className="grid gap-12 lg:grid-cols-5">
+        <article className="grid gap-12 lg:grid-cols-5">
           <div className="lg:col-span-3">
             <FadeIn>
-              <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
+              <GradientText as="h1" gradient="primary" className="text-3xl font-bold">
                 About Me
               </GradientText>
             </FadeIn>
@@ -179,10 +181,10 @@ export default function AboutPage() {
             </FadeIn>
           </div>
 
-          <div className="lg:col-span-2">
+          <aside className="lg:col-span-2">
             <FadeIn delay={0.2}>
               <GlassCard padding="lg" className="space-y-4">
-                <h3 className="text-lg font-semibold text-white">Quick Info</h3>
+                <h2 className="text-lg font-semibold text-white">Quick Info</h2>
                 <dl className="space-y-3 text-sm">
                   {[
                     {dt: "역할", dd: "FE Developer / 매니저"},
@@ -199,8 +201,8 @@ export default function AboutPage() {
                 </dl>
               </GlassCard>
             </FadeIn>
-          </div>
-        </div>
+          </aside>
+        </article>
       </Section>
 
       {/* 개발 여정 */}
@@ -212,25 +214,31 @@ export default function AboutPage() {
           <p className="mt-2 text-white/60">프론트엔드 개발자로서의 성장 과정입니다.</p>
         </FadeIn>
 
-        <div className="relative mt-10">
+        <div className="relative mt-10" role="list" aria-label="개발 여정">
           <div className="space-y-0">
             {journeyItems.map((item, i) => (
               <FadeIn key={item.year} delay={i * 0.1}>
-                <div className="group relative grid gap-4 border-l border-white/10 py-8 pl-8 md:grid-cols-5 md:gap-8">
+                <article
+                  className="group relative grid gap-4 border-l border-white/10 py-8 pl-8 md:grid-cols-5 md:gap-8"
+                  role="listitem"
+                >
                   {/* 타임라인 도트 */}
-                  <div className="absolute -left-[5px] top-10 h-2.5 w-2.5 rounded-full border-2 border-indigo-400/60 bg-background transition-colors group-hover:border-indigo-400 group-hover:bg-indigo-400/20" />
+                  <div
+                    className="absolute -left-[5px] top-10 h-2.5 w-2.5 rounded-full border-2 border-indigo-400/60 bg-background transition-colors group-hover:border-indigo-400 group-hover:bg-indigo-400/20"
+                    aria-hidden="true"
+                  />
 
                   <div className="md:col-span-1">
-                    <span className="text-sm font-mono font-medium text-indigo-400">
+                    <time className="text-sm font-mono font-medium text-indigo-400">
                       {item.year}
-                    </span>
-                    <p className="mt-1 text-lg font-semibold text-white">{item.title}</p>
+                    </time>
+                    <h3 className="mt-1 text-lg font-semibold text-white">{item.title}</h3>
                   </div>
 
                   <div className="md:col-span-4">
                     <p className="text-white/70 leading-relaxed">{item.description}</p>
                   </div>
-                </div>
+                </article>
               </FadeIn>
             ))}
           </div>
@@ -246,16 +254,25 @@ export default function AboutPage() {
           <p className="mt-2 text-white/60">개발할 때 가장 중요하게 생각하는 가치들입니다.</p>
         </FadeIn>
 
-        <StaggerChildren className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <StaggerChildren
+          className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          role="list"
+          aria-label="개발 철학"
+        >
           {philosophies.map((item) => (
-            <GlassCard key={item.title} padding="lg" hover>
-              <span className="text-sm font-mono font-semibold text-indigo-400">{item.number}</span>
+            <GlassCard key={item.title} padding="lg" hover role="listitem">
+              <span
+                className="text-sm font-mono font-semibold text-indigo-400"
+                aria-label={`철학 ${item.number}`}
+              >
+                {item.number}
+              </span>
               <h3 className="mt-3 text-lg font-semibold text-white">{item.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-white/70">{item.description}</p>
               <ul className="mt-4 space-y-2">
                 {item.details.map((detail) => (
                   <li key={detail} className="flex items-start gap-2 text-xs text-white/60">
-                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60" />
+                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60" aria-hidden="true" />
                     {detail}
                   </li>
                 ))}

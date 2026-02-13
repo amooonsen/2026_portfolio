@@ -5,6 +5,8 @@ import { socials } from "@/data/socials"
 
 export const metadata: Metadata = {
   title: "연락처",
+  description:
+    "조경문에게 연락하세요. 프로젝트 문의, 협업 제안, 채용 문의 등을 기다립니다.",
 }
 
 /**

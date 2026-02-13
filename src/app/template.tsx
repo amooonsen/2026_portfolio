@@ -16,12 +16,25 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // 라우트 전환 시 스크롤 위치를 최상단으로 리셋 (Lenis 내부 상태 포함)
   useEffect(() => {
-    const lenis = getLenisInstance()
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true })
-    } else {
-      window.scrollTo(0, 0)
+    // Lenis 인스턴스가 준비될 때까지 대기 후 스크롤 리셋
+    const scrollToTop = () => {
+      const lenis = getLenisInstance()
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true })
+      } else {
+        window.scrollTo(0, 0)
+      }
     }
+
+    // 즉시 실행
+    scrollToTop()
+
+    // Lenis 초기화를 위한 재시도 로직 (100ms 후)
+    const timer = setTimeout(() => {
+      scrollToTop()
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
