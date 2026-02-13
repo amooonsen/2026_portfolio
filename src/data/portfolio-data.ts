@@ -12,7 +12,7 @@ export const navItems = [
   { label: "연락처", href: "/contact" },
 ]
 
-/* ─── 경력 (최신순) ─── */
+/* ─── 경력 (최신순, 핵심 스텝만 노출) ─── */
 
 export const experiences: TimelineItem[] = [
   {
@@ -44,36 +44,6 @@ export const experiences: TimelineItem[] = [
       "고객사 제안 수주 성공에 기술적 근거 및 데모 제공으로 기여",
     ],
     technologies: ["Next.js", "TypeScript", "Zustand", "Supabase", "Fastify", "n8n"],
-  },
-  {
-    company: "주식회사이트라이브",
-    role: "프론트엔드 개발 매니저",
-    period: "2024.10 — 2026.02",
-    year: 2024,
-    description:
-      "해외인턴십 채용 매칭 플랫폼 ThunderJob의 기획부터 배포까지 End-to-End FE 개발을 리딩했습니다.",
-    achievements: [
-      "Next.js SSR/SSG 아키텍처 구축으로 SEO 최적화 및 초기 로딩 개선",
-      "인턴/기업 회원 역할별 채용 프로세스 플로우 설계·구현",
-      "Tosspayments 결제 모듈 연동 및 GitLab CI/CD 배포 자동화 구축",
-      "Sentry 모니터링 도입 및 I18N 다국어 처리(ko, en)",
-    ],
-    technologies: ["Next.js", "TypeScript", "Zustand", "Sentry", "I18N", "GitLab CI/CD"],
-  },
-  {
-    company: "주식회사이트라이브",
-    role: "프론트엔드 개발 매니저",
-    period: "2024.01 — 2024.07",
-    year: 2024,
-    description:
-      "삼정회계법인 KPMG 홈페이지 구축 및 삼성자산운용 FunETF 차트 시스템 리뉴얼을 담당했습니다.",
-    achievements: [
-      "KPMG: React + React Query + Zustand 기반 SPA 아키텍처 구축",
-      "KPMG: 멀티 스텝 폼 및 무한 스크롤 게시판 구현",
-      "FunETF: Amcharts5 기반 전체 차트 시스템 리뉴얼 및 레거시 마이그레이션",
-      "FunETF: 대용량 데이터셋(1000+ 포인트) 렌더링 최적화",
-    ],
-    technologies: ["React", "React Query", "Zustand", "Amcharts5", "Tailwind CSS"],
   },
   {
     company: "주식회사이트라이브",
