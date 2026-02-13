@@ -147,7 +147,7 @@ function createMarkedInstance(): Marked {
       },
       link(token: Tokens.Link) {
         const text = this.parser.parseInline(token.tokens);
-        return `<a href="${token.href}" target="_blank" rel="noopener noreferrer" class="text-accent-indigo hover:opacity-80 underline underline-offset-2 transition-colors">${text}</a>`;
+        return `<a href="${token.href}" target="_blank" rel="noopener noreferrer" class="text-accent-highlight hover:opacity-80 underline underline-offset-2 transition-colors">${text}</a>`;
       },
       blockquote(token: Tokens.Blockquote) {
         const text = this.parser.parse(token.tokens);

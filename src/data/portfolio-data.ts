@@ -25,6 +25,7 @@ export const experiences: TimelineItem[] = [
       "프론트엔드 기술 스택 선정 및 아키텍처 설계 주도",
       "Core Web Vitals 최적화 — LCP 2000ms 이하, INP 150ms 이하 달성",
       "400+ 폼 필드 규모의 대규모 시스템 렌더링 최적화",
+      "Claude Code, Cursor 등 AI 도구를 개발 워크플로우에 도입하여 생산성 향상",
       "n8n + AI Agent 자동화 파이프라인 구축으로 운영 효율화",
       "삼성·롯데 등 대형 고객사 기술 데모 및 수주 기여",
     ],
@@ -87,6 +88,16 @@ export const techCategories: TechCategory[] = [
       {name: "GitLab CI/CD"},
       {name: "AWS"},
       {name: "Sentry"},
+    ],
+  },
+  {
+    name: "AI & Productivity",
+    items: [
+      {name: "Claude Code"},
+      {name: "Cursor"},
+      {name: "GitHub Copilot"},
+      {name: "v0"},
+      {name: "ChatGPT"},
     ],
   },
   {

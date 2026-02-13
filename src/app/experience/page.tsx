@@ -28,11 +28,14 @@ export default function ExperiencePage() {
           <p className="mt-6 text-lg leading-relaxed text-foreground/80">
             <span className="text-accent-highlight">Next.js, TypeScript, React</span>를 기반으로
             엔터프라이즈급 웹 애플리케이션을 구축합니다.
-            <br /> 다수의 <span className="text-accent-highlight">React Hook Form + Zod</span>로
-            타입 안전한 폼 시스템 설계 경험이 있습니다. <br />{" "}
-            <span className="text-accent-highlight">Gsap</span>를 주로 사용하고,{" "}
-            <span className="text-accent-highlight">Chart.js 및 Amcharts</span>로 금융 데이터를
-            시각화해왔습니다.
+            <br /> <span className="text-accent-highlight">React Hook Form + Zod</span>로
+            타입 안전한 폼 시스템을 설계하고,{" "}
+            <span className="text-accent-highlight">GSAP</span>과{" "}
+            <span className="text-accent-highlight">Chart.js</span>로 인터랙션과 데이터를
+            시각화합니다.
+            <br />{" "}
+            <span className="text-accent-highlight">Claude Code, Cursor</span> 등 AI 도구를
+            적극 활용하여 코드 생성부터 리팩토링, 디버깅까지 개발 전 과정의 생산성을 높이고 있습니다.
           </p>
         </FadeIn>
       </FadeIn>

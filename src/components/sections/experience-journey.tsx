@@ -28,7 +28,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
               />
 
               <div className="md:col-span-1">
-                <time className="text-sm font-mono font-medium text-accent-indigo">{item.year}</time>
+                <time className="text-sm font-mono font-medium text-accent-highlight">{item.year}</time>
                 <h3 className="mt-1 text-lg font-semibold text-foreground">{item.title}</h3>
               </div>
 
@@ -41,7 +41,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
                       <Link
                         key={project.slug}
                         href={`/projects/${project.slug}`}
-                        className="inline-flex items-center gap-1 rounded-full border border-glass-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-accent-indigo-muted hover:text-accent-indigo"
+                        className="inline-flex items-center gap-1 rounded-full border border-glass-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-accent-indigo-muted hover:text-accent-highlight"
                       >
                         {project.name}
                         <ArrowUpRight className="h-3 w-3" />

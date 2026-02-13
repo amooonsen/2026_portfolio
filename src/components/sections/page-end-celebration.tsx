@@ -91,7 +91,7 @@ export function PageEndCelebration() {
             showMessage ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
           )}
         >
-          <PartyPopper className="mx-auto h-10 w-10 text-accent-indigo" strokeWidth={1.5} />
+          <PartyPopper className="mx-auto h-10 w-10 text-accent-highlight" strokeWidth={1.5} />
           <GradientText as="p" gradient="primary" className="mt-2 text-xl font-bold">
             여기까지 봐주셔서 감사합니다!
           </GradientText>

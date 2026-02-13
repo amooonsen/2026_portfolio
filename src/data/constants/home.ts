@@ -22,10 +22,10 @@ export const philosophies: Philosophy[] = [
     number: "02",
     title: "견고한 코드",
     description:
-      "읽기 쉽고 유지보수 가능한 코드를 추구합니다. TypeScript의 타입 안전성, 충분한 테스트 커버리지, 일관된 코딩 컨벤션으로 팀 전체의 생산성을 높입니다.",
+      "읽기 쉽고 유지보수 가능한 코드를 추구합니다. TypeScript의 타입 안전성과 일관된 컨벤션을 기반으로 하되, Claude Code 등 AI 도구를 활용한 코드 리뷰와 리팩토링으로 품질을 한 단계 높입니다.",
     details: [
       "TypeScript strict mode 기반 타입 안전성",
-      "단위·통합·E2E 테스트 자동화",
+      "AI 보조 코드 리뷰로 패턴 일관성 검증",
       "ESLint, Prettier로 일관된 컨벤션 유지",
     ],
   },
@@ -64,13 +64,13 @@ export const philosophies: Philosophy[] = [
   },
   {
     number: "06",
-    title: "지속적 학습",
+    title: "AI 시대의 개발자",
     description:
-      "빠르게 변화하는 프론트엔드 생태계에서 새로운 기술과 패턴을 꾸준히 학습합니다. 실무에 적용 가능한 기술을 선별하여 팀에 공유하고 함께 성장합니다.",
+      "Claude Code, Cursor, GitHub Copilot 등 AI 도구를 실무 워크플로우에 통합하여 개발 생산성을 극대화합니다. AI가 생성한 코드를 검증하고 최적화하는 것이 현대 개발자의 핵심 역량이라고 생각합니다.",
     details: [
-      "기술 블로그 운영과 사내 세미나 발표",
-      "오픈소스 프로젝트 기여 및 분석",
-      "새로운 프레임워크와 도구 PoC 수행",
+      "Claude Code로 코드 생성·리팩토링·디버깅 자동화",
+      "Cursor + Copilot 기반 AI 페어 프로그래밍",
+      "n8n + AI Agent로 반복 업무 자동화 파이프라인 구축",
     ],
   },
 ];
@@ -130,9 +130,9 @@ export const journeyItems: JourneyItem[] = [
   },
   {
     year: "2025",
-    title: "성능 최적화 & 대규모 시스템",
+    title: "성능 최적화 & AI 워크플로우",
     description:
-      "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화 및 레거시 인증 시스템 마이그레이션을 수행하며 대규모 엔터프라이즈 시스템에서의 프론트엔드 전문성을 심화했습니다.",
+      "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화를 수행했습니다. Claude Code, Cursor 등 AI 도구를 개발 워크플로우 전반에 도입하여 코드 생성·리팩토링·디버깅 효율을 크게 높였습니다.",
     projects: [{slug: "lgcns-recruitment", name: "LG CNS 채용 솔루션"}],
   },
 ];
