@@ -7,6 +7,7 @@ import { ExternalLink, Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Container } from "@/components/ui/container"
 import { MobileNav } from "./mobile-nav"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface NavItem {
   label: string
@@ -21,7 +22,8 @@ interface HeaderProps {
 
 /**
  * 고정 헤더 컴포넌트.
- * 스크롤 다운 시 숨기고, 스크롤 업 시 glassmorphism 배경과 함께 표시한다.
+ * 데스크톱: 스크롤 다운 시 숨기고, 스크롤 업 시 glassmorphism 배경과 함께 표시한다.
+ * 모바일: 항상 고정되어 표시된다.
  * 현재 라우트에 따라 네비게이션 링크 활성 상태를 표시한다.
  * @param props.items - 네비게이션 링크 목록
  * @param props.className - 추가 CSS 클래스
@@ -32,8 +34,9 @@ export function Header({ items, className }: HeaderProps) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const lastScrollY = useRef(0)
   const pathname = usePathname()
+  const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. */
+  /** 스크롤 방향을 감지하여 헤더 표시 여부와 배경 스타일을 결정한다. 모바일에서는 항상 표시. */
   const handleScroll = useCallback(() => {
     const currentY = window.scrollY
 
@@ -41,12 +44,13 @@ export function Header({ items, className }: HeaderProps) {
       setIsVisible(true)
       setIsScrolled(false)
     } else {
-      setIsVisible(currentY < lastScrollY.current)
+      // 모바일에서는 항상 visible, 데스크톱에서만 스크롤 방향에 따라 숨김/표시
+      setIsVisible(!isDesktop || currentY < lastScrollY.current)
       setIsScrolled(true)
     }
 
     lastScrollY.current = currentY
-  }, [])
+  }, [isDesktop])
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true })

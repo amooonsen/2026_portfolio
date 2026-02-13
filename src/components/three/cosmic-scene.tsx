@@ -5,10 +5,11 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { Points, PointMaterial, Float } from "@react-three/drei"
 import * as THREE from "three"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 /* ─── 별 필드 ─── */
 
-function StarField({ count = 600 }: { count?: number }) {
+function StarField({ count = 600, isMobile = false }: { count?: number; isMobile?: boolean }) {
   const ref = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
@@ -25,7 +26,7 @@ function StarField({ count = 600 }: { count?: number }) {
   }, [count])
 
   useFrame((_, delta) => {
-    if (ref.current) {
+    if (ref.current && !isMobile) {
       ref.current.rotation.y += delta * 0.008
       ref.current.rotation.x += delta * 0.003
     }
@@ -47,7 +48,7 @@ function StarField({ count = 600 }: { count?: number }) {
 
 /* ─── 네뷸라 파티클 ─── */
 
-function NebulaParticles({ count = 150 }: { count?: number }) {
+function NebulaParticles({ count = 150, isMobile = false }: { count?: number; isMobile?: boolean }) {
   const ref = useRef<THREE.Points>(null)
 
   const [positions, colors] = useMemo(() => {
@@ -80,7 +81,7 @@ function NebulaParticles({ count = 150 }: { count?: number }) {
   }, [count])
 
   useFrame((_, delta) => {
-    if (ref.current) {
+    if (ref.current && !isMobile) {
       ref.current.rotation.y += delta * 0.02
     }
   })
@@ -116,7 +117,7 @@ function GlowOrb({ position, color, scale = 1 }: { position: [number, number, nu
 
 /* ─── 마우스 반응형 카메라 ─── */
 
-function CameraRig() {
+function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
   const { camera } = useThree()
   const mouseRef = useRef({ x: 0, y: 0 })
 
@@ -131,6 +132,8 @@ function CameraRig() {
   }, [handlePointerMove])
 
   useFrame(() => {
+    if (isMobile) return
+
     const targetX = mouseRef.current.x * 1.5
     const targetY = -mouseRef.current.y * 1
 
@@ -144,7 +147,11 @@ function CameraRig() {
 
 /* ─── 메인 씬 내부 ─── */
 
-function CosmicSceneInner() {
+function CosmicSceneInner({ isMobile = false }: { isMobile?: boolean }) {
+  // 모바일에서 파티클 수 50% 감소
+  const starCount = isMobile ? 300 : 600
+  const nebulaCount = isMobile ? 75 : 150
+
   return (
     <>
       <color attach="background" args={["#030014"]} />
@@ -152,13 +159,14 @@ function CosmicSceneInner() {
 
       <ambientLight intensity={0.08} />
 
-      <CameraRig />
-      <StarField />
-      <NebulaParticles />
+      <CameraRig isMobile={isMobile} />
+      <StarField count={starCount} isMobile={isMobile} />
+      <NebulaParticles count={nebulaCount} isMobile={isMobile} />
 
-      <GlowOrb position={[-15, 5, -20]} color="#7c3aed" scale={3} />
-      <GlowOrb position={[20, -8, -15]} color="#ec4899" scale={2.5} />
-      <GlowOrb position={[0, 10, -30]} color="#6366f1" scale={4} />
+      {/* 모바일에서 GlowOrb 2개만 표시 */}
+      <GlowOrb position={[-15, 5, -20]} color="#7c3aed" scale={isMobile ? 2 : 3} />
+      {!isMobile && <GlowOrb position={[20, -8, -15]} color="#ec4899" scale={2.5} />}
+      <GlowOrb position={[0, 10, -30]} color="#6366f1" scale={isMobile ? 3 : 4} />
     </>
   )
 }
@@ -188,11 +196,13 @@ interface CosmicSceneProps {
  * React Three Fiber를 사용하여 별, 네뷸라 파티클, 빛 구체를 렌더링한다.
  * fixed 포지션으로 전체 페이지 뒤에 패럴랙스 배경으로 동작한다.
  * reduced-motion 시 CSS 정적 배경으로 대체된다.
+ * 모바일에서 파티클 수와 애니메이션을 최적화하여 성능을 개선한다.
  * @param props.className - 추가 CSS 클래스
  * @param props.onCreated - Canvas 생성 완료 시 콜백
  */
 export function CosmicScene({ className, onCreated }: CosmicSceneProps) {
   const reducedMotion = useReducedMotion()
+  const isMobile = useMediaQuery("(max-width: 767px)")
 
   if (reducedMotion) {
     return <StaticBackground />
@@ -206,11 +216,11 @@ export function CosmicScene({ className, onCreated }: CosmicSceneProps) {
     >
       <Canvas
         camera={{ position: [0, 0, 25], fov: 60, near: 0.1, far: 300 }}
-        dpr={[1, 1.5]}
+        dpr={isMobile ? [1, 1] : [1, 1.5]}
         gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
         onCreated={onCreated}
       >
-        <CosmicSceneInner />
+        <CosmicSceneInner isMobile={isMobile} />
       </Canvas>
     </div>
   )
