@@ -32,7 +32,7 @@ export default function Home() {
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
         text="기술 선택에는 이유가 있어야 하고, 코드는 6개월 후에도 이해할 수 있어야 합니다. 
-성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만듭니다."
+성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
       />
 
       {/* 자기소개 */}
@@ -47,72 +47,17 @@ export default function Home() {
 
             <FadeIn delay={0.1}>
               <p className="mt-6 text-lg leading-relaxed text-white/80">
-                4년간 프론트엔드 개발을 하며 한 가지 확신을 얻었습니다.
+                개발, 더 나아가 제품을 만들 때 가장 중요한 것은
+                <span className="text-indigo-400 font-medium"> "왜?"라는 질문</span>이라고
+                생각합니다.
+                <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
+                이유가 있을 때,
+                <br />
                 <span className="text-indigo-400 font-medium">
                   {" "}
-                  좋은 코드는 6개월 후에도 이해할 수 있어야 한다
+                  확장 가능하고 유지보수하기 쉬운 시스템
                 </span>
-                는 것입니다. 그래서 저는 단순히 기능을 구현하는 것이 아니라,
-                <span className="text-indigo-400 font-medium">
-                  {" "}
-                  확장 가능하고 유지보수하기 쉬운 아키텍처
-                </span>
-                를 설계하는 데 집중합니다.
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.2}>
-              <p className="mt-4 text-lg leading-relaxed text-white/80">
-                <span className="text-indigo-400 font-medium">삼성, 롯데, LG CNS</span> 프로젝트에서
-                프론트엔드를 리드하며 측정 가능한 성과를 만들었습니다.
-              </p>
-              <ul className="mt-3 space-y-2 text-lg text-white/80">
-                <li className="flex items-start gap-2">
-                  <span
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white"
-                    aria-hidden="true"
-                  />
-                  이미지 최적화로{" "}
-                  <span className="text-indigo-400 font-medium">LCP 2.1초 개선</span> (3.8s → 1.7s)
-                </li>
-                <li className="flex items-start gap-2">
-                  <span
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white"
-                    aria-hidden="true"
-                  />
-                  코드 스플리팅으로{" "}
-                  <span className="text-indigo-400 font-medium">초기 로딩 35% 단축</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white"
-                    aria-hidden="true"
-                  />
-                  <span className="text-indigo-400 font-medium">400+ 필드 폼 시스템</span> 설계로
-                  개발 시간 50% 단축
-                </li>
-              </ul>
-            </FadeIn>
-
-            <FadeIn delay={0.3}>
-              <p className="mt-6 text-lg leading-relaxed text-white/80">
-                <span className="text-indigo-400 font-medium">Next.js, TypeScript, React</span>를
-                기반으로 엔터프라이즈급 웹 애플리케이션을 구축합니다. React Hook Form + Zod로 타입
-                안전한 폼 시스템을 설계하고, Zustand로 복잡한 상태를 관리하며, Amcharts로 금융
-                데이터를 시각화해왔습니다.
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.4}>
-              <p className="mt-4 text-lg leading-relaxed text-white/80">
-                기술적 의사결정뿐만 아니라{" "}
-                <span className="text-indigo-400 font-medium">팀과 함께 성장하는 것</span>을
-                중요하게 생각합니다. 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화하며, 주니어
-                개발자의 멘토로 활동하고 있습니다. 개발자는 코드만 작성하는 사람이 아니라,
-                <span className="text-indigo-400 font-medium">
-                  문제를 해결하고 가치를 만드는 사람
-                </span>
-                이라고 믿습니다.
+                이 만들어집니다.
               </p>
             </FadeIn>
           </div>
@@ -147,7 +92,18 @@ export default function Home() {
           <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
             Journey
           </GradientText>
-          <p className="mt-2 text-white/60">프론트엔드 개발자로서의 성장 과정입니다.</p>
+          <FadeIn delay={0.3}>
+            <p className="mt-6 text-lg leading-relaxed text-white/80">
+              <span className="text-indigo-400 font-medium">Next.js, TypeScript, React</span>를
+              기반으로 엔터프라이즈급 웹 애플리케이션을 구축합니다.
+              <br /> 다수의{" "}
+              <span className="text-indigo-400 font-medium">React Hook Form + Zod</span>로 타입
+              안전한 폼 시스템 설계 경험이 있습니다. <br />{" "}
+              <span className="text-indigo-400 font-medium">Gsap</span>를 주로 사용하고,{" "}
+              <span className="text-indigo-400 font-medium">Chart.js 및 Amcharts</span>로 금융
+              데이터를 시각화해왔습니다.
+            </p>
+          </FadeIn>
         </FadeIn>
 
         <div className="relative mt-10" role="list" aria-label="개발 여정">
@@ -186,7 +142,34 @@ export default function Home() {
           <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
             Philosophy
           </GradientText>
-          <p className="mt-2 text-white/60">개발할 때 가장 중요하게 생각하는 가치들입니다.</p>
+          <FadeIn delay={0.1}>
+            <p className="mt-6 text-lg leading-relaxed text-white/80">
+              개발, 더 나아가 제품을 만들 때 가장 중요한 것은
+              <span className="text-indigo-400 font-medium"> "왜?"라는 질문</span>이라고 생각합니다.
+              <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
+              이유가 있을 때,
+              <br />
+              <span className="text-indigo-400 font-medium">
+                {" "}
+                확장 가능하고 유지보수하기 쉬운 시스템
+              </span>
+              이 만들어집니다.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.4}>
+            <p className="mt-4 text-lg leading-relaxed text-white/80">
+              기술적 의사결정뿐만 아니라{" "}
+              <span className="text-indigo-400 font-medium">팀과 함께 성장하는 것</span>을 중요하게
+              생각합니다.
+              <br /> 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화 하였습니다.
+              <br />
+              개발자는 코드만 작성하는 사람이 아니라,
+              <span className="text-indigo-400 font-medium">
+                문제를 해결하고 가치를 만드는 사람
+              </span>
+              이라고 믿습니다.
+            </p>
+          </FadeIn>
         </FadeIn>
 
         <StaggerChildren
