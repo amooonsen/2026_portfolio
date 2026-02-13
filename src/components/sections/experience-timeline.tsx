@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { gsap, ScrollTrigger } from "@/lib/gsap"
-import { useReducedMotion } from "@/hooks/use-reduced-motion"
-import { Section } from "@/components/ui/section"
-import { GlassCard } from "@/components/ui/glass-card"
-import { TechBadge } from "@/components/ui/tech-badge"
-import { GradientText } from "@/components/ui/gradient-text"
-import { FadeIn } from "@/components/animation/fade-in"
-import { cn } from "@/lib/utils"
+import {useEffect, useRef} from "react";
+import {gsap, ScrollTrigger} from "@/lib/gsap";
+import {useReducedMotion} from "@/hooks/use-reduced-motion";
+import {Section} from "@/components/ui/section";
+import {GlassCard} from "@/components/ui/glass-card";
+import {TechBadge} from "@/components/ui/tech-badge";
+import {GradientText} from "@/components/ui/gradient-text";
+import {FadeIn} from "@/components/animation/fade-in";
+import {cn} from "@/lib/utils";
 
 interface TimelineItem {
-  company: string
-  role: string
-  period: string
-  year: number
-  description: string
-  achievements?: string[]
-  technologies: string[]
+  company: string;
+  role: string;
+  period: string;
+  year: number;
+  description: string;
+  achievements?: string[];
+  technologies: string[];
 }
 
 interface ExperienceTimelineProps {
-  items: TimelineItem[]
+  items: TimelineItem[];
 }
 
 /**
@@ -30,28 +30,25 @@ interface ExperienceTimelineProps {
  * 타임라인 라인 드로우, 도트 스케일, 카드 3D 슬라이드, 뱃지 스태거 애니메이션을 포함한다.
  * @param props.items - 경력 항목 배열 (최신순 권장)
  */
-export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const lineRef = useRef<HTMLDivElement>(null)
-  const reducedMotion = useReducedMotion()
+export function ExperienceTimeline({items}: ExperienceTimelineProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!containerRef.current || reducedMotion) return
+    if (!containerRef.current || reducedMotion) return;
 
-    const cards = containerRef.current.querySelectorAll("[data-timeline-item]")
-    const dots = containerRef.current.querySelectorAll("[data-timeline-dot]")
-    const yearBadges = containerRef.current.querySelectorAll(
-      "[data-timeline-year]"
-    )
-    const techGroups =
-      containerRef.current.querySelectorAll("[data-tech-group]")
+    const cards = containerRef.current.querySelectorAll("[data-timeline-item]");
+    const dots = containerRef.current.querySelectorAll("[data-timeline-dot]");
+    const yearBadges = containerRef.current.querySelectorAll("[data-timeline-year]");
+    const techGroups = containerRef.current.querySelectorAll("[data-tech-group]");
 
     const ctx = gsap.context(() => {
       // 타임라인 라인 드로우 (스크롤 연동)
       if (lineRef.current) {
         gsap.fromTo(
           lineRef.current,
-          { scaleY: 0 },
+          {scaleY: 0},
           {
             scaleY: 1,
             ease: "none",
@@ -61,13 +58,13 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
               end: "bottom 20%",
               scrub: 0.5,
             },
-          }
-        )
+          },
+        );
       }
 
       // 카드 입장 — 좌우에서 3D 회전 + 페이드
       cards.forEach((card, i) => {
-        const isLeft = i % 2 === 0
+        const isLeft = i % 2 === 0;
         gsap.from(card, {
           opacity: 0,
           x: isLeft ? -80 : 80,
@@ -79,8 +76,8 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        })
-      })
+        });
+      });
 
       // 타임라인 도트 — 스케일 + 바운스 등장
       dots.forEach((dot) => {
@@ -93,8 +90,8 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        })
-      })
+        });
+      });
 
       // 연도 뱃지 — 페이드 + 스케일
       yearBadges.forEach((badge) => {
@@ -108,12 +105,12 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
             start: "top 88%",
             toggleActions: "play none none none",
           },
-        })
-      })
+        });
+      });
 
       // 기술 뱃지 — 스태거 페이드인
       techGroups.forEach((group) => {
-        const badges = group.querySelectorAll("[data-tech-badge]")
+        const badges = group.querySelectorAll("[data-tech-badge]");
         gsap.from(badges, {
           opacity: 0,
           y: 10,
@@ -126,26 +123,20 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
             start: "top 92%",
             toggleActions: "play none none none",
           },
-        })
-      })
-    })
+        });
+      });
+    });
 
-    return () => ctx.revert()
-  }, [reducedMotion])
+    return () => ctx.revert();
+  }, [reducedMotion]);
 
   return (
     <Section spacing="lg" container>
       <FadeIn>
-        <GradientText
-          as="h2"
-          gradient="primary"
-          className="text-3xl font-bold"
-        >
+        <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
           Experience
         </GradientText>
-        <p className="mt-2 text-muted-foreground">
-          성장하며 쌓아온 경험들입니다.
-        </p>
+        <p className="mt-2 text-muted-foreground">성장하며 쌓아온 경험들입니다.</p>
       </FadeIn>
 
       <div ref={containerRef} className="relative mt-16 overflow-hidden">
@@ -157,12 +148,9 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
 
         <div className="space-y-16 md:space-y-20">
           {items.map((item, i) => {
-            const isLeft = i % 2 === 0
+            const isLeft = i % 2 === 0;
             return (
-              <div
-                key={`${item.company}-${item.period}`}
-                className="relative"
-              >
+              <div key={`${item.company}-${item.period}`} className="relative">
                 {/* 연도 뱃지 */}
                 <div
                   data-timeline-year
@@ -186,21 +174,17 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
                   data-timeline-item
                   className={cn(
                     "relative pl-10 pt-4 md:flex md:w-[calc(50%-2rem)] md:pl-0 md:pt-2",
-                    isLeft ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10"
+                    isLeft ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10",
                   )}
-                  style={{ perspective: "800px" }}
+                  style={{perspective: "800px"}}
                 >
                   <GlassCard padding="lg" hover className="w-full">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <h3 className="text-xl font-semibold">{item.role}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {item.company}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{item.company}</p>
                       </div>
-                      <span className="shrink-0 text-sm text-muted-foreground">
-                        {item.period}
-                      </span>
+                      <span className="shrink-0 text-sm text-muted-foreground">{item.period}</span>
                     </div>
 
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -233,12 +217,12 @@ export function ExperienceTimeline({ items }: ExperienceTimelineProps) {
                   </GlassCard>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
     </Section>
-  )
+  );
 }
 
-export type { TimelineItem }
+export type {TimelineItem};
