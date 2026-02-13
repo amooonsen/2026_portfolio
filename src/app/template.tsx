@@ -3,16 +3,19 @@
 import { useEffect, useRef } from "react"
 import { gsap, ScrollTrigger } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { getLenisInstance } from "@/lib/lenis-store"
 
 /**
  * 페이지 트랜지션 템플릿.
  * 라우트 전환 시 아래에서 위로 블러와 함께 등장하는 애니메이션을 적용한다.
+ * 모바일에서는 간소화된 페이드인 애니메이션을 사용한다.
  * App Router의 template은 네비게이션마다 새로 마운트된다.
  */
 export default function Template({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
+  const isMobile = useMediaQuery("(max-width: 767px)")
 
   // 라우트 전환 시 스크롤 위치를 최상단으로 리셋 (Lenis 내부 상태 포함)
   useEffect(() => {
@@ -46,6 +49,22 @@ export default function Template({ children }: { children: React.ReactNode }) {
       return
     }
 
+    // 모바일에서는 간소화된 페이드인 애니메이션
+    if (isMobile) {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out",
+          onComplete: () => ScrollTrigger.refresh(),
+        }
+      )
+      return
+    }
+
+    // 데스크톱: 블러 + 슬라이드 애니메이션
     gsap.fromTo(
       ref.current,
       { opacity: 0, y: 30, filter: "blur(6px)" },
@@ -58,7 +77,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         onComplete: () => ScrollTrigger.refresh(),
       }
     )
-  }, [reducedMotion])
+  }, [reducedMotion, isMobile])
 
   return (
     <div ref={ref} style={{ opacity: 0 }}>

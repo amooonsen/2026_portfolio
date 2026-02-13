@@ -6,7 +6,7 @@ import type { Metadata } from "next"
 export const siteConfig = {
   name: "조경문 | Frontend Developer",
   description:
-    "4년차 프론트엔드 개발자 조경문의 포트폴리오입니다. React, Next.js, TypeScript를 주력으로 모던 웹 애플리케이션을 구축합니다.",
+    "4년 경력 프론트엔드 개발자 조경문의 포트폴리오입니다. React, Next.js, TypeScript를 주력으로 모던 웹 애플리케이션을 구축합니다.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://cho-kyeongmoon.dev",
   author: {
     name: "조경문",

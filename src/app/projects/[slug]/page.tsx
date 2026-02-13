@@ -1,21 +1,21 @@
-import { notFound } from "next/navigation"
-import Link from "next/link"
-import type { Metadata } from "next"
-import { ArrowLeft, ExternalLink, Github } from "lucide-react"
-import { Section } from "@/components/ui/section"
-import { GlassCard } from "@/components/ui/glass-card"
-import { TechBadge } from "@/components/ui/tech-badge"
-import { GradientText } from "@/components/ui/gradient-text"
-import { Button } from "@/components/ui/button"
-import { FadeIn } from "@/components/animation/fade-in"
-import { ProjectGallery } from "@/components/sections/project-gallery"
-import { MarkdownContent } from "@/components/ui/markdown-content"
-import { ProjectSchema, BreadcrumbSchema } from "@/components/seo/json-ld"
-import { getAllProjects, getProjectBySlug } from "@/lib/projects"
-import { createMetadata } from "@/lib/metadata"
+import {notFound} from "next/navigation";
+import Link from "next/link";
+import type {Metadata} from "next";
+import {ArrowLeft, ExternalLink, Github} from "lucide-react";
+import {Section} from "@/components/ui/section";
+import {GlassCard} from "@/components/ui/glass-card";
+import {TechBadge} from "@/components/ui/tech-badge";
+import {GradientText} from "@/components/ui/gradient-text";
+import {Button} from "@/components/ui/button";
+import {FadeIn} from "@/components/animation/fade-in";
+import {ProjectGallery} from "@/components/sections/project-gallery";
+import {MarkdownContent} from "@/components/ui/markdown-content";
+import {ProjectSchema, BreadcrumbSchema} from "@/components/seo/json-ld";
+import {getAllProjects, getProjectBySlug} from "@/lib/projects";
+import {createMetadata} from "@/lib/metadata";
 
 interface ProjectDetailPageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{slug: string}>;
 }
 
 /**
@@ -23,35 +23,32 @@ interface ProjectDetailPageProps {
  * 빌드 시 모든 프로젝트 slug에 대한 페이지를 미리 생성한다.
  */
 export function generateStaticParams() {
-  return getAllProjects().map((p) => ({ slug: p.slug }))
+  return getAllProjects().map((p) => ({slug: p.slug}));
 }
 
 /**
  * 동적 메타데이터 생성.
  */
-export async function generateMetadata({
-  params,
-}: ProjectDetailPageProps): Promise<Metadata> {
-  const { slug } = await params
+export async function generateMetadata({params}: ProjectDetailPageProps): Promise<Metadata> {
+  const {slug} = await params;
   try {
-    const project = getProjectBySlug(slug)
+    const project = getProjectBySlug(slug);
     const description =
-      project.description ||
-      `${project.title} 프로젝트 - ${project.tags.join(", ")}`
-    const image = project.thumbnail || project.images?.[0] || "/og-image.png"
+      project.description || `${project.title} 프로젝트 - ${project.tags.join(", ")}`;
+    const image = project.thumbnail || project.images?.[0] || "/og-image.png";
 
     return createMetadata({
       title: project.title,
       description,
       image,
       path: `/projects/${slug}`,
-    })
+    });
   } catch {
     return createMetadata({
       title: "프로젝트",
       path: `/projects/${slug}`,
       noIndex: true,
-    })
+    });
   }
 }
 
@@ -59,16 +56,14 @@ export async function generateMetadata({
  * 프로젝트 상세 페이지.
  * 마크다운 파일에서 읽어온 프로젝트 설명, 기술 스택, 외부 링크를 표시한다.
  */
-export default async function ProjectDetailPage({
-  params,
-}: ProjectDetailPageProps) {
-  const { slug } = await params
+export default async function ProjectDetailPage({params}: ProjectDetailPageProps) {
+  const {slug} = await params;
 
-  let project
+  let project;
   try {
-    project = getProjectBySlug(slug)
+    project = getProjectBySlug(slug);
   } catch {
-    notFound()
+    notFound();
   }
 
   return (
@@ -77,14 +72,14 @@ export default async function ProjectDetailPage({
         title={project.title}
         description={project.description || `${project.title} 프로젝트`}
         image={project.thumbnail || project.images?.[0]}
-        datePublished={project.date}
+        datePublished={project.year.toString()}
         tags={project.tags}
       />
       <BreadcrumbSchema
         items={[
-          { name: "홈", url: "/" },
-          { name: "프로젝트", url: "/projects" },
-          { name: project.title, url: `/projects/${slug}` },
+          {name: "홈", url: "/"},
+          {name: "프로젝트", url: "/projects"},
+          {name: project.title, url: `/projects/${slug}`},
         ]}
       />
 
@@ -167,5 +162,5 @@ export default async function ProjectDetailPage({
         )}
       </Section>
     </>
-  )
+  );
 }

@@ -12,7 +12,7 @@ import {techCategories} from "@/data/portfolio-data";
 export const metadata: Metadata = {
   title: "소개",
   description:
-    "조경문 프론트엔드 개발자의 소개 페이지입니다. 4년 5개월간의 경력과 개발 철학, 기술 스택을 확인하세요.",
+    "조경문 프론트엔드 개발자의 소개 페이지입니다. 4년간의 경력과 개발 철학, 기술 스택을 확인하세요.",
 };
 
 const philosophies = [
@@ -139,7 +139,7 @@ export default function AboutPage() {
   return (
     <>
       {/* 스크롤 리빌 텍스트 */}
-      <AboutHero text="안녕하세요, 조경문입니다. 4년 5개월간 대형 고객사 대상 프론트엔드 개발을 수행 및 리드하고 있습니다. Core Web Vitals 최적화와 인터랙션 UI로 정량적 성과를 만들어냅니다." />
+      <AboutHero text="안녕하세요, 조경문입니다. 4년간 대형 고객사 대상 프론트엔드 개발을 수행 및 리드하고 있습니다. Core Web Vitals 최적화와 인터랙션 UI로 정량적 성과를 만들어냅니다." />
 
       {/* 자기소개 */}
       <Section spacing="lg" container>
@@ -154,7 +154,7 @@ export default function AboutPage() {
             <FadeIn delay={0.1}>
               <p className="mt-6 text-lg leading-relaxed text-white/80">
                 안녕하세요,{" "}
-                <span className="text-indigo-400 font-medium">4년 5개월차 프론트엔드 개발자</span>{" "}
+                <span className="text-indigo-400 font-medium">4년차 프론트엔드 개발자</span>{" "}
                 조경문입니다. 대형 고객사 대상{" "}
                 <span className="text-indigo-400 font-medium">Next.js/React, TypeScript</span> 기반
                 프론트엔드 개발을 수행 및 리드하고 있습니다.
@@ -188,7 +188,7 @@ export default function AboutPage() {
                 <dl className="space-y-3 text-sm">
                   {[
                     {dt: "역할", dd: "FE Developer / 매니저"},
-                    {dt: "경력", dd: "4년 5개월"},
+                    {dt: "경력", dd: "4년"},
                     {dt: "소속", dd: "주식회사이트라이브"},
                     {dt: "강점", dd: "성능 최적화, 인터랙션 UI"},
                     {dt: "학력", dd: "수원과학대학교 전자과"},
@@ -256,11 +256,10 @@ export default function AboutPage() {
 
         <StaggerChildren
           className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          role="list"
           aria-label="개발 철학"
         >
           {philosophies.map((item) => (
-            <GlassCard key={item.title} padding="lg" hover role="listitem">
+            <GlassCard key={item.title} padding="lg" hover>
               <span
                 className="text-sm font-mono font-semibold text-indigo-400"
                 aria-label={`철학 ${item.number}`}
@@ -272,7 +271,10 @@ export default function AboutPage() {
               <ul className="mt-4 space-y-2">
                 {item.details.map((detail) => (
                   <li key={detail} className="flex items-start gap-2 text-xs text-white/60">
-                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60" aria-hidden="true" />
+                    <span
+                      className="mt-1 h-1 w-1 shrink-0 rounded-full bg-indigo-400/60"
+                      aria-hidden="true"
+                    />
                     {detail}
                   </li>
                 ))}
