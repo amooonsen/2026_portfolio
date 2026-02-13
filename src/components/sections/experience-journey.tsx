@@ -33,7 +33,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
 
     const ctx = gsap.context(() => {
       // 1. 타임라인 라인 스크롤 드로잉
-      // scaleY 대신 실측 높이(px) 기반 height 애니메이션으로 해상도 무관 동작
+      // 아이템이 먼저 등장한 후 라인이 따라 그려지도록 시작점을 늦춤
       if (timelineLineRef.current) {
         const containerH = containerRef.current!.offsetHeight;
         gsap.set(timelineLineRef.current, {height: 0});
@@ -42,7 +42,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current!,
-            start: "top 80%",
+            start: "top 60%",
             end: `+=${containerH}`,
             scrub: 0.5,
             invalidateOnRefresh: true,
@@ -50,7 +50,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
         });
       }
 
-      // 2. 각 여정 아이템 교차 등장
+      // 2. 각 여정 아이템 교차 등장 (라인보다 먼저 나타남)
       articles.forEach((article, i) => {
         const fromLeft = i % 2 === 0;
 
@@ -91,7 +91,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
           });
         }
 
-        // 도트 펄스 글로우
+        // 도트 펄스 글로우 — CSS 애니메이션으로 위임 (off-screen 시 GPU 유휴)
         if (dotGlows[i]) {
           gsap.set(dotGlows[i], {scale: 0, opacity: 0});
           gsap.to(dotGlows[i], {
@@ -104,15 +104,9 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
               start: "top 85%",
               toggleActions: "play none none none",
             },
-          });
-          // 지속적 펄스
-          gsap.to(dotGlows[i], {
-            scale: 2,
-            opacity: 0,
-            duration: 1.5,
-            repeat: -1,
-            delay: 0.6,
-            ease: "power1.out",
+            onComplete: () => {
+              (dotGlows[i] as HTMLElement).classList.add("animate-dot-pulse");
+            },
           });
         }
 

@@ -136,17 +136,10 @@ export function TechStack({categories}: TechStackProps) {
         })
       })
 
-      // 카테고리 도트 펄스 애니메이션
-      const dots = gridRef.current!.querySelectorAll("[data-category-dot]")
+      // 카테고리 도트 펄스 — CSS @keyframes로 위임 (off-screen 시 GPU 유휴)
+      const dots = gridRef.current!.querySelectorAll<HTMLElement>("[data-category-dot]")
       dots.forEach((dot) => {
-        gsap.to(dot, {
-          scale: 1.4,
-          opacity: 0.6,
-          duration: 1.2,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        })
+        dot.classList.add("animate-dot-pulse")
       })
     })
 

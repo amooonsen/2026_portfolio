@@ -95,8 +95,8 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
       className={cn(
         "fixed bottom-6 left-1/2 -translate-x-1/2 z-50",
         "bg-background/80 backdrop-blur-xl",
-        "border border-border/50 rounded-full",
-        "px-1.5 py-1.5 shadow-2xl sm:px-2",
+        "border border-glass-border rounded-full",
+        "px-1.5 py-1.5 shadow-[0_4px_24px_var(--glass-shadow)] sm:px-2",
         "origin-center",
         "hidden md:block",
         className

@@ -251,6 +251,21 @@
   animation-delay: 4s;
 }
 
+@keyframes dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@utility animate-dot-pulse {
+  animation: dot-pulse 1.5s ease-out infinite;
+}
+
 @utility perspective-1000 {
   perspective: 1000px;
 }

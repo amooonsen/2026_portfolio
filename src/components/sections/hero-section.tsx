@@ -196,7 +196,7 @@ export function HeroSection({
     <Section spacing="xl" container>
       <div
         ref={heroRef}
-        className="relative flex min-h-[calc(100dvh-24rem)] items-center"
+        className="relative flex min-h-[calc(100dvh-30rem)] items-center"
         style={{opacity: reducedMotion ? 1 : 0}}
       >
         <div className="relative z-10 flex w-full items-center gap-8 lg:gap-12">

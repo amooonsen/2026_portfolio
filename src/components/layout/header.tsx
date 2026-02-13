@@ -75,7 +75,7 @@ export function Header({items, className}: HeaderProps) {
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isVisible ? "translate-y-0" : "-translate-y-full",
           isScrolled
-            ? "bg-background/80 backdrop-blur-xl border-b border-border/50"
+            ? "bg-background/80 backdrop-blur-xl border-b border-glass-border shadow-[0_1px_15px_var(--glass-shadow)]"
             : "bg-transparent",
           className,
         )}

@@ -81,8 +81,10 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
           <GradientText as="h1" gradient="primary" className="text-3xl font-bold">
             Projects
           </GradientText>
-          <p className="mt-2 text-muted-foreground">
-            다양한 도메인에서 설계하고 구현한 프로젝트들입니다.
+          <p className="mt-2 max-w-xl text-muted-foreground leading-relaxed">
+            다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한
+            프로젝트들입니다. 모던 기술 스택을 활용하여 실질적인 가치를
+            만들어냈습니다.
           </p>
         </FadeIn>
 
