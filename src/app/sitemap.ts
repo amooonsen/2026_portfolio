@@ -1,14 +1,14 @@
-import { MetadataRoute } from "next"
-import { getAllProjects } from "@/lib/projects"
+import {MetadataRoute} from "next";
+import {getAllProjects} from "@/lib/projects";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cho-kyeongmoon.dev"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cho-kyeongmoon.dev";
 
 /**
  * 동적 sitemap 생성.
  * 정적 페이지와 프로젝트 페이지를 포함한다.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const projects = getAllProjects()
+  const projects = getAllProjects();
 
   // 정적 페이지
   const staticPages = [
@@ -42,15 +42,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.6,
     },
-  ]
+  ];
 
   // 프로젝트 페이지
   const projectPages = projects.map((project) => ({
     url: `${siteUrl}/projects/${project.slug}`,
-    lastModified: project.date ? new Date(project.date) : new Date(),
+    lastModified: project.year.toString() ? new Date(project.year.toString()) : new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.7,
-  }))
+  }));
 
-  return [...staticPages, ...projectPages]
+  return [...staticPages, ...projectPages];
 }
