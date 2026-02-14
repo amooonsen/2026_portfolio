@@ -1,7 +1,8 @@
 "use client";
 
-import {useEffect, useRef} from "react";
-import {gsap, ScrollTrigger} from "@/lib/gsap";
+import {useRef} from "react";
+import {gsap} from "@/lib/gsap";
+import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {cn} from "@/lib/utils";
 
@@ -22,26 +23,22 @@ export function AboutHero({text, className}: AboutHeroProps) {
   const textRef = useRef<HTMLParagraphElement>(null);
   const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  useGsapContext(wrapperRef, () => {
     if (!wrapperRef.current || !textRef.current || reducedMotion) return;
 
     const words = textRef.current.querySelectorAll("[data-word]");
 
-    const ctx = gsap.context(() => {
-      gsap.to(words, {
-        opacity: 1,
-        stagger: {each: 0.1},
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrapperRef.current,
-          start: "top top+=64",
-          end: "bottom bottom",
-          scrub: 0.8,
-        },
-      });
-    }, wrapperRef);
-
-    return () => ctx.revert();
+    gsap.to(words, {
+      opacity: 1,
+      stagger: {each: 0.1},
+      ease: "none",
+      scrollTrigger: {
+        trigger: wrapperRef.current,
+        start: "top top+=64",
+        end: "bottom bottom",
+        scrub: 0.8,
+      },
+    });
   }, [reducedMotion, text]);
 
   const words = text.split(" ");

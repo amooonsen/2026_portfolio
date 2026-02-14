@@ -15,6 +15,31 @@ const INTRO_CACHE_KEY = "portfolio-intro-seen";
 const MIN_DISPLAY_DURATION = 1200;
 /** 100% 도달 후 종료 시퀀스까지 대기 시간 (ms) */
 const DISMISS_DELAY = 300;
+/** 다국어 Hello World 인사 목록 */
+const GREETINGS = [
+  "Hello World!",
+  "안녕 세상아!",
+  "こんにちは世界！",
+  "你好世界！",
+  "Hola Mundo!",
+  "Bonjour le Monde!",
+  "Hallo Welt!",
+  "Ciao Mondo!",
+  "Olá Mundo!",
+  "Привет Мир!",
+];
+/** 인사 순회 횟수 */
+const GREETING_ROUNDS = 2;
+
+/** Fisher-Yates 셔플 */
+function shuffleArray<T>(arr: T[]): T[] {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 interface IntroLoaderProps {
   isSceneReady: boolean;
@@ -62,14 +87,30 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
   const progressTweenRef = useRef<gsap.core.Tween | null>(null);
   const mountTimeRef = useRef(0);
   const dismissedRef = useRef(false);
+  const prevCounterValRef = useRef(-1);
+
+  // ── Refs: 다국어 인사 순회 ──
+  const greetingIntroRef = useRef<HTMLSpanElement>(null);
+  const greetingLoadingRef = useRef<HTMLSpanElement>(null);
+  const greetingTlRef = useRef<gsap.core.Timeline | null>(null);
 
   /** 프로그레스 UI 동시 갱신 (카운터 텍스트 + 인트로 바 + 미니멀 바) */
   function updateProgressUI() {
     const val = Math.round(progressObjRef.current.value);
-    if (counterRef.current) counterRef.current.textContent = String(val);
     const pct = `${progressObjRef.current.value}%`;
     if (progressBarRef.current) progressBarRef.current.style.width = pct;
     if (loadingBarRef.current) loadingBarRef.current.style.width = pct;
+
+    // 카운터: 정수 변경 시에만 텍스트 갱신 + 아래에서 슬라이드업 (오도미터 효과)
+    if (counterRef.current && val !== prevCounterValRef.current) {
+      prevCounterValRef.current = val;
+      counterRef.current.textContent = String(val);
+      gsap.fromTo(
+        counterRef.current,
+        {yPercent: 30},
+        {yPercent: 0, duration: 0.15, ease: "power2.out", overwrite: true},
+      );
+    }
   }
 
   /** Lenis 동기화 스크롤 리셋 */
@@ -124,6 +165,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
   function dismiss() {
     if (dismissedRef.current) return;
     dismissedRef.current = true;
+    // 인사 타임라인은 kill하지 않음 — 오버레이 페이드아웃과 함께 자연스럽게 사라짐
 
     if (isFirstVisitRef.current) {
       setSessionItem(INTRO_CACHE_KEY, "1");
@@ -242,11 +284,53 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
     gsap.from(loadingRef.current, {opacity: 0, duration: 0.3, ease: "power2.out"});
   }, [mode]);
 
-  // ─── 프로그레스 Phase 1: 느린 진행 (0 → 80) ───
-  useEffect(() => {
-    if (mode !== "intro" && mode !== "loading") return;
+  // ─── 다국어 인사 순회 애니메이션 ───
+  useGsap(() => {
+    if (!isMounted || (mode !== "intro" && mode !== "loading") || reducedMotion) return;
+    const el = mode === "intro" ? greetingIntroRef.current : greetingLoadingRef.current;
+    if (!el) return;
 
+    const sequence = Array.from({length: GREETING_ROUNDS}, () => shuffleArray(GREETINGS)).flat();
+    // 인트로: 입장 애니메이션 중 시작(카운터 등장 직후), 미니멀: 빠르게 시작
+    const tl = gsap.timeline({delay: mode === "intro" ? 0.8 : 0.3});
+    greetingTlRef.current = tl;
+
+    // 첫 인사: 텍스트 설정 → 아래에서 마스킹 슬라이드 인
+    // textContent를 timeline 내부에서 설정하여 delay 전 빈 텍스트 노출 방지
+    tl.call(() => {
+      el.textContent = sequence[0];
+    }).fromTo(
+      el,
+      {yPercent: 100, opacity: 0},
+      {yPercent: 0, opacity: 1, duration: 0.2, ease: "power2.out"},
+    );
+
+    // 나머지 순회: 위로 슬라이드 아웃 → 아래에서 슬라이드 인
+    for (let i = 1; i < sequence.length; i++) {
+      tl.to(el, {yPercent: -100, opacity: 0, duration: 0.08, ease: "power2.in"})
+        .call(() => {
+          el.textContent = sequence[i];
+        })
+        .fromTo(
+          el,
+          {yPercent: 100, opacity: 0},
+          {yPercent: 0, opacity: 1, duration: 0.08, ease: "power2.out"},
+        );
+    }
+
+    // 마지막 인사 유지 후 자연스럽게 페이드아웃
+    tl.to(el, {opacity: 0, yPercent: -50, duration: 0.4, ease: "power2.out", delay: 0.5});
+  }, [mode, isMounted, reducedMotion]);
+
+  // ─── 프로그레스 Phase 1: 느린 진행 (0 → 80) ───
+  // isMounted 후 시작하여 모드 결정 전 tween이 돌아가는 것을 방지
+  useEffect(() => {
+    if (!isMounted || (mode !== "intro" && mode !== "loading")) return;
+
+    // DOM + ref를 반드시 0에서 시작 (Strict Mode·모드 전환 시 stale value 방지)
     progressObjRef.current.value = 0;
+    updateProgressUI();
+
     progressTweenRef.current = gsap.to(progressObjRef.current, {
       value: 80,
       duration: mode === "intro" ? 4 : 2,
@@ -257,7 +341,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
     return () => {
       progressTweenRef.current?.kill();
     };
-  }, [mode]);
+  }, [mode, isMounted]);
 
   // ─── 프로그레스 Phase 2: 리소스 준비 → 100% + 종료 시퀀스 ───
   useEffect(() => {
@@ -320,8 +404,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
             <div className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center gap-4">
               <h1
                 ref={titleRef}
-                className="text-5xl font-bold tracking-tight text-foreground md:text-6xl [perspective:1000px]"
-                style={{transformStyle: "preserve-3d"}}
+                className="text-5xl font-bold tracking-tight text-foreground md:text-6xl perspective-1000 preserve-3d"
               >
                 Portfolio
               </h1>
@@ -335,17 +418,33 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
 
             {/* 카운터 + 프로그레스 바 — 화면 정중앙 */}
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
-              <div ref={counterGroupRef} className="flex items-baseline gap-1">
-                <span
-                  ref={counterRef}
-                  className="text-7xl font-bold text-foreground tabular-nums tracking-tighter md:text-8xl"
-                >
-                  0
-                </span>
-                <span className="text-xl font-light text-muted-foreground md:text-2xl">%</span>
+              {/* 카운터 + 인사를 감싸는 relative wrapper (인사는 absolute로 flow 밖) */}
+              <div className="relative">
+                <div ref={counterGroupRef} className="flex items-baseline gap-1">
+                  {/* clip-path로 오도미터 슬라이드업 영역 마스킹 (overflow:hidden과 달리 baseline 유지) */}
+                  <span
+                    className="inline-block min-w-[3ch] text-right text-7xl font-bold leading-[1.15] text-foreground tabular-nums tracking-tighter md:text-8xl"
+                    style={{clipPath: "inset(-5% 0)"}}
+                  >
+                    <span ref={counterRef} className="inline-block tabular-nums">
+                      0
+                    </span>
+                  </span>
+                  <span className="text-xl font-light text-muted-foreground md:text-2xl">%</span>
+                </div>
+
+                {/* 다국어 인사 순회 — counter 하단 absolute (flex flow 영향 없음) */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 h-9 w-64 overflow-hidden md:w-80">
+                  <span
+                    ref={greetingIntroRef}
+                    className="block text-center text-lg font-light text-muted-foreground/60 tracking-wider md:text-xl"
+                    style={{opacity: 0}}
+                    aria-hidden="true"
+                  />
+                </div>
               </div>
 
-              <div ref={progressGroupRef} className="mt-8 w-64 md:w-80">
+              <div ref={progressGroupRef} className="mt-16 w-64 md:w-80">
                 <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                   <div
                     ref={progressBarRef}
@@ -386,6 +485,15 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
                   style={{width: "0%"}}
                 />
               </div>
+            </div>
+
+            {/* 다국어 인사 순회 */}
+            <div className="relative z-10 mt-4 h-5 overflow-hidden">
+              <span
+                ref={greetingLoadingRef}
+                className="block text-center text-xs font-light text-muted-foreground/50 tracking-wider"
+                aria-hidden="true"
+              />
             </div>
           </div>,
           document.body,

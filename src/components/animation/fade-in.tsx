@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { gsap } from "@/lib/gsap"
+import { useGsapContext } from "@/hooks/use-gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
-import { cn } from "@/lib/utils"
 
 interface FadeInProps {
   children: React.ReactNode
@@ -36,7 +36,7 @@ export function FadeIn({
   const ref = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  useEffect(() => {
+  useGsapContext(ref, () => {
     if (!ref.current) return
 
     if (reducedMotion) {
@@ -57,32 +57,27 @@ export function FadeIn({
           ? -distance
           : 0
 
-    // 초기 상태 즉시 적용
-    gsap.set(ref.current!, { opacity: 0, y, x })
+    gsap.set(ref.current, { opacity: 0, y, x })
 
-    const ctx = gsap.context(() => {
-      gsap.to(ref.current!, {
-        opacity: 1,
-        y: 0,
-        x: 0,
-        duration,
-        delay,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ref.current!,
-          start: "top 90%",
-          toggleActions: once
-            ? "play none none none"
-            : "play reverse play reverse",
-        },
-      })
+    gsap.to(ref.current, {
+      opacity: 1,
+      y: 0,
+      x: 0,
+      duration,
+      delay,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ref.current,
+        start: "top 90%",
+        toggleActions: once
+          ? "play none none none"
+          : "play reverse play reverse",
+      },
     })
-
-    return () => ctx.revert()
   }, [reducedMotion, delay, duration, direction, distance, once])
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} style={{ opacity: 0 }}>
       {children}
     </div>
   )

@@ -1,7 +1,8 @@
 "use client";
 
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 import {gsap} from "@/lib/gsap";
+import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {GlassCard} from "@/components/ui/glass-card";
 import {TechBadge} from "@/components/ui/tech-badge";
@@ -32,7 +33,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  useGsapContext(containerRef, () => {
     if (!containerRef.current || reducedMotion) return;
 
     const cards = containerRef.current.querySelectorAll("[data-timeline-item]");
@@ -40,91 +41,87 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
     const yearBadges = containerRef.current.querySelectorAll("[data-timeline-year]");
     const techGroups = containerRef.current.querySelectorAll("[data-tech-group]");
 
-    const ctx = gsap.context(() => {
-      // 타임라인 라인 드로우 — 컨테이너 진입 시 완전히 그어짐
-      if (lineRef.current) {
-        gsap.fromTo(
-          lineRef.current,
-          {scaleY: 0},
-          {
-            scaleY: 1,
-            duration: 1.2,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 80%",
-              toggleActions: "play none none none",
-            },
-          },
-        );
-      }
-
-      // 카드 입장 — 좌우에서 3D 회전 + 페이드
-      cards.forEach((card, i) => {
-        const isLeft = i % 2 === 0;
-        gsap.from(card, {
-          opacity: 0,
-          x: isLeft ? -80 : 80,
-          rotateY: isLeft ? -8 : 8,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        });
-      });
-
-      // 타임라인 도트 — 스케일 + 바운스 등장
-      dots.forEach((dot) => {
-        gsap.from(dot, {
-          scale: 0,
-          duration: 0.5,
-          ease: "back.out(2)",
-          scrollTrigger: {
-            trigger: dot,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        });
-      });
-
-      // 연도 뱃지 — 페이드 + 스케일
-      yearBadges.forEach((badge) => {
-        gsap.from(badge, {
-          opacity: 0,
-          scale: 0.6,
-          duration: 0.5,
+    // 타임라인 라인 드로우 — 컨테이너 진입 시 완전히 그어짐
+    if (lineRef.current) {
+      gsap.fromTo(
+        lineRef.current,
+        {scaleY: 0},
+        {
+          scaleY: 1,
+          duration: 1.2,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: badge,
-            start: "top 88%",
+            trigger: containerRef.current,
+            start: "top 80%",
             toggleActions: "play none none none",
           },
-        });
-      });
+        },
+      );
+    }
 
-      // 기술 뱃지 — 스태거 페이드인
-      techGroups.forEach((group) => {
-        const badges = group.querySelectorAll("[data-tech-badge]");
-        gsap.from(badges, {
-          opacity: 0,
-          y: 10,
-          scale: 0.8,
-          stagger: 0.06,
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: group,
-            start: "top 92%",
-            toggleActions: "play none none none",
-          },
-        });
+    // 카드 입장 — 좌우에서 3D 회전 + 페이드
+    cards.forEach((card, i) => {
+      const isLeft = i % 2 === 0;
+      gsap.from(card, {
+        opacity: 0,
+        x: isLeft ? -80 : 80,
+        rotateY: isLeft ? -8 : 8,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
       });
     });
 
-    return () => ctx.revert();
+    // 타임라인 도트 — 스케일 + 바운스 등장
+    dots.forEach((dot) => {
+      gsap.from(dot, {
+        scale: 0,
+        duration: 0.5,
+        ease: "back.out(2)",
+        scrollTrigger: {
+          trigger: dot,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    });
+
+    // 연도 뱃지 — 페이드 + 스케일
+    yearBadges.forEach((badge) => {
+      gsap.from(badge, {
+        opacity: 0,
+        scale: 0.6,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: badge,
+          start: "top 88%",
+          toggleActions: "play none none none",
+        },
+      });
+    });
+
+    // 기술 뱃지 — 스태거 페이드인
+    techGroups.forEach((group) => {
+      const badges = group.querySelectorAll("[data-tech-badge]");
+      gsap.from(badges, {
+        opacity: 0,
+        y: 10,
+        scale: 0.8,
+        stagger: 0.06,
+        duration: 0.4,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: group,
+          start: "top 92%",
+          toggleActions: "play none none none",
+        },
+      });
+    });
   }, [reducedMotion]);
 
   return (
@@ -165,10 +162,9 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                 <div
                   data-timeline-item
                   className={cn(
-                    "relative pl-10 pt-4 md:flex md:w-[calc(50%-2rem)] md:pl-0 md:pt-2",
+                    "relative pl-10 pt-4 md:flex md:w-[calc(50%-2rem)] md:pl-0 md:pt-2 [perspective:800px]",
                     isLeft ? "md:mr-auto md:pr-10" : "md:ml-auto md:pl-10",
                   )}
-                  style={{perspective: "800px"}}
                 >
                   <GlassCard padding="lg" hover tabIndex={0} className="w-full">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">

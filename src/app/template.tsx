@@ -145,10 +145,10 @@ export default function Template({children}: {children: React.ReactNode}) {
   return (
     <div
       ref={ref}
+      className="min-h-dvh"
       style={{
         opacity: 0,
         willChange: "transform, opacity, filter",
-        minHeight: "100dvh",
       }}
     >
       {children}

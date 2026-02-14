@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { gsap } from "@/lib/gsap"
+import { useGsapContext } from "@/hooks/use-gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 
 const fromMap = {
@@ -42,31 +43,31 @@ export function StaggerChildren({
   const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  useEffect(() => {
-    if (!containerRef.current || reducedMotion) return
+  useGsapContext(containerRef, () => {
+    if (!containerRef.current) return
 
     const items = containerRef.current.querySelectorAll(":scope > *")
     if (items.length === 0) return
 
-    // 초기 상태 즉시 적용
+    if (reducedMotion) {
+      gsap.set(items, { opacity: 1, y: 0, scale: 1 })
+      return
+    }
+
     gsap.set(items, fromMap[animation])
 
-    const ctx = gsap.context(() => {
-      gsap.to(items, {
-        ...toMap[animation],
-        duration: 0.6,
-        stagger,
-        delay,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current!,
-          start: "top 90%",
-          toggleActions: "play none none none",
-        },
-      })
+    gsap.to(items, {
+      ...toMap[animation],
+      duration: 0.6,
+      stagger,
+      delay,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 90%",
+        toggleActions: "play none none none",
+      },
     })
-
-    return () => ctx.revert()
   }, [reducedMotion, stagger, delay, animation])
 
   return (

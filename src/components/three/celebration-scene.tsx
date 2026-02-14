@@ -297,8 +297,9 @@ export function CelebrationScene({active, className}: CelebrationSceneProps) {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 50,
+        zIndex: 1,
         pointerEvents: "none",
+        overflow: "hidden",
         opacity: active ? 1 : 0,
         transition: "opacity 0.5s ease-in-out",
       }}

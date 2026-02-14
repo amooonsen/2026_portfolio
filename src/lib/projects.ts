@@ -30,12 +30,31 @@ export function getProjectBySlug(slug: string): Project & { content: string } {
 }
 
 /**
- * 모든 프로젝트 마크다운을 파싱하여 year 기준 오름차순으로 반환한다.
+ * 모든 프로젝트의 메타데이터만 파싱하여 year 기준 오름차순으로 반환한다.
+ * content 필드를 제외하여 직렬화 비용을 줄인다.
  */
-export function getAllProjects(): (Project & { content: string })[] {
+export function getAllProjects(): Project[] {
   const files = fs.readdirSync(PROJECTS_DIR).filter((f) => f.endsWith(".md"))
 
   return files
-    .map((file) => getProjectBySlug(file.replace(/\.md$/, "")))
+    .map((file) => {
+      const slug = file.replace(/\.md$/, "")
+      const filePath = path.join(PROJECTS_DIR, file)
+      const raw = fs.readFileSync(filePath, "utf-8")
+      const { data } = matter(raw)
+
+      return {
+        slug,
+        title: data.title,
+        description: data.description,
+        tags: data.tags ?? [],
+        year: data.year,
+        period: data.period,
+        featured: data.featured ?? false,
+        thumbnail: data.thumbnail,
+        images: data.images,
+        links: data.links,
+      }
+    })
     .sort((a, b) => a.year - b.year)
 }

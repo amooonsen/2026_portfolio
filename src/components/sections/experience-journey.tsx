@@ -1,9 +1,10 @@
 "use client";
 
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 import Link from "next/link";
 import {ArrowUpRight} from "lucide-react";
 import {gsap} from "@/lib/gsap";
+import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {cn} from "@/lib/utils";
 import type {JourneyItem} from "@/data/constants/home";
@@ -21,7 +22,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
   const timelineLineRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  useGsapContext(containerRef, () => {
     if (!containerRef.current || reducedMotion) return;
 
     const articles = containerRef.current.querySelectorAll<HTMLElement>("[data-journey-item]");
@@ -31,42 +32,97 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
     const descEls = containerRef.current.querySelectorAll<HTMLElement>("[data-journey-desc]");
     const linkContainers = containerRef.current.querySelectorAll<HTMLElement>("[data-journey-links]");
 
-    const ctx = gsap.context(() => {
-      // 1. 타임라인 라인 스크롤 드로잉
-      // 아이템이 먼저 등장한 후 라인이 따라 그려지도록 시작점을 늦춤
-      if (timelineLineRef.current) {
-        const containerH = containerRef.current!.offsetHeight;
-        gsap.set(timelineLineRef.current, {height: 0});
-        gsap.to(timelineLineRef.current, {
-          height: containerH,
-          ease: "none",
+    // 1. 타임라인 라인 스크롤 드로잉
+    // 아이템이 먼저 등장한 후 라인이 따라 그려지도록 시작점을 늦춤
+    if (timelineLineRef.current) {
+      const containerH = containerRef.current!.offsetHeight;
+      gsap.set(timelineLineRef.current, {height: 0});
+      gsap.to(timelineLineRef.current, {
+        height: containerH,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current!,
+          start: "top 60%",
+          end: `+=${containerH}`,
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+        },
+      });
+    }
+
+    // 2. 각 여정 아이템 교차 등장 (라인보다 먼저 나타남)
+    articles.forEach((article, i) => {
+      const fromLeft = i % 2 === 0;
+
+      // 아이템 카드 등장
+      gsap.set(article, {
+        opacity: 0,
+        x: fromLeft ? -60 : 60,
+        y: 30,
+        scale: 0.95,
+      });
+      gsap.to(article, {
+        opacity: 1,
+        x: 0,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: article,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+
+      // 도트 스케일인 + 글로우
+      if (dots[i]) {
+        gsap.set(dots[i], {scale: 0, opacity: 0});
+        gsap.to(dots[i], {
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          ease: "back.out(3)",
           scrollTrigger: {
-            trigger: containerRef.current!,
-            start: "top 60%",
-            end: `+=${containerH}`,
-            scrub: 0.5,
-            invalidateOnRefresh: true,
+            trigger: article,
+            start: "top 85%",
+            toggleActions: "play none none none",
           },
         });
       }
 
-      // 2. 각 여정 아이템 교차 등장 (라인보다 먼저 나타남)
-      articles.forEach((article, i) => {
-        const fromLeft = i % 2 === 0;
-
-        // 아이템 카드 등장
-        gsap.set(article, {
-          opacity: 0,
-          x: fromLeft ? -60 : 60,
-          y: 30,
-          scale: 0.95,
+      // 도트 펄스 글로우 — CSS 애니메이션으로 위임 (off-screen 시 GPU 유휴)
+      if (dotGlows[i]) {
+        gsap.set(dotGlows[i], {scale: 0, opacity: 0});
+        gsap.to(dotGlows[i], {
+          scale: 1,
+          opacity: 0.6,
+          duration: 0.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: article,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+          onComplete: () => {
+            (dotGlows[i] as HTMLElement).classList.add("animate-dot-pulse");
+          },
         });
-        gsap.to(article, {
+      }
+
+      // 연도 텍스트 카운터 느낌 (클립 리빌)
+      if (yearEls[i]) {
+        gsap.set(yearEls[i], {
+          opacity: 0,
+          y: 20,
+          scale: 1.2,
+        });
+        gsap.to(yearEls[i], {
           opacity: 1,
-          x: 0,
           y: 0,
           scale: 1,
-          duration: 0.8,
+          duration: 0.6,
+          delay: 0.15,
           ease: "power3.out",
           scrollTrigger: {
             trigger: article,
@@ -74,56 +130,38 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
             toggleActions: "play none none none",
           },
         });
+      }
 
-        // 도트 스케일인 + 글로우
-        if (dots[i]) {
-          gsap.set(dots[i], {scale: 0, opacity: 0});
-          gsap.to(dots[i], {
-            scale: 1,
+      // 설명 텍스트 페이드인
+      if (descEls[i]) {
+        gsap.set(descEls[i], {opacity: 0, y: 15});
+        gsap.to(descEls[i], {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: 0.3,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: article,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+
+      // 프로젝트 링크 뱃지 스태거
+      if (linkContainers[i]) {
+        const links = linkContainers[i].querySelectorAll("a");
+        if (links.length > 0) {
+          gsap.set(links, {opacity: 0, scale: 0.7, y: 10});
+          gsap.to(links, {
             opacity: 1,
-            duration: 0.5,
-            ease: "back.out(3)",
-            scrollTrigger: {
-              trigger: article,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          });
-        }
-
-        // 도트 펄스 글로우 — CSS 애니메이션으로 위임 (off-screen 시 GPU 유휴)
-        if (dotGlows[i]) {
-          gsap.set(dotGlows[i], {scale: 0, opacity: 0});
-          gsap.to(dotGlows[i], {
             scale: 1,
-            opacity: 0.6,
-            duration: 0.5,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: article,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-            onComplete: () => {
-              (dotGlows[i] as HTMLElement).classList.add("animate-dot-pulse");
-            },
-          });
-        }
-
-        // 연도 텍스트 카운터 느낌 (클립 리빌)
-        if (yearEls[i]) {
-          gsap.set(yearEls[i], {
-            opacity: 0,
-            y: 20,
-            scale: 1.2,
-          });
-          gsap.to(yearEls[i], {
-            opacity: 1,
             y: 0,
-            scale: 1,
-            duration: 0.6,
-            delay: 0.15,
-            ease: "power3.out",
+            duration: 0.4,
+            stagger: 0.08,
+            delay: 0.45,
+            ease: "back.out(2)",
             scrollTrigger: {
               trigger: article,
               start: "top 85%",
@@ -131,49 +169,8 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
             },
           });
         }
-
-        // 설명 텍스트 페이드인
-        if (descEls[i]) {
-          gsap.set(descEls[i], {opacity: 0, y: 15});
-          gsap.to(descEls[i], {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            delay: 0.3,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: article,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          });
-        }
-
-        // 프로젝트 링크 뱃지 스태거
-        if (linkContainers[i]) {
-          const links = linkContainers[i].querySelectorAll("a");
-          if (links.length > 0) {
-            gsap.set(links, {opacity: 0, scale: 0.7, y: 10});
-            gsap.to(links, {
-              opacity: 1,
-              scale: 1,
-              y: 0,
-              duration: 0.4,
-              stagger: 0.08,
-              delay: 0.45,
-              ease: "back.out(2)",
-              scrollTrigger: {
-                trigger: article,
-                start: "top 85%",
-                toggleActions: "play none none none",
-              },
-            });
-          }
-        }
-      });
+      }
     });
-
-    return () => ctx.revert();
   }, [reducedMotion, items]);
 
   return (
