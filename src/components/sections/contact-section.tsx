@@ -12,7 +12,9 @@ import {GradientText} from "@/components/ui/gradient-text";
 import {Button} from "@/components/ui/button";
 import {FadeIn} from "@/components/animation/fade-in";
 import {SlideUp} from "@/components/animation/slide-up";
+import {StaggerChildren} from "@/components/animation/stagger-children";
 import {ContactSuccess} from "@/components/sections/contact-success";
+import {Mail, ArrowUpRight} from "lucide-react";
 import {cn} from "@/lib/utils";
 
 interface Social {
@@ -85,12 +87,46 @@ export function ContactSection({email, socials}: ContactSectionProps) {
           <GradientText as="h1" gradient="accent" className="text-3xl font-bold">
             Get in Touch
           </GradientText>
-          <p className="mt-4 text-muted-foreground">
-            채용 관련 문의나 커피챗이 필요하시다면 편하게 연락해 주세요 :)
-            <br />
-            이메일에 성함과 소속을 기재하여 주시면 더욱 빨리 연락 드리겠습니다.
-            <br />
-          </p>
+          <FadeIn delay={0.1}>
+            <p className="mt-4 text-lg leading-relaxed text-foreground/80">
+              <span className="text-accent-highlight">채용 문의</span>나{" "}
+              <span className="text-accent-highlight">협업 제안</span>,
+              커피챗까지 편하게 연락해 주세요.
+              <br />
+              성함과 소속을 함께 남겨주시면 더 빠르게 답변 드리겠습니다.
+            </p>
+          </FadeIn>
+        </div>
+      </FadeIn>
+
+      {/* 이메일 + 소셜 링크 */}
+      <FadeIn delay={0.2}>
+        <div className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-5">
+          {/* 이메일 */}
+          <a
+            href={`mailto:${email}`}
+            className="group inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-5 py-2.5 text-sm font-medium text-foreground/90 transition-all duration-200 hover:border-glass-hover-border hover:bg-glass-hover-bg hover:text-foreground"
+          >
+            <Mail className="h-4 w-4 text-accent-highlight" />
+            {email}
+            <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+
+          {/* 소셜 링크 */}
+          <StaggerChildren className="flex items-center gap-3" stagger={0.08}>
+            {socials.map((social) => (
+              <a
+                key={social.platform}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.platform}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg text-foreground/70 transition-all duration-200 hover:border-glass-hover-border hover:bg-glass-hover-bg hover:text-foreground hover:-translate-y-0.5 hover:shadow-md"
+              >
+                {social.icon}
+              </a>
+            ))}
+          </StaggerChildren>
         </div>
       </FadeIn>
 
@@ -101,7 +137,7 @@ export function ContactSection({email, socials}: ContactSectionProps) {
           </GlassCard>
         </div>
       ) : (
-        <SlideUp delay={0.2}>
+        <SlideUp delay={0.3}>
           <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
             <form ref={formRef} onSubmit={handleSubmit(onValid)} className="space-y-6" noValidate>
               {/* 이름 */}

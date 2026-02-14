@@ -200,9 +200,15 @@ export function TechStack({categories}: TechStackProps) {
         <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
           Tech Stack
         </GradientText>
-        <p className="mt-2 text-muted-foreground">
-          주력으로 사용하는 기술들입니다.
-        </p>
+        <FadeIn delay={0.1}>
+          <p className="mt-4 text-lg leading-relaxed text-foreground/80">
+            <span className="text-accent-highlight">실무에서 검증된 기술</span>을 기반으로
+            효율적이고 확장 가능한 시스템을 구축합니다.
+            <br />
+            각 기술의 선택에는{" "}
+            <span className="text-accent-highlight">명확한 이유</span>가 있습니다.
+          </p>
+        </FadeIn>
       </FadeIn>
 
       <div ref={gridRef} className="mt-10 grid gap-6 md:grid-cols-2 perspective-1000">
