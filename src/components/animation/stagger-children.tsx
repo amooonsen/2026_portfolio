@@ -16,7 +16,7 @@ const toMap = {
   scaleUp: { opacity: 1, scale: 1 },
 } as const
 
-interface StaggerChildrenProps {
+interface StaggerChildrenProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   className?: string
   stagger?: number
@@ -37,6 +37,7 @@ export function StaggerChildren({
   stagger = 0.1,
   delay = 0,
   animation = "fadeUp",
+  ...rest
 }: StaggerChildrenProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
@@ -69,7 +70,7 @@ export function StaggerChildren({
   }, [reducedMotion, stagger, delay, animation])
 
   return (
-    <div ref={containerRef} className={className}>
+    <div ref={containerRef} className={className} {...rest}>
       {children}
     </div>
   )

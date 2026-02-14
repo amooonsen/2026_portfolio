@@ -91,11 +91,12 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
         <FadeIn delay={0.1}>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">정렬:</span>
-            <div className="flex gap-2">
+            <div role="group" aria-label="정렬 순서" className="flex gap-2">
               <button
+                type="button"
                 onClick={() => setSortOrder("latest")}
                 aria-pressed={sortOrder === "latest"}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none ${
                   sortOrder === "latest"
                     ? "bg-accent-indigo-subtle text-accent-highlight"
                     : "text-muted-foreground hover:text-foreground"
@@ -104,9 +105,10 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
                 최신순
               </button>
               <button
+                type="button"
                 onClick={() => setSortOrder("oldest")}
                 aria-pressed={sortOrder === "oldest"}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none ${
                   sortOrder === "oldest"
                     ? "bg-accent-indigo-subtle text-accent-highlight"
                     : "text-muted-foreground hover:text-foreground"

@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {Section} from "@/components/ui/section";
@@ -52,6 +52,7 @@ export function HeroSection({
   const isMobile = useMediaQuery("(max-width: 767px)");
   const isLgScreen = useMediaQuery("(min-width: 1024px)");
   const isIntroComplete = useIntroComplete();
+  const [robotGreeting, setRobotGreeting] = useState(false);
 
   useEffect(() => {
     if (!isIntroComplete || !heroRef.current || reducedMotion) return;
@@ -122,13 +123,22 @@ export function HeroSection({
         tl.to(ctaRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.1");
       }
 
-      // 3D 캐릭터 등장 (데스크톱만)
+      // 3D 캐릭터 등장 (데스크톱만) — 1s 앞당김 + 인사 트리거
       if (astronautRef.current && !isMobile) {
         gsap.set(astronautRef.current, {opacity: 0, scale: 0.8});
         tl.to(
           astronautRef.current,
-          {opacity: 1, scale: 1, duration: 1, ease: "power2.out"},
-          "-=0.4",
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            ease: "power2.out",
+            onStart: () => {
+              setRobotGreeting(true);
+              setTimeout(() => setRobotGreeting(false), 2000);
+            },
+          },
+          "-=1.4",
         );
       }
 
@@ -252,13 +262,13 @@ export function HeroSection({
           {/* 3D 로봇 캐릭터 — lg 이상에서만 조건부 렌더링 (Canvas 0-size 방지) */}
           {isLgScreen && (
             <div ref={astronautRef} className="w-2/5" aria-hidden="true">
-              <SpaceAstronaut className="aspect-square w-full" />
+              <SpaceAstronaut className="aspect-square w-full" greeting={robotGreeting} />
             </div>
           )}
         </div>
 
         {/* 스크롤 인디케이터 — GSAP 반복 애니메이션 */}
-        <div ref={scrollRef} className="absolute bottom-0 left-1/2 -translate-x-1/2">
+        <div ref={scrollRef} aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2">
           <div className="flex flex-col items-center gap-3">
             <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground/50">
               Scroll

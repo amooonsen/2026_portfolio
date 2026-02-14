@@ -217,12 +217,14 @@ export function TechStack({categories}: TechStackProps) {
             <div
               key={category.name}
               data-tech-card
+              tabIndex={0}
               className={cn(
                 "group relative rounded-2xl border backdrop-blur-xl p-6 transition-shadow duration-300",
                 "bg-glass-bg hover:bg-glass-hover-bg",
                 color.border,
                 "hover:shadow-xl",
                 color.glow,
+                "focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none",
               )}
               style={{
                 transformStyle: "preserve-3d",

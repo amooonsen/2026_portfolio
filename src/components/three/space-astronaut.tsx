@@ -44,6 +44,7 @@ const lightPalette: RobotPalette = {
 
 interface InteractionState {
   isHovered: boolean;
+  introGreeting: boolean;
   rotation: number;
   momentum: number;
   isDragging: boolean;
@@ -75,7 +76,7 @@ function RobotHead({
 
   useFrame((state) => {
     if (!groupRef.current || !mouseRef.current || !interaction.current) return;
-    const hovered = interaction.current.isHovered;
+    const hovered = interaction.current.isHovered || interaction.current.introGreeting;
     const t = state.clock.elapsedTime;
 
     // 마우스 방향으로 부드럽게 회전
@@ -264,7 +265,8 @@ function FloatingArms({interaction, palette}: {interaction: React.RefObject<Inte
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    const hovered = interaction.current?.isHovered ?? false;
+    const s = interaction.current;
+    const hovered = s ? (s.isHovered || s.introGreeting) : false;
 
     // 왼쪽 팔 — 기본 idle
     if (leftRef.current) {
@@ -318,10 +320,11 @@ function BottomGlow({palette}: {palette: RobotPalette}) {
 
 /* ─── 로봇 씬 내부 ─── */
 
-function RobotSceneInner({palette}: {palette: RobotPalette}) {
+function RobotSceneInner({palette, greeting}: {palette: RobotPalette; greeting: boolean}) {
   const mouseRef = useRef({x: 0, y: 0});
   const interaction = useRef<InteractionState>({
     isHovered: false,
+    introGreeting: false,
     rotation: 0,
     momentum: 0,
     isDragging: false,
@@ -331,6 +334,11 @@ function RobotSceneInner({palette}: {palette: RobotPalette}) {
     smoothVelocity: 0,
   });
   const robotGroupRef = useRef<THREE.Group>(null);
+
+  // greeting prop → interaction ref 동기화
+  useEffect(() => {
+    interaction.current.introGreeting = greeting;
+  }, [greeting]);
 
   useEffect(() => {
     function handlePointerMove(e: PointerEvent) {
@@ -449,6 +457,7 @@ function RobotSceneInner({palette}: {palette: RobotPalette}) {
 
 interface SpaceAstronautProps {
   className?: string;
+  greeting?: boolean;
 }
 
 /**
@@ -461,7 +470,7 @@ interface SpaceAstronautProps {
  * 테마에 따라 다크(밝은 블루화이트)/라이트(슬레이트) 색상이 전환된다.
  * 데스크톱 전용 (조건부 렌더링).
  */
-export function SpaceAstronaut({className}: SpaceAstronautProps) {
+export function SpaceAstronaut({className, greeting = false}: SpaceAstronautProps) {
   const {resolvedTheme} = useTheme();
   const palette = resolvedTheme === "dark" ? darkPalette : lightPalette;
 
@@ -474,7 +483,7 @@ export function SpaceAstronaut({className}: SpaceAstronautProps) {
         style={{background: "transparent"}}
         onCreated={() => signalAstronautReady()}
       >
-        <RobotSceneInner palette={palette} />
+        <RobotSceneInner palette={palette} greeting={greeting} />
       </Canvas>
     </div>
   );

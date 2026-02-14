@@ -82,7 +82,22 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
     }
   }
 
-  // ─── 초기화: 모드 결정 + body overflow 잠금 ───
+  /** 배경 요소에 inert 속성 토글 (오버레이 표시 중 포커스 차단) */
+  function setBackgroundInert(inert: boolean) {
+    const main = document.getElementById("main-content");
+    const header = document.querySelector("header");
+    const footer = document.querySelector("footer");
+    for (const el of [main, header, footer]) {
+      if (!el) continue;
+      if (inert) {
+        el.setAttribute("inert", "");
+      } else {
+        el.removeAttribute("inert");
+      }
+    }
+  }
+
+  // ─── 초기화: 모드 결정 + body overflow 잠금 + 배경 inert ───
   useEffect(() => {
     setIsMounted(true);
     mountTimeRef.current = Date.now();
@@ -95,9 +110,11 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
       setMode("loading");
     }
     document.body.style.overflow = "hidden";
+    setBackgroundInert(true);
 
     return () => {
       document.body.style.overflow = "";
+      setBackgroundInert(false);
     };
   }, []);
 
@@ -113,9 +130,14 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
     }
 
     document.body.style.overflow = "";
+    setBackgroundInert(false);
     resetScroll();
     // 프레임 이후 한번 더 리셋하여 Lenis + 브라우저 동기화 보장
-    requestAnimationFrame(() => resetScroll());
+    requestAnimationFrame(() => {
+      resetScroll();
+      // 인트로 완료 후 메인 콘텐츠로 포커스 이동
+      document.getElementById("main-content")?.focus();
+    });
 
     const isIntro = mode === "intro";
     const container = isIntro ? introRef.current : loadingRef.current;
@@ -281,7 +303,11 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
           <div
             ref={introRef}
             className="fixed inset-0 z-[9999] h-screen bg-scene-bg"
-            aria-hidden={!showIntroOverlay}
+            role="progressbar"
+            aria-valuenow={Math.round(progressObjRef.current.value)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="포트폴리오 로딩 중"
           >
             {/* 앰비언트 그라디언트 오브 */}
             <div className="absolute inset-0 overflow-hidden">
@@ -339,7 +365,11 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
           <div
             ref={loadingRef}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-scene-bg"
-            aria-hidden={!showLoadingOverlay}
+            role="progressbar"
+            aria-valuenow={Math.round(progressObjRef.current.value)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="로딩 중"
           >
             {/* 앰비언트 그라디언트 (단순화) */}
             <div className="absolute inset-0 overflow-hidden">

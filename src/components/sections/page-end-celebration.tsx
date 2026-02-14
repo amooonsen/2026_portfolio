@@ -8,7 +8,7 @@ import {PartyPopper, ArrowRight} from "lucide-react";
 import {ScrollTrigger} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {GradientText} from "@/components/ui/gradient-text";
-import {hasSessionItem, setSessionItem} from "@/lib/session-storage";
+// import {hasSessionItem, setSessionItem} from "@/lib/session-storage";
 import {cn} from "@/lib/utils";
 
 const CelebrationScene = dynamic(
@@ -49,7 +49,7 @@ export function PageEndCelebration() {
       return;
     }
 
-    const alreadyPlayed = hasSessionItem(CELEBRATION_CACHE_KEY);
+    // const alreadyPlayed = hasSessionItem(CELEBRATION_CACHE_KEY);
 
     const st = ScrollTrigger.create({
       trigger: triggerRef.current,
@@ -60,21 +60,21 @@ export function PageEndCelebration() {
         celebratedRef.current = true;
         setShowMessage(true);
 
-        // 세션 내 최초 1회만 파티클 재생
-        if (!alreadyPlayed) {
-          setSessionItem(CELEBRATION_CACHE_KEY, "1");
-          setCelebrating(true);
-          setShowScene(true);
-          // CTA 등장
-          setTimeout(() => setShowCta(true), 1200);
-          // 8초 후 자동 페이드아웃 + 언마운트
-          setTimeout(() => setCelebrating(false), 6000);
-          setTimeout(() => setSceneFading(true), 7000);
-          setTimeout(() => setShowScene(false), 8000);
-        } else {
-          // 이미 재생된 세션: 메시지 + CTA만 표시
-          setShowCta(true);
-        }
+        // 세션 스토리지 체크 주석 처리 — 섹션 도착 시 항상 폭죽 재생
+        // if (!alreadyPlayed) {
+        //   setSessionItem(CELEBRATION_CACHE_KEY, "1");
+        setCelebrating(true);
+        setShowScene(true);
+        // CTA 등장
+        setTimeout(() => setShowCta(true), 1200);
+        // 8초 후 자동 페이드아웃 + 언마운트
+        setTimeout(() => setCelebrating(false), 6000);
+        setTimeout(() => setSceneFading(true), 7000);
+        setTimeout(() => setShowScene(false), 8000);
+        // } else {
+        //   // 이미 재생된 세션: 메시지 + CTA만 표시
+        //   setShowCta(true);
+        // }
       },
     });
 

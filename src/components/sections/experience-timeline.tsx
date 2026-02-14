@@ -133,14 +133,15 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
         {/* 중앙 세로선 — 스크롤 연동 드로우 */}
         <div
           ref={lineRef}
+          aria-hidden="true"
           className="absolute left-4 top-0 hidden h-full w-px origin-top bg-gradient-to-b from-gradient-accent-from/50 via-gradient-accent-via/50 to-gradient-accent-to/50 md:left-1/2 md:block md:-translate-x-px"
         />
 
-        <div className="space-y-16 md:space-y-20">
+        <ol className="list-none space-y-16 md:space-y-20">
           {items.map((item, i) => {
             const isLeft = i % 2 === 0;
             return (
-              <div key={`${item.company}-${item.period}`} className="relative">
+              <li key={`${item.company}-${item.period}`} className="relative">
                 {/* 연도 뱃지 */}
                 <div
                   data-timeline-year
@@ -154,6 +155,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                 {/* 타임라인 도트 */}
                 <div
                   data-timeline-dot
+                  aria-hidden="true"
                   className="absolute top-8 left-4 hidden h-4 w-4 rounded-full border-2 border-accent-indigo bg-background shadow-[0_0_12px_var(--accent-indigo-muted)] md:left-1/2 md:-translate-x-1/2 md:block"
                 >
                   <div className="absolute inset-1 rounded-full bg-accent-indigo" />
@@ -168,7 +170,7 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                   )}
                   style={{perspective: "800px"}}
                 >
-                  <GlassCard padding="lg" hover className="w-full">
+                  <GlassCard padding="lg" hover tabIndex={0} className="w-full">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <h3 className="text-xl font-semibold">{item.role}</h3>
@@ -206,10 +208,10 @@ export function ExperienceTimeline({items}: ExperienceTimelineProps) {
                     </div>
                   </GlassCard>
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ol>
       </div>
     </div>
   );

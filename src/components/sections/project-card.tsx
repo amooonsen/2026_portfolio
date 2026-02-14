@@ -48,7 +48,7 @@ export function ProjectCard({
   showTags = true,
 }: ProjectCardProps) {
   return (
-    <Link href={`/projects/${project.slug}`} className="block h-full">
+    <Link href={`/projects/${project.slug}`} className="block h-full focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-2xl">
       <Spotlight>
         <GlassCard hover padding="lg" className="flex h-full flex-col">
           {/* 썸네일 영역 */}
@@ -67,7 +67,7 @@ export function ProjectCard({
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-muted-foreground/50">
+              <div className="flex h-full w-full items-center justify-center text-muted-foreground/50" aria-hidden="true">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={featured ? 48 : 32}

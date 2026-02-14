@@ -14,10 +14,10 @@ const BURST_COUNT = 4;
 const PARTICLE_COUNT = SPARKS_PER_BURST * BURST_COUNT;
 
 /** 중력 */
-const GRAVITY = -6;
+const GRAVITY = -3;
 
 /** 파티클 수명 */
-const LIFETIME = 3;
+const LIFETIME = 4;
 
 /** 폭죽 색상 팔레트 — 각 폭죽마다 하나의 테마 색상 */
 const BURST_PALETTES = [
@@ -67,7 +67,7 @@ function createBursts(): BurstData[] {
       directions,
       speeds,
       paletteIdx: b % BURST_PALETTES.length,
-      delay: b * 0.15 + Math.random() * 0.1,
+      delay: b * 0.4 + Math.random() * 0.3,
     });
   }
 
@@ -129,26 +129,27 @@ function FireworkParticles({active}: {active: boolean}) {
           continue;
         }
 
-        const life = LIFETIME + (burst.speeds[i] / 7) * 0.5;
+        const life = LIFETIME + (burst.speeds[i] / 7) * 1.5;
         const progress = Math.min(t / life, 1);
 
-        // 속도 감쇠 (공기저항 시뮬레이션)
-        const damping = Math.exp(-t * 1.5);
-        const speed = burst.speeds[i] * damping;
+        // 위치 = 중심 + 방향 * 속도 * (1 - e^(-kt)) / k
+        // 적분 기반이므로 항상 바깥으로 퍼짐 (되돌아오지 않음)
+        const k = 0.8;
+        const spread = burst.speeds[i] * (1 - Math.exp(-k * t)) / k;
 
         const dx = burst.directions[i * 3];
         const dy = burst.directions[i * 3 + 1];
         const dz = burst.directions[i * 3 + 2];
 
-        const px = burst.center.x + dx * speed * t;
-        const py = burst.center.y + dy * speed * t + 0.5 * GRAVITY * t * t;
-        const pz = burst.center.z + dz * speed * t;
+        const px = burst.center.x + dx * spread;
+        const py = burst.center.y + dy * spread + 0.5 * GRAVITY * t * t;
+        const pz = burst.center.z + dz * spread;
 
-        // 페이드 아웃: 수명 60% 이후 서서히 축소
-        const fadeOut = progress > 0.6 ? 1 - (progress - 0.6) / 0.4 : 1;
+        // 페이드 아웃: 수명 50% 이후 서서히 축소하며 퍼짐
+        const fadeOut = progress > 0.5 ? 1 - (progress - 0.5) / 0.5 : 1;
         // 깜빡임 효과
         const flicker = 0.7 + 0.3 * Math.sin(t * 15 + i * 2);
-        const scale = 0.12 * fadeOut * flicker;
+        const scale = 0.03 * fadeOut * flicker;
 
         dummy.current.position.set(px, py, pz);
         dummy.current.scale.setScalar(scale);
@@ -167,8 +168,8 @@ function FireworkParticles({active}: {active: boolean}) {
       frustumCulled={false}
       visible={active}
     >
-      <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial transparent opacity={0.9} depthWrite={false} toneMapped={false} />
+      <sphereGeometry args={[1, 6, 6]} />
+      <meshBasicMaterial transparent opacity={0.9} side={THREE.DoubleSide} />
     </instancedMesh>
   );
 }
@@ -206,7 +207,7 @@ function SparkTrails({active}: {active: boolean}) {
         velocitiesRef.current[i * 3 + 1] = Math.random() * 2;
         velocitiesRef.current[i * 3 + 2] = Math.sin(angle) * speed;
 
-        delaysRef.current[i] = Math.random() * 0.6;
+        delaysRef.current[i] = Math.random() * 1.5;
 
         const palette = BURST_PALETTES[Math.floor(Math.random() * BURST_PALETTES.length)];
         const color = palette[0];
@@ -238,13 +239,14 @@ function SparkTrails({active}: {active: boolean}) {
         continue;
       }
 
-      const damping = Math.exp(-t * 2);
-      const px = positionsRef.current[i * 3] + velocitiesRef.current[i * 3] * t * damping;
+      const trailK = 1.2;
+      const trailSpread = (1 - Math.exp(-trailK * t)) / trailK;
+      const px = positionsRef.current[i * 3] + velocitiesRef.current[i * 3] * trailSpread;
       const py =
         positionsRef.current[i * 3 + 1] +
-        velocitiesRef.current[i * 3 + 1] * t * damping +
-        0.5 * GRAVITY * 0.5 * t * t;
-      const pz = positionsRef.current[i * 3 + 2] + velocitiesRef.current[i * 3 + 2] * t * damping;
+        velocitiesRef.current[i * 3 + 1] * trailSpread +
+        0.5 * GRAVITY * 0.4 * t * t;
+      const pz = positionsRef.current[i * 3 + 2] + velocitiesRef.current[i * 3 + 2] * trailSpread;
 
       posAttr.setXYZ(i, px, py, pz);
     }
@@ -254,17 +256,16 @@ function SparkTrails({active}: {active: boolean}) {
   return (
     <points ref={ref} visible={active} frustumCulled={false}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[new Float32Array(count * 3), 3]} />
+        <bufferAttribute attach="attributes-position" args={[positionsRef.current, 3]} />
         <bufferAttribute attach="attributes-color" args={[colorsArr.current, 3]} />
       </bufferGeometry>
       <pointsMaterial
         vertexColors
         transparent
-        size={0.6}
+        size={0.4}
         sizeAttenuation
         depthWrite={false}
-        opacity={0.9}
-        toneMapped={false}
+        opacity={0.8}
         blending={THREE.AdditiveBlending}
       />
     </points>
@@ -296,7 +297,7 @@ export function CelebrationScene({active, className}: CelebrationSceneProps) {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 40,
+        zIndex: 50,
         pointerEvents: "none",
         opacity: active ? 1 : 0,
         transition: "opacity 0.5s ease-in-out",
