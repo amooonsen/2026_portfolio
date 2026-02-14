@@ -37,7 +37,7 @@ export function Section({
   containerSize,
 }: SectionProps) {
   return (
-    <section id={id} className={cn("py-16 md:py-24 lg:py-32", id && "scroll-mt-20", className)}>
+    <section id={id} className={cn(spacingMap[spacing], id && "scroll-mt-20", className)}>
       {container ? <Container size={containerSize}>{children}</Container> : children}
     </section>
   );

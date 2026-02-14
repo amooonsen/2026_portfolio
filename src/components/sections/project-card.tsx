@@ -1,5 +1,4 @@
-"use client"
-
+import Image from "next/image"
 import Link from "next/link"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TechBadge } from "@/components/ui/tech-badge"
@@ -60,10 +59,12 @@ export function ProjectCard({
             )}
           >
             {project.thumbnail ? (
-              <img
+              <Image
                 src={project.thumbnail}
                 alt={`${project.title} 썸네일`}
-                className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-500 hover:scale-105"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-muted-foreground/50">
@@ -90,19 +91,19 @@ export function ProjectCard({
           {(showTitle || showDescription || showTags) && (
             <div className="flex flex-1 flex-col">
               {showTitle && (
-                <h3 className={cn("font-semibold", featured ? "text-2xl" : "text-lg")}>
+                <h3 className={cn("font-semibold text-foreground", featured ? "text-2xl" : "text-lg")}>
                   {project.title}
                 </h3>
               )}
               {project.period && (
-                <span className="mt-1 text-xs text-muted-foreground/70">
+                <span className="mt-1 text-xs text-foreground/50">
                   {project.period}
                 </span>
               )}
               {showDescription && (
                 <p
                   className={cn(
-                    "mt-2 text-muted-foreground",
+                    "mt-2 text-foreground/65",
                     featured ? "text-base" : "text-sm",
                     !featured && "line-clamp-2"
                   )}

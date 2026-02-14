@@ -82,7 +82,7 @@ export function ContactSection({email, socials}: ContactSectionProps) {
     <Section spacing="lg" container containerSize="md">
       <FadeIn>
         <div className="text-center">
-          <GradientText as="h2" gradient="accent" className="text-3xl font-bold">
+          <GradientText as="h1" gradient="accent" className="text-3xl font-bold">
             Get in Touch
           </GradientText>
           <p className="mt-4 text-muted-foreground">
@@ -111,11 +111,12 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   id="name"
                   type="text"
                   placeholder="홍길동"
+                  aria-describedby={errors.name ? "name-error" : undefined}
                   className={cn(inputBaseClass, errors.name && inputErrorClass)}
                   {...register("name")}
                 />
                 {errors.name && (
-                  <p className="mt-1.5 text-xs text-destructive">{errors.name.message}</p>
+                  <p id="name-error" role="alert" className="mt-1.5 text-xs text-destructive">{errors.name.message}</p>
                 )}
               </div>
 
@@ -128,11 +129,12 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   id="email"
                   type="email"
                   placeholder="hello@example.com"
+                  aria-describedby={errors.email ? "email-error" : undefined}
                   className={cn(inputBaseClass, errors.email && inputErrorClass)}
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="mt-1.5 text-xs text-destructive">{errors.email.message}</p>
+                  <p id="email-error" role="alert" className="mt-1.5 text-xs text-destructive">{errors.email.message}</p>
                 )}
               </div>
 
@@ -145,11 +147,12 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   id="message"
                   rows={5}
                   placeholder="프로젝트에 대해 알려주세요."
+                  aria-describedby={errors.message ? "message-error" : undefined}
                   className={cn(inputBaseClass, "resize-none", errors.message && inputErrorClass)}
                   {...register("message")}
                 />
                 {errors.message && (
-                  <p className="mt-1.5 text-xs text-destructive">{errors.message.message}</p>
+                  <p id="message-error" role="alert" className="mt-1.5 text-xs text-destructive">{errors.message.message}</p>
                 )}
               </div>
 

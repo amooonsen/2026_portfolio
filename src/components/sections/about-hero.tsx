@@ -47,10 +47,10 @@ export function AboutHero({text, className}: AboutHeroProps) {
   const words = text.split(" ");
 
   return (
-    <div ref={wrapperRef} className={cn("relative h-[200vh]", className)}>
+    <div ref={wrapperRef} className={cn("relative h-[300vh]", className)}>
       <div className="sticky top-16 flex min-h-[calc(100vh-4rem)] items-center">
         <div className="mx-auto max-w-5xl px-6">
-          <p ref={textRef} className="text-3xl font-bold leading-relaxed md:text-5xl lg:text-6xl">
+          <p ref={textRef} className="font-bold leading-relaxed text-[7vw] sm:text-[5vw] md:text-[4vw] lg:text-[3.5vw] xl:text-[3vw] 2xl:text-[2.5vw]">
             {reducedMotion ? (
               <span className="text-foreground">{text}</span>
             ) : (

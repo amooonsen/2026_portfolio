@@ -196,7 +196,7 @@ export function HeroSection({
     <Section spacing="xl" container>
       <div
         ref={heroRef}
-        className="relative flex min-h-[calc(100dvh-24rem)] items-center"
+        className="relative flex min-h-[calc(100dvh-30rem)] items-center"
         style={{opacity: reducedMotion ? 1 : 0}}
       >
         <div className="relative z-10 flex w-full items-center gap-8 lg:gap-12">
@@ -258,9 +258,11 @@ export function HeroSection({
         </div>
 
         {/* 스크롤 인디케이터 — GSAP 반복 애니메이션 */}
-        <div ref={scrollRef} className="absolute bottom-[-25%] left-1/2 -translate-x-1/2">
+        <div ref={scrollRef} className="absolute bottom-0 left-1/2 -translate-x-1/2">
           <div className="flex flex-col items-center gap-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground/50">Scroll</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground/50">
+              Scroll
+            </span>
             <div className="relative h-12 w-px bg-border">
               <div
                 data-scroll-dot

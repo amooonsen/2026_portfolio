@@ -20,13 +20,13 @@ interface FooterProps {
  */
 export function Footer({socials = [], className}: FooterProps) {
   return (
-    <footer className={cn("relative z-[60]", className)}>
+    <footer className={cn("relative z-10", className)}>
       <Container>
         <div className="border-t border-border py-12">
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
             {/* 소셜 링크 */}
             {socials.length > 0 && (
-              <div className="flex gap-2">
+              <nav aria-label="소셜 미디어" className="flex gap-2">
                 {socials.map((social) => (
                   <IconButton
                     key={social.platform}
@@ -36,18 +36,11 @@ export function Footer({socials = [], className}: FooterProps) {
                     variant="ghost"
                   />
                 ))}
-              </div>
+              </nav>
             )}
 
             {/* 이메일 + 저작권 */}
             <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground md:items-end">
-              <a
-                href="mailto:chonghocho72@gmail.com"
-                className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
-              >
-                <Mail className="size-4" />
-                <span>chonghocho72@gmail.com</span>
-              </a>
               <p>&copy; {new Date().getFullYear()} Kyungmun Cho. All rights reserved.</p>
               <p className="text-xs">Built with Next.js &middot; Deployed on Vercel</p>
             </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import Image from "next/image"
 import { gsap } from "@/lib/gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
@@ -52,15 +53,17 @@ export function ProjectGallery({ images, title }: ProjectGalleryProps) {
           key={src}
           data-parallax-img
           className={cn(
-            "overflow-hidden rounded-2xl",
+            "relative overflow-hidden rounded-2xl",
             i === 0 ? "aspect-video" : "aspect-[16/10]"
           )}
         >
-          <img
+          <Image
             src={src}
             alt={`${title} 스크린샷 ${i + 1}`}
-            className="h-full w-full object-cover"
-            loading={i === 0 ? "eager" : "lazy"}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+            className="object-cover"
+            priority={i === 0}
           />
         </div>
       ))}

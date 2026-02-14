@@ -60,6 +60,8 @@
   --color-gradient-accent-from: var(--gradient-accent-from);
   --color-gradient-accent-via: var(--gradient-accent-via);
   --color-gradient-accent-to: var(--gradient-accent-to);
+  /* Accent highlight */
+  --color-accent-highlight: var(--accent-highlight);
 }
 
 /* Light theme (default) — Warm White */
@@ -97,11 +99,11 @@
   --sidebar-border: oklch(0 0 0 / 8%);
   --sidebar-ring: oklch(0.5 0.15 270);
   /* Glass */
-  --glass-bg: oklch(0 0 0 / 3%);
-  --glass-border: oklch(0 0 0 / 8%);
-  --glass-hover-bg: oklch(0 0 0 / 5%);
-  --glass-hover-border: oklch(0 0 0 / 12%);
-  --glass-shadow: oklch(0 0 0 / 5%);
+  --glass-bg: oklch(0 0 0 / 4%);
+  --glass-border: oklch(0 0 0 / 10%);
+  --glass-hover-bg: oklch(0 0 0 / 7%);
+  --glass-hover-border: oklch(0 0 0 / 15%);
+  --glass-shadow: oklch(0 0 0 / 8%);
   /* Scene */
   --scene-bg: oklch(0.96 0.005 80);
   /* Accent indigo */
@@ -112,6 +114,8 @@
   --gradient-accent-from: oklch(0.52 0.2 270);
   --gradient-accent-via: oklch(0.55 0.2 300);
   --gradient-accent-to: oklch(0.6 0.2 340);
+  /* Accent highlight */
+  --accent-highlight: #0064FF;
 }
 
 /* Dark theme */
@@ -158,6 +162,8 @@
   --gradient-accent-from: oklch(0.7 0.17 270);
   --gradient-accent-via: oklch(0.72 0.17 300);
   --gradient-accent-to: oklch(0.72 0.2 340);
+  /* Accent highlight */
+  --accent-highlight: #0064FF;
 }
 
 @layer base {
@@ -181,6 +187,11 @@
 
   * {
     @apply border-border outline-ring/50;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
   }
 
   body {
@@ -240,6 +251,21 @@
   animation-delay: 4s;
 }
 
+@keyframes dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@utility animate-dot-pulse {
+  animation: dot-pulse 1.5s ease-out infinite;
+}
+
 @utility perspective-1000 {
   perspective: 1000px;
 }
@@ -249,8 +275,8 @@
 }
 
 @utility text-accent-highlight {
-  color: var(--accent-indigo);
-  font-weight: 500;
+  color: var(--accent-highlight);
+  font-weight: 600;
 }
 
 /* Shiki dual theme support — light/dark switching */
@@ -259,6 +285,7 @@ html.dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
 }
+
 html:not(.dark) .shiki,
 html:not(.dark) .shiki span {
   color: var(--shiki-light) !important;

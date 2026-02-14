@@ -22,7 +22,7 @@ export default function Home() {
       <HeroSection
         title="Frontend Developer"
         subtitle="조경문"
-        description="비즈니스 문제를 기술로 해결하는 4년차 프론트엔드 개발자입니다. React, Next.js, TypeScript를 기반으로 대규모 엔터프라이즈 웹 애플리케이션을 설계하고 구축합니다. 성능 최적화, 컴포넌트 아키텍처, UI 개발 및 시각화에 강점을 가지고 있습니다."
+        description="비즈니스 문제를 기술로 해결하는 4년차 프론트엔드 개발자입니다. React, Next.js, TypeScript를 기반으로 대규모 엔터프라이즈 웹 애플리케이션을 설계하고 구축합니다. Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
         ctaLabel="프로젝트 보기"
         ctaHref="/projects"
         secondaryLabel="연락하기"
@@ -31,8 +31,9 @@ export default function Home() {
 
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
-        text="기술 선택에는 이유가 있어야 하고, 코드는 레거시가 되어도 이해할 수 있어야 합니다. 
-              성능·유지보수성·확장성을 균형있게 고려합니다. 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
+        text="기술 선택에는 이유가 있어야 하고, 코드는 레거시가 되어도 이해할 수 있어야 합니다.
+              AI를 적극 활용하되, 생성된 코드를 이해하고 검증하는 것이 개발자의 역할이라고 생각합니다.
+              성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
       />
 
       {/* 개발 철학 */}
@@ -59,6 +60,9 @@ export default function Home() {
               생각합니다.
               <br /> 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화 하였습니다.
               <br />
+              <span className="text-accent-highlight">AI는 개발자를 대체하는 것이 아니라, 더 본질적인 문제에 집중하게 해주는 도구</span>
+              라고 생각합니다.
+              <br />
               개발자는 코드만 작성하는 사람이 아니라,
               <span className="text-accent-highlight">문제를 해결하고 가치를 만드는 사람</span>
               이라고 믿습니다.
@@ -73,7 +77,7 @@ export default function Home() {
           {philosophies.map((item) => (
             <GlassCard key={item.title} padding="lg" hover>
               <span
-                className="text-sm font-mono font-semibold text-accent-indigo"
+                className="text-sm font-mono font-semibold text-accent-highlight"
                 aria-label={`철학 ${item.number}`}
               >
                 {item.number}

@@ -285,9 +285,9 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
           >
             {/* 앰비언트 그라디언트 오브 */}
             <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute top-1/4 left-1/4 h-[450px] w-[450px] rounded-full bg-violet-600/25 blur-[120px] animate-pulse" />
-              <div className="absolute bottom-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-indigo-600/20 blur-[100px] animate-pulse [animation-delay:1s]" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-pink-600/15 blur-[90px] animate-pulse [animation-delay:0.5s]" />
+              <div className="absolute top-1/4 left-1/4 h-[450px] w-[450px] rounded-full bg-violet-600/10 dark:bg-violet-600/25 blur-[120px] animate-pulse" />
+              <div className="absolute bottom-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-indigo-600/8 dark:bg-indigo-600/20 blur-[100px] animate-pulse [animation-delay:1s]" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-pink-600/8 dark:bg-pink-600/15 blur-[90px] animate-pulse [animation-delay:0.5s]" />
             </div>
 
             {/* 타이틀 — 상단 영역 */}
@@ -343,8 +343,8 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
           >
             {/* 앰비언트 그라디언트 (단순화) */}
             <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute top-1/3 left-1/3 h-[300px] w-[300px] rounded-full bg-violet-600/15 blur-[100px]" />
-              <div className="absolute bottom-1/3 right-1/3 h-[250px] w-[250px] rounded-full bg-indigo-600/10 blur-[80px]" />
+              <div className="absolute top-1/3 left-1/3 h-[300px] w-[300px] rounded-full bg-violet-600/8 dark:bg-violet-600/15 blur-[100px]" />
+              <div className="absolute bottom-1/3 right-1/3 h-[250px] w-[250px] rounded-full bg-indigo-600/5 dark:bg-indigo-600/10 blur-[80px]" />
             </div>
 
             {/* 미니멀 프로그레스 바 */}

@@ -75,7 +75,7 @@ export function Header({items, className}: HeaderProps) {
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isVisible ? "translate-y-0" : "-translate-y-full",
           isScrolled
-            ? "bg-background/80 backdrop-blur-xl border-b border-border/50"
+            ? "bg-background/80 backdrop-blur-xl border-b border-glass-border shadow-[0_1px_15px_var(--glass-shadow)]"
             : "bg-transparent",
           className,
         )}
@@ -86,7 +86,7 @@ export function Header({items, className}: HeaderProps) {
               Portfolio
             </Link>
 
-            <nav className="hidden md:flex items-center gap-1">
+            <nav aria-label="메인 내비게이션" className="hidden md:flex items-center gap-1">
               {items.map((item) => {
                 if (item.external) {
                   return (

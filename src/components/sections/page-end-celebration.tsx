@@ -1,12 +1,14 @@
 "use client";
 
 import {useEffect, useRef, useState} from "react";
+import {createPortal} from "react-dom";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {PartyPopper, ArrowRight} from "lucide-react";
 import {ScrollTrigger} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {GradientText} from "@/components/ui/gradient-text";
+import {hasSessionItem, setSessionItem} from "@/lib/session-storage";
 import {cn} from "@/lib/utils";
 
 const CelebrationScene = dynamic(
@@ -14,22 +16,29 @@ const CelebrationScene = dynamic(
   {ssr: false},
 );
 
+const CELEBRATION_CACHE_KEY = "celebration-played";
+
 /**
  * 페이지 최하단 축하 애니메이션 컴포넌트.
  * 스크롤이 트리거 영역에 도달하면 3D 컨페티 파티클과 감사 메시지를 표시한다.
  * 감사 메시지는 한번 표시되면 유지된다 (언마운트되지 않음).
- * Canvas는 opacity 0으로 마운트 후 fade-in하여 흰 배경 플래시를 방지한다.
+ * 세션당 최초 1회만 파티클 재생 — 재방문 시 메시지만 표시.
+ * CelebrationScene은 body에 portal 렌더링하여 부모 stacking context(z-10)를 벗어난다.
  */
 export function PageEndCelebration() {
   const triggerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const [isMounted, setIsMounted] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const [showScene, setShowScene] = useState(false);
-  const [sceneReady, setSceneReady] = useState(false);
   const [sceneFading, setSceneFading] = useState(false);
   const [showCta, setShowCta] = useState(false);
   const celebratedRef = useRef(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!triggerRef.current || reducedMotion) {
@@ -40,27 +49,32 @@ export function PageEndCelebration() {
       return;
     }
 
+    const alreadyPlayed = hasSessionItem(CELEBRATION_CACHE_KEY);
+
     const st = ScrollTrigger.create({
       trigger: triggerRef.current,
-      start: "top 95%",
+      start: "top 85%",
       once: true,
       onEnter: () => {
         if (celebratedRef.current) return;
         celebratedRef.current = true;
         setShowMessage(true);
-        setCelebrating(true);
-        // Canvas 마운트 (opacity 0 상태)
-        setShowScene(true);
-        // 다음 프레임에서 fade-in 시작 (WebGL 초기화 후)
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => setSceneReady(true));
-        });
-        // CTA 교차 등장
-        setTimeout(() => setShowCta(true), 2500);
-        // 30초 후 자동 언마운트
-        setTimeout(() => setCelebrating(false), 28000);
-        setTimeout(() => setSceneFading(true), 29000);
-        setTimeout(() => setShowScene(false), 30000);
+
+        // 세션 내 최초 1회만 파티클 재생
+        if (!alreadyPlayed) {
+          setSessionItem(CELEBRATION_CACHE_KEY, "1");
+          setCelebrating(true);
+          setShowScene(true);
+          // CTA 등장
+          setTimeout(() => setShowCta(true), 1200);
+          // 8초 후 자동 페이드아웃 + 언마운트
+          setTimeout(() => setCelebrating(false), 6000);
+          setTimeout(() => setSceneFading(true), 7000);
+          setTimeout(() => setShowScene(false), 8000);
+        } else {
+          // 이미 재생된 세션: 메시지 + CTA만 표시
+          setShowCta(true);
+        }
       },
     });
 
@@ -77,7 +91,7 @@ export function PageEndCelebration() {
             showMessage ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
           )}
         >
-          <PartyPopper className="mx-auto h-10 w-10 text-accent-indigo" strokeWidth={1.5} />
+          <PartyPopper className="mx-auto h-10 w-10 text-accent-highlight" strokeWidth={1.5} />
           <GradientText as="p" gradient="primary" className="mt-2 text-xl font-bold">
             여기까지 봐주셔서 감사합니다!
           </GradientText>
@@ -89,7 +103,7 @@ export function PageEndCelebration() {
         {/* Contact CTA */}
         <div
           className={cn(
-            "relative z-[60] mt-6 transition-all duration-1000 ease-out",
+            "relative mt-6 transition-all duration-1000 ease-out",
             showCta ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none",
           )}
         >
@@ -104,17 +118,21 @@ export function PageEndCelebration() {
         </div>
       </div>
 
-      {/* 3D 씬 — opacity 0으로 마운트 후 rAF 2프레임 뒤 fade-in (흰 배경 방지) */}
-      {showScene && !reducedMotion && (
-        <div
-          style={{
-            opacity: sceneFading ? 0 : sceneReady ? 1 : 0,
-            transition: "opacity 0.3s ease-out",
-          }}
-        >
-          <CelebrationScene active={celebrating} />
-        </div>
-      )}
+      {/* 3D 씬 — body portal로 부모 stacking context 탈출 */}
+      {showScene &&
+        !reducedMotion &&
+        isMounted &&
+        createPortal(
+          <div
+            style={{
+              opacity: sceneFading ? 0 : 1,
+              transition: "opacity 0.5s ease-out",
+            }}
+          >
+            <CelebrationScene active={celebrating} />
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
