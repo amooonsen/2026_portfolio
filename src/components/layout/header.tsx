@@ -33,6 +33,7 @@ export function Header({items, className}: HeaderProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [hasFocusWithin, setHasFocusWithin] = useState(false);
   const lastScrollY = useRef(0);
   const pathname = usePathname();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -71,9 +72,15 @@ export function Header({items, className}: HeaderProps) {
   return (
     <>
       <header
+        onFocus={() => setHasFocusWithin(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setHasFocusWithin(false);
+          }
+        }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isVisible ? "translate-y-0" : "-translate-y-full",
+          isVisible || hasFocusWithin ? "translate-y-0" : "-translate-y-full",
           isScrolled
             ? "bg-background/80 backdrop-blur-xl border-b border-glass-border shadow-[0_1px_15px_var(--glass-shadow)]"
             : "bg-transparent",
