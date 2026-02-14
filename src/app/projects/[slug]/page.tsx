@@ -95,7 +95,7 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
               <nav aria-label="빵가루 네비게이션">
                 <Link
                   href="/projects"
-                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg"
                 >
                   <ArrowLeft className="size-4" />
                   프로젝트 목록
@@ -143,7 +143,7 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2"
-                        aria-label={`${project.title} GitHub 저장소`}
+                        aria-label={`${project.title} GitHub 저장소 (새 창에서 열림)`}
                       >
                         <Github className="size-4" aria-hidden="true" />
                         GitHub
@@ -157,7 +157,7 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2"
-                        aria-label={`${project.title} 라이브 데모`}
+                        aria-label={`${project.title} 라이브 데모 (새 창에서 열림)`}
                       >
                         <ExternalLink className="size-4" aria-hidden="true" />
                         라이브 데모

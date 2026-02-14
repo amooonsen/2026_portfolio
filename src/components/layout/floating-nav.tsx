@@ -111,10 +111,11 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-2.5 py-2 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200 sm:gap-2 sm:px-3 sm:text-sm"
+                  className="flex items-center gap-1.5 px-2.5 py-2 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200 sm:gap-2 sm:px-3 sm:text-sm focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none"
                 >
                   {item.icon && <span className="shrink-0">{item.icon}</span>}
                   <span>{item.label}</span>
+                  <span className="sr-only">(새 창에서 열림)</span>
                 </a>
               </li>
             )
@@ -130,7 +131,7 @@ export function FloatingNav({ items, className }: FloatingNavProps) {
               <Link
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-2 rounded-full text-xs font-medium transition-colors duration-200 sm:gap-2 sm:px-3 sm:text-sm",
+                  "flex items-center gap-1.5 px-2.5 py-2 rounded-full text-xs font-medium transition-colors duration-200 sm:gap-2 sm:px-3 sm:text-sm focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none",
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"

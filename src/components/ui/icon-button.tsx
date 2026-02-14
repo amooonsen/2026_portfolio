@@ -44,7 +44,7 @@ export function IconButton({
   ...props
 }: IconButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+    "inline-flex items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo",
     sizeMap[size],
     variantMap[variant],
     className
@@ -54,7 +54,7 @@ export function IconButton({
     return (
       <a
         href={href}
-        aria-label={label}
+        aria-label={`${label} (새 창에서 열림)`}
         className={classes}
         target="_blank"
         rel="noopener noreferrer"

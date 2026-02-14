@@ -86,7 +86,7 @@ export default function Home() {
           aria-label="개발 철학"
         >
           {philosophies.map((item) => (
-            <GlassCard key={item.title} padding="lg" hover>
+            <GlassCard key={item.title} padding="lg" hover tabIndex={0}>
               <span
                 className="text-sm font-mono font-semibold text-accent-highlight"
                 aria-label={`철학 ${item.number}`}

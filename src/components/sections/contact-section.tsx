@@ -95,9 +95,11 @@ export function ContactSection({email, socials}: ContactSectionProps) {
       </FadeIn>
 
       {serverState.success ? (
-        <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
-          <ContactSuccess />
-        </GlassCard>
+        <div role="status" aria-live="polite">
+          <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
+            <ContactSuccess />
+          </GlassCard>
+        </div>
       ) : (
         <SlideUp delay={0.2}>
           <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
@@ -111,6 +113,8 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   id="name"
                   type="text"
                   placeholder="홍길동"
+                  aria-required="true"
+                  aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? "name-error" : undefined}
                   className={cn(inputBaseClass, errors.name && inputErrorClass)}
                   {...register("name")}
@@ -129,6 +133,8 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   id="email"
                   type="email"
                   placeholder="hello@example.com"
+                  aria-required="true"
+                  aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? "email-error" : undefined}
                   className={cn(inputBaseClass, errors.email && inputErrorClass)}
                   {...register("email")}
@@ -147,6 +153,8 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   id="message"
                   rows={5}
                   placeholder="프로젝트에 대해 알려주세요."
+                  aria-required="true"
+                  aria-invalid={!!errors.message}
                   aria-describedby={errors.message ? "message-error" : undefined}
                   className={cn(inputBaseClass, "resize-none", errors.message && inputErrorClass)}
                   {...register("message")}
@@ -158,10 +166,10 @@ export function ContactSection({email, socials}: ContactSectionProps) {
 
               {/* 서버 에러 메시지 */}
               {serverState.message && !serverState.success && (
-                <p className="text-sm text-destructive">{serverState.message}</p>
+                <p role="alert" className="text-sm text-destructive">{serverState.message}</p>
               )}
 
-              <Button type="submit" className="w-full" disabled={isPending}>
+              <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
                 {isPending ? "전송 중..." : "메시지 보내기"}
               </Button>
             </form>

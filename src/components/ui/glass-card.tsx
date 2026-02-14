@@ -6,7 +6,7 @@ const paddingMap = {
   lg: "p-8",
 } as const
 
-interface GlassCardProps {
+interface GlassCardProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode
   className?: string
   hover?: boolean
@@ -27,9 +27,11 @@ export function GlassCard({
   hover = false,
   as: Component = "div",
   padding = "md",
+  ...rest
 }: GlassCardProps) {
   return (
     <Component
+      {...rest}
       className={cn(
         "rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl",
         paddingMap[padding],
@@ -38,6 +40,7 @@ export function GlassCard({
           "hover:bg-glass-hover-bg hover:border-glass-hover-border",
           "hover:shadow-lg hover:shadow-glass-shadow",
         ],
+        rest.tabIndex !== undefined && "focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none",
         className
       )}
     >

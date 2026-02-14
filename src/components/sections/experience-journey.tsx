@@ -190,7 +190,8 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
           <article
             key={item.year}
             data-journey-item
-            className="group relative grid gap-4 py-8 pl-8 md:grid-cols-5 md:gap-8"
+            tabIndex={0}
+            className="group relative grid gap-4 py-8 pl-8 md:grid-cols-5 md:gap-8 focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg"
             role="listitem"
           >
             {/* 도트 + 펄스 글로우 */}
@@ -235,6 +236,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
                         "inline-flex items-center gap-1 rounded-full border border-glass-border px-3 py-1 text-xs font-medium text-muted-foreground",
                         "transition-all duration-200",
                         "hover:border-accent-indigo-muted hover:text-accent-highlight hover:-translate-y-0.5 hover:shadow-sm",
+                        "focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none",
                       )}
                     >
                       {project.name}

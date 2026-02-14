@@ -67,14 +67,21 @@ export function SkillBars({ skills }: SkillBarsProps) {
   return (
     <div ref={containerRef} className="space-y-6">
       {skills.map((skill) => (
-        <div key={skill.name}>
+        <div key={skill.name} tabIndex={0} className="focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg">
           <div data-skill-label className="mb-2 flex justify-between">
             <span className="text-sm font-medium text-foreground">{skill.name}</span>
             <span className="text-sm tabular-nums text-muted-foreground">
               {skill.level}%
             </span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-glass-bg">
+          <div
+            className="h-1.5 overflow-hidden rounded-full bg-glass-bg"
+            role="progressbar"
+            aria-valuenow={skill.level}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`${skill.name} 숙련도 ${skill.level}%`}
+          >
             <div
               data-skill-bar
               className="h-full rounded-full bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to"

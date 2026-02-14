@@ -144,6 +144,7 @@ export function OverviewCard({
         className={cn("group block", className)}
       >
         {content}
+        <span className="sr-only">(새 창에서 열림)</span>
       </a>
     );
   }

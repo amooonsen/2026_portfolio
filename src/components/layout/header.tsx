@@ -82,7 +82,7 @@ export function Header({items, className}: HeaderProps) {
       >
         <Container>
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="text-lg font-bold tracking-tight">
+            <Link href="/" className="text-lg font-bold tracking-tight focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg">
               Portfolio
             </Link>
 
@@ -95,10 +95,11 @@ export function Header({items, className}: HeaderProps) {
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors rounded-lg"
+                      className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors rounded-lg focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none"
                     >
                       {item.label}
                       <ExternalLink className="size-3" />
+                      <span className="sr-only">(새 창에서 열림)</span>
                     </a>
                   );
                 }
@@ -111,7 +112,7 @@ export function Header({items, className}: HeaderProps) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "px-4 py-2 text-sm font-medium transition-colors rounded-lg",
+                      "px-4 py-2 text-sm font-medium transition-colors rounded-lg focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none",
                       isActive
                         ? "text-foreground bg-muted"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted",
@@ -126,7 +127,7 @@ export function Header({items, className}: HeaderProps) {
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <button
-                className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted transition-colors"
+                className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none"
                 onClick={() => setIsMobileNavOpen(true)}
                 aria-label="메뉴 열기"
                 aria-expanded={isMobileNavOpen}
