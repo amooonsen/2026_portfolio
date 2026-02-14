@@ -265,7 +265,11 @@ export function HeroSection({
         </div>
 
         {/* 스크롤 인디케이터 — GSAP 반복 애니메이션 */}
-        <div ref={scrollRef} aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2">
+        <div
+          ref={scrollRef}
+          aria-hidden="true"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2"
+        >
           <div className="flex flex-col items-center gap-3">
             <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground/50">
               Scroll

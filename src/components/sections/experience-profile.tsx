@@ -3,7 +3,7 @@
 import {useEffect, useRef} from "react";
 import {gsap} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
-import profileSrc from "@/assets/profile.jpg";
+import profileSrc from "@/assets/hemging.png";
 
 /**
  * Experience 페이지 프로필 사진.
