@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import Link from "next/link"
 import { gsap } from "@/lib/gsap"
+import { useGsapContext } from "@/hooks/use-gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Home } from "lucide-react"
@@ -21,7 +22,7 @@ export function ContactSuccess() {
   const buttonsRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  useEffect(() => {
+  useGsapContext(containerRef, () => {
     if (!containerRef.current) return
 
     if (reducedMotion) {
@@ -35,111 +36,107 @@ export function ContactSuccess() {
       return
     }
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } })
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } })
 
-      // 컨테이너 페이드인
-      tl.fromTo(
-        containerRef.current,
-        { opacity: 0, scale: 0.9 },
-        { opacity: 1, scale: 1, duration: 0.3 },
-      )
+    // 컨테이너 페이드인
+    tl.fromTo(
+      containerRef.current,
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.3 },
+    )
 
-      // 원 드로우
-      if (circleRef.current) {
-        const circumference = 2 * Math.PI * 40
-        gsap.set(circleRef.current, {
-          strokeDasharray: circumference,
-          strokeDashoffset: circumference,
-        })
-        tl.to(circleRef.current, {
-          strokeDashoffset: 0,
-          duration: 0.45,
-          ease: "power2.inOut",
-        }, "-=0.05")
-      }
+    // 원 드로우
+    if (circleRef.current) {
+      const circumference = 2 * Math.PI * 40
+      gsap.set(circleRef.current, {
+        strokeDasharray: circumference,
+        strokeDashoffset: circumference,
+      })
+      tl.to(circleRef.current, {
+        strokeDashoffset: 0,
+        duration: 0.45,
+        ease: "power2.inOut",
+      }, "-=0.05")
+    }
 
-      // 체크마크 드로우
-      if (checkRef.current) {
-        const checkLength = checkRef.current.getTotalLength()
-        gsap.set(checkRef.current, {
-          strokeDasharray: checkLength,
-          strokeDashoffset: checkLength,
-        })
-        tl.to(checkRef.current, {
-          strokeDashoffset: 0,
-          duration: 0.25,
-          ease: "power2.out",
-        }, "-=0.1")
-      }
+    // 체크마크 드로우
+    if (checkRef.current) {
+      const checkLength = checkRef.current.getTotalLength()
+      gsap.set(checkRef.current, {
+        strokeDasharray: checkLength,
+        strokeDashoffset: checkLength,
+      })
+      tl.to(checkRef.current, {
+        strokeDashoffset: 0,
+        duration: 0.25,
+        ease: "power2.out",
+      }, "-=0.1")
+    }
 
-      // 스파클 폭발
-      if (sparklesRef.current) {
-        const sparkles = sparklesRef.current.querySelectorAll("[data-sparkle]")
-        gsap.set(sparkles, { scale: 0, opacity: 0 })
-        tl.to(sparkles, {
-          scale: 1,
-          opacity: 1,
-          duration: 0.25,
-          stagger: { each: 0.02, from: "random" },
-          ease: "back.out(3)",
-        }, "-=0.15")
-        tl.to(sparkles, {
-          opacity: 0,
-          scale: 0.5,
-          duration: 0.4,
-          stagger: { each: 0.015, from: "random" },
-          ease: "power2.in",
-        }, "+=0.1")
-      }
-
-      // 펄스 효과
-      tl.to("[data-check-group]", {
-        scale: 1.1,
-        duration: 0.12,
+    // 스파클 폭발
+    if (sparklesRef.current) {
+      const sparkles = sparklesRef.current.querySelectorAll("[data-sparkle]")
+      gsap.set(sparkles, { scale: 0, opacity: 0 })
+      tl.to(sparkles, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.25,
+        stagger: { each: 0.02, from: "random" },
+        ease: "back.out(3)",
+      }, "-=0.15")
+      tl.to(sparkles, {
+        opacity: 0,
+        scale: 0.5,
+        duration: 0.4,
+        stagger: { each: 0.015, from: "random" },
         ease: "power2.in",
-      }, "-=0.4")
-        .to("[data-check-group]", {
-          scale: 1,
-          duration: 0.2,
-          ease: "elastic.out(1.2, 0.5)",
-        })
+      }, "+=0.1")
+    }
 
-      // 타이틀 글자별 리빌
-      if (titleRef.current) {
-        const words = titleRef.current.querySelectorAll("[data-word]")
-        gsap.set(words, { yPercent: 100, opacity: 0 })
-        tl.to(words, {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.3,
-          stagger: 0.04,
-          ease: "power3.out",
-        }, "-=0.25")
-      }
+    // 펄스 효과
+    tl.to("[data-check-group]", {
+      scale: 1.1,
+      duration: 0.12,
+      ease: "power2.in",
+    }, "-=0.4")
+      .to("[data-check-group]", {
+        scale: 1,
+        duration: 0.2,
+        ease: "elastic.out(1.2, 0.5)",
+      })
 
-      // 설명 텍스트
-      if (descRef.current) {
-        gsap.set(descRef.current, { opacity: 0, y: 10 })
-        tl.to(descRef.current, { opacity: 1, y: 0, duration: 0.3 }, "-=0.1")
-      }
+    // 타이틀 글자별 리빌
+    if (titleRef.current) {
+      const words = titleRef.current.querySelectorAll("[data-word]")
+      gsap.set(words, { yPercent: 100, opacity: 0 })
+      tl.to(words, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.3,
+        stagger: 0.04,
+        ease: "power3.out",
+      }, "-=0.25")
+    }
 
-      // 버튼 등장
-      if (buttonsRef.current) {
-        const buttons = buttonsRef.current.querySelectorAll("[data-btn]")
-        gsap.set(buttons, { opacity: 0, y: 15, scale: 0.95 })
-        tl.to(buttons, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.3,
-          stagger: 0.08,
-          ease: "back.out(1.5)",
-        }, "-=0.05")
-      }
-    }, containerRef)
+    // 설명 텍스트
+    if (descRef.current) {
+      gsap.set(descRef.current, { opacity: 0, y: 10 })
+      tl.to(descRef.current, { opacity: 1, y: 0, duration: 0.3 }, "-=0.1")
+    }
 
-    return () => ctx.revert()
+    // 버튼 등장
+    if (buttonsRef.current) {
+      const buttons = buttonsRef.current.querySelectorAll("[data-btn]")
+      gsap.set(buttons, { opacity: 0, y: 15, scale: 0.95 })
+      tl.to(buttons, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.3,
+        stagger: 0.08,
+        ease: "back.out(1.5)",
+      }, "-=0.05")
+    }
   }, [reducedMotion])
 
   // 스파클 위치 (원 주변 12개)
@@ -162,7 +159,7 @@ export function ContactSuccess() {
       style={{ opacity: reducedMotion ? 1 : 0 }}
     >
       {/* 체크마크 + 스파클 */}
-      <div className="relative mb-8 flex items-center justify-center" style={{ width: 140, height: 140 }}>
+      <div className="relative mb-8 flex h-[140px] w-[140px] items-center justify-center">
         <div ref={sparklesRef} className="absolute inset-0">
           {sparklePositions.map((pos, i) => (
             <span

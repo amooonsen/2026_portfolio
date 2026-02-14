@@ -1,6 +1,7 @@
 "use client"
 
 import {useEffect, useRef} from "react"
+import {useGsapContext} from "@/hooks/use-gsap"
 import {Section} from "@/components/ui/section"
 import {GradientText} from "@/components/ui/gradient-text"
 import {FadeIn} from "@/components/animation/fade-in"
@@ -78,72 +79,68 @@ export function TechStack({categories}: TechStackProps) {
   const reducedMotion = useReducedMotion()
 
   // GSAP 스크롤 등장 애니메이션
-  useEffect(() => {
+  useGsapContext(gridRef, () => {
     if (!gridRef.current || reducedMotion) return
 
     const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]")
     if (cards.length === 0) return
 
-    const ctx = gsap.context(() => {
-      // 카드별 교차 방향 진입 (좌/우 교대) + 회전 + 스케일
-      cards.forEach((card, i) => {
-        const fromLeft = i % 2 === 0
-        gsap.set(card, {
-          opacity: 0,
-          x: fromLeft ? -80 : 80,
-          y: 40,
-          rotateY: fromLeft ? -8 : 8,
-          scale: 0.92,
-        })
-
-        gsap.to(card, {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          rotateY: 0,
-          scale: 1,
-          duration: 0.8,
-          delay: i * 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: gridRef.current!,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        })
+    // 카드별 교차 방향 진입 (좌/우 교대) + 회전 + 스케일
+    cards.forEach((card, i) => {
+      const fromLeft = i % 2 === 0
+      gsap.set(card, {
+        opacity: 0,
+        x: fromLeft ? -80 : 80,
+        y: 40,
+        rotateY: fromLeft ? -8 : 8,
+        scale: 0.92,
       })
 
-      // 카드 내 뱃지 stagger 등장 + 바운스
-      cards.forEach((card) => {
-        const badges = card.querySelectorAll("[data-tech-badge]")
-        if (badges.length === 0) return
-
-        gsap.set(badges, {opacity: 0, scale: 0.6, y: 20, rotateX: -30})
-
-        gsap.to(badges, {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          rotateX: 0,
-          duration: 0.5,
-          stagger: 0.06,
-          ease: "back.out(2)",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        })
-      })
-
-      // 카테고리 도트 펄스 — CSS @keyframes로 위임 (off-screen 시 GPU 유휴)
-      const dots = gridRef.current!.querySelectorAll<HTMLElement>("[data-category-dot]")
-      dots.forEach((dot) => {
-        dot.classList.add("animate-dot-pulse")
+      gsap.to(card, {
+        opacity: 1,
+        x: 0,
+        y: 0,
+        rotateY: 0,
+        scale: 1,
+        duration: 0.8,
+        delay: i * 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: gridRef.current!,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
       })
     })
 
-    return () => ctx.revert()
+    // 카드 내 뱃지 stagger 등장 + 바운스
+    cards.forEach((card) => {
+      const badges = card.querySelectorAll("[data-tech-badge]")
+      if (badges.length === 0) return
+
+      gsap.set(badges, {opacity: 0, scale: 0.6, y: 20, rotateX: -30})
+
+      gsap.to(badges, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        rotateX: 0,
+        duration: 0.5,
+        stagger: 0.06,
+        ease: "back.out(2)",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      })
+    })
+
+    // 카테고리 도트 펄스 — CSS @keyframes로 위임 (off-screen 시 GPU 유휴)
+    const dots = gridRef.current.querySelectorAll<HTMLElement>("[data-category-dot]")
+    dots.forEach((dot) => {
+      dot.classList.add("animate-dot-pulse")
+    })
   }, [reducedMotion])
 
   // 3D tilt 효과 (마우스 트래킹)
@@ -219,17 +216,14 @@ export function TechStack({categories}: TechStackProps) {
               data-tech-card
               tabIndex={0}
               className={cn(
-                "group relative rounded-2xl border backdrop-blur-xl p-6 transition-shadow duration-300",
+                "group relative rounded-2xl border backdrop-blur-xl p-6 transition-shadow duration-300 preserve-3d",
                 "bg-glass-bg hover:bg-glass-hover-bg",
                 color.border,
                 "hover:shadow-xl",
                 color.glow,
                 "focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none",
               )}
-              style={{
-                transformStyle: "preserve-3d",
-                ["--card-rgb" as string]: rgb,
-              }}
+              style={{["--card-rgb" as string]: rgb}}
             >
               {/* 마우스 트래킹 광원 오버레이 */}
               <div

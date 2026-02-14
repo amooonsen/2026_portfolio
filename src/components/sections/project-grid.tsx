@@ -1,7 +1,8 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {gsap} from "@/lib/gsap";
+import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {BentoGridItem} from "@/components/ui/bento-grid";
 import {FadeIn} from "@/components/animation/fade-in";
@@ -42,35 +43,31 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
     return a.year - b.year;
   });
 
-  useEffect(() => {
+  useGsapContext(gridRef, () => {
     if (!gridRef.current || reducedMotion) return;
 
     const cards = gridRef.current.querySelectorAll("[data-project-card]");
     if (cards.length === 0) return;
 
-    const ctx = gsap.context(() => {
-      cards.forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          {opacity: 0, y: 40, scale: 0.95},
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.6,
-            delay: (i % 3) * 0.1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 92%",
-              toggleActions: "play none none none",
-            },
+    cards.forEach((card, i) => {
+      gsap.fromTo(
+        card,
+        {opacity: 0, y: 40, scale: 0.95},
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          delay: (i % 3) * 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 92%",
+            toggleActions: "play none none none",
           },
-        );
-      });
+        },
+      );
     });
-
-    return () => ctx.revert();
   }, [reducedMotion, sortOrder]);
 
   return (

@@ -1,12 +1,13 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {Section} from "@/components/ui/section";
 import {Button} from "@/components/ui/button";
 import {Magnetic} from "@/components/ui/magnetic";
 import {gsap} from "@/lib/gsap";
+import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {useMediaQuery} from "@/hooks/use-media-query";
 import {useIntroComplete} from "@/lib/intro-context";
@@ -54,118 +55,114 @@ export function HeroSection({
   const isIntroComplete = useIntroComplete();
   const [robotGreeting, setRobotGreeting] = useState(false);
 
-  useEffect(() => {
+  useGsapContext(heroRef, () => {
     if (!isIntroComplete || !heroRef.current || reducedMotion) return;
 
-    const ctx = gsap.context(() => {
-      // 히어로 wrapper 노출
-      gsap.set(heroRef.current, {opacity: 1});
+    // 히어로 wrapper 노출
+    gsap.set(heroRef.current, {opacity: 1});
 
-      const tl = gsap.timeline();
+    const tl = gsap.timeline();
 
-      // 모바일에서는 간소화된 애니메이션
-      if (isMobile) {
-        if (subtitleRef.current) {
-          gsap.set(subtitleRef.current, {opacity: 0, y: 20});
-          tl.to(subtitleRef.current, {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-          });
-        }
+    // 모바일에서는 간소화된 애니메이션
+    if (isMobile) {
+      if (subtitleRef.current) {
+        gsap.set(subtitleRef.current, {opacity: 0, y: 20});
+        tl.to(subtitleRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      }
 
-        if (titleRef.current) {
-          gsap.set(titleRef.current, {opacity: 0, y: 20});
-          tl.to(titleRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.3");
-        }
-      } else {
-        // 데스크톱: 글자별/단어별 애니메이션
-        const chars = subtitleRef.current?.querySelectorAll("[data-char]");
-        if (chars?.length) {
-          gsap.set(chars, {yPercent: 110, opacity: 0});
-          tl.to(chars, {
+      if (titleRef.current) {
+        gsap.set(titleRef.current, {opacity: 0, y: 20});
+        tl.to(titleRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.3");
+      }
+    } else {
+      // 데스크톱: 글자별/단어별 애니메이션
+      const chars = subtitleRef.current?.querySelectorAll("[data-char]");
+      if (chars?.length) {
+        gsap.set(chars, {yPercent: 110, opacity: 0});
+        tl.to(chars, {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.03,
+          ease: "power3.out",
+        });
+      }
+
+      const words = titleRef.current?.querySelectorAll("[data-word]");
+      if (words?.length) {
+        gsap.set(words, {yPercent: 100, opacity: 0, filter: "blur(8px)"});
+        tl.to(
+          words,
+          {
             yPercent: 0,
             opacity: 1,
+            filter: "blur(0px)",
             duration: 0.7,
-            stagger: 0.03,
-            ease: "power3.out",
-          });
-        }
-
-        const words = titleRef.current?.querySelectorAll("[data-word]");
-        if (words?.length) {
-          gsap.set(words, {yPercent: 100, opacity: 0, filter: "blur(8px)"});
-          tl.to(
-            words,
-            {
-              yPercent: 0,
-              opacity: 1,
-              filter: "blur(0px)",
-              duration: 0.7,
-              stagger: 0.12,
-              ease: "power2.out",
-            },
-            "-=0.3",
-          );
-        }
-      }
-
-      // 설명 텍스트 페이드인
-      if (descRef.current) {
-        gsap.set(descRef.current, {opacity: 0, y: 20});
-        tl.to(descRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.2");
-      }
-
-      // CTA 버튼 슬라이드업
-      if (ctaRef.current) {
-        gsap.set(ctaRef.current, {opacity: 0, y: 20});
-        tl.to(ctaRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.1");
-      }
-
-      // 3D 캐릭터 등장 (데스크톱만) — 1s 앞당김 + 인사 트리거
-      if (astronautRef.current && !isMobile) {
-        gsap.set(astronautRef.current, {opacity: 0, scale: 0.8});
-        tl.to(
-          astronautRef.current,
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 1,
+            stagger: 0.12,
             ease: "power2.out",
-            onStart: () => {
-              setRobotGreeting(true);
-              setTimeout(() => setRobotGreeting(false), 2000);
-            },
           },
-          "-=1.4",
+          "-=0.3",
         );
       }
+    }
 
-      // 스크롤 인디케이터 등장 + 반복 애니메이션
-      if (scrollRef.current) {
-        gsap.set(scrollRef.current, {opacity: 0});
-        tl.to(scrollRef.current, {opacity: 1, duration: 0.5}, "-=0.1");
+    // 설명 텍스트 페이드인
+    if (descRef.current) {
+      gsap.set(descRef.current, {opacity: 0, y: 20});
+      tl.to(descRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.2");
+    }
 
-        const dot = scrollRef.current.querySelector("[data-scroll-dot]");
-        if (dot) {
-          gsap.fromTo(
-            dot,
-            {y: 0, opacity: 1},
-            {
-              y: 16,
-              opacity: 0,
-              duration: 1.5,
-              repeat: -1,
-              ease: "power1.in",
-              repeatDelay: 0.8,
-            },
-          );
-        }
+    // CTA 버튼 슬라이드업
+    if (ctaRef.current) {
+      gsap.set(ctaRef.current, {opacity: 0, y: 20});
+      tl.to(ctaRef.current, {opacity: 1, y: 0, duration: 0.6, ease: "power2.out"}, "-=0.1");
+    }
+
+    // 3D 캐릭터 등장 (데스크톱만) — 1s 앞당김 + 인사 트리거
+    if (astronautRef.current && !isMobile) {
+      gsap.set(astronautRef.current, {opacity: 0, scale: 0.8});
+      tl.to(
+        astronautRef.current,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: "power2.out",
+          onStart: () => {
+            setRobotGreeting(true);
+            setTimeout(() => setRobotGreeting(false), 2000);
+          },
+        },
+        "-=1.4",
+      );
+    }
+
+    // 스크롤 인디케이터 등장 + 반복 애니메이션
+    if (scrollRef.current) {
+      gsap.set(scrollRef.current, {opacity: 0});
+      tl.to(scrollRef.current, {opacity: 1, duration: 0.5}, "-=0.1");
+
+      const dot = scrollRef.current.querySelector("[data-scroll-dot]");
+      if (dot) {
+        gsap.fromTo(
+          dot,
+          {y: 0, opacity: 1},
+          {
+            y: 16,
+            opacity: 0,
+            duration: 1.5,
+            repeat: -1,
+            ease: "power1.in",
+            repeatDelay: 0.8,
+          },
+        );
       }
-    }, heroRef);
-
-    return () => ctx.revert();
+    }
   }, [isIntroComplete, reducedMotion, isMobile]);
 
   /** 텍스트를 글자별 span으로 분할 (SplitText 효과용) */

@@ -320,8 +320,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
             <div className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center gap-4">
               <h1
                 ref={titleRef}
-                className="text-5xl font-bold tracking-tight text-foreground md:text-6xl [perspective:1000px]"
-                style={{transformStyle: "preserve-3d"}}
+                className="text-5xl font-bold tracking-tight text-foreground md:text-6xl perspective-1000 preserve-3d"
               >
                 Portfolio
               </h1>

@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import Image from "next/image"
 import { gsap } from "@/lib/gsap"
+import { useGsapContext } from "@/hooks/use-gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -21,29 +22,25 @@ export function ProjectGallery({ images, title }: ProjectGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  useEffect(() => {
+  useGsapContext(containerRef, () => {
     if (!containerRef.current || reducedMotion) return
 
     const items = containerRef.current.querySelectorAll("[data-parallax-img]")
 
-    const ctx = gsap.context(() => {
-      items.forEach((item, i) => {
-        const speed = i % 2 === 0 ? -40 : -60
+    items.forEach((item, i) => {
+      const speed = i % 2 === 0 ? -40 : -60
 
-        gsap.to(item, {
-          y: speed,
-          ease: "none",
-          scrollTrigger: {
-            trigger: item,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        })
+      gsap.to(item, {
+        y: speed,
+        ease: "none",
+        scrollTrigger: {
+          trigger: item,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
       })
     })
-
-    return () => ctx.revert()
   }, [reducedMotion])
 
   return (

@@ -8,7 +8,6 @@ import {PartyPopper, ArrowRight} from "lucide-react";
 import {ScrollTrigger} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {GradientText} from "@/components/ui/gradient-text";
-// import {hasSessionItem, setSessionItem} from "@/lib/session-storage";
 import {cn} from "@/lib/utils";
 
 const CelebrationScene = dynamic(
@@ -16,13 +15,10 @@ const CelebrationScene = dynamic(
   {ssr: false},
 );
 
-const CELEBRATION_CACHE_KEY = "celebration-played";
-
 /**
  * 페이지 최하단 축하 애니메이션 컴포넌트.
  * 스크롤이 트리거 영역에 도달하면 3D 컨페티 파티클과 감사 메시지를 표시한다.
  * 감사 메시지는 한번 표시되면 유지된다 (언마운트되지 않음).
- * 세션당 최초 1회만 파티클 재생 — 재방문 시 메시지만 표시.
  * CelebrationScene은 body에 portal 렌더링하여 부모 stacking context(z-10)를 벗어난다.
  */
 export function PageEndCelebration() {
@@ -49,8 +45,6 @@ export function PageEndCelebration() {
       return;
     }
 
-    // const alreadyPlayed = hasSessionItem(CELEBRATION_CACHE_KEY);
-
     const st = ScrollTrigger.create({
       trigger: triggerRef.current,
       start: "top 85%",
@@ -59,22 +53,12 @@ export function PageEndCelebration() {
         if (celebratedRef.current) return;
         celebratedRef.current = true;
         setShowMessage(true);
-
-        // 세션 스토리지 체크 주석 처리 — 섹션 도착 시 항상 폭죽 재생
-        // if (!alreadyPlayed) {
-        //   setSessionItem(CELEBRATION_CACHE_KEY, "1");
         setCelebrating(true);
         setShowScene(true);
-        // CTA 등장
         setTimeout(() => setShowCta(true), 1200);
-        // 8초 후 자동 페이드아웃 + 언마운트
         setTimeout(() => setCelebrating(false), 6000);
         setTimeout(() => setSceneFading(true), 7000);
         setTimeout(() => setShowScene(false), 8000);
-        // } else {
-        //   // 이미 재생된 세션: 메시지 + CTA만 표시
-        //   setShowCta(true);
-        // }
       },
     });
 

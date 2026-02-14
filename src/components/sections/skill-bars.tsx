@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { gsap } from "@/lib/gsap"
+import { useGsapContext } from "@/hooks/use-gsap"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 
 interface Skill {
@@ -22,46 +23,42 @@ export function SkillBars({ skills }: SkillBarsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  useEffect(() => {
+  useGsapContext(containerRef, () => {
     if (!containerRef.current || reducedMotion) return
 
     const bars = containerRef.current.querySelectorAll("[data-skill-bar]")
     const labels = containerRef.current.querySelectorAll("[data-skill-label]")
 
-    const ctx = gsap.context(() => {
-      // 바 스케일 애니메이션
-      bars.forEach((bar) => {
-        gsap.from(bar, {
-          scaleX: 0,
-          transformOrigin: "left",
-          duration: 1.2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: bar,
-            start: "top 92%",
-            toggleActions: "play none none none",
-          },
-        })
-      })
-
-      // 라벨 페이드인
-      labels.forEach((label, i) => {
-        gsap.from(label, {
-          opacity: 0,
-          x: -10,
-          duration: 0.5,
-          delay: i * 0.05,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: label,
-            start: "top 92%",
-            toggleActions: "play none none none",
-          },
-        })
+    // 바 스케일 애니메이션
+    bars.forEach((bar) => {
+      gsap.from(bar, {
+        scaleX: 0,
+        transformOrigin: "left",
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: bar,
+          start: "top 92%",
+          toggleActions: "play none none none",
+        },
       })
     })
 
-    return () => ctx.revert()
+    // 라벨 페이드인
+    labels.forEach((label, i) => {
+      gsap.from(label, {
+        opacity: 0,
+        x: -10,
+        duration: 0.5,
+        delay: i * 0.05,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: label,
+          start: "top 92%",
+          toggleActions: "play none none none",
+        },
+      })
+    })
   }, [reducedMotion])
 
   return (
