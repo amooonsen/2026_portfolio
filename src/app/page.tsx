@@ -20,6 +20,15 @@ export default function Home() {
   return (
     <HomeClient>
       <HeroSection
+        title="Crafting Interfaces That Matter"
+        subtitle="개발자 조경문"
+        description="문제를 정의하고, 기술로 해결합니다. React, Next.js, TypeScript 기반의 4년차 프론트엔드 개발자로서, 사용자 경험과 비즈니스 가치를 연결하는 인터페이스를 만듭니다."
+        ctaLabel="프로젝트 보기"
+        ctaHref="/projects"
+        secondaryLabel="연락하기"
+        secondaryHref="/contact"
+      />
+      {/* <HeroSection
         title="Frontend Developer"
         subtitle="조경문"
         description="비즈니스 문제를 기술로 해결하는 4년차 프론트엔드 개발자입니다. React, Next.js, TypeScript를 기반으로 대규모 엔터프라이즈 웹 애플리케이션을 설계하고 구축합니다. Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
@@ -27,7 +36,7 @@ export default function Home() {
         ctaHref="/projects"
         secondaryLabel="연락하기"
         secondaryHref="/contact"
-      />
+      /> */}
 
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
@@ -60,7 +69,9 @@ export default function Home() {
               생각합니다.
               <br /> 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화 하였습니다.
               <br />
-              <span className="text-accent-highlight">AI는 개발자를 대체하는 것이 아니라, 더 본질적인 문제에 집중하게 해주는 도구</span>
+              <span className="text-accent-highlight">
+                AI는 개발자를 대체하는 것이 아니라, 더 본질적인 문제에 집중하게 해주는 도구
+              </span>
               라고 생각합니다.
               <br />
               개발자는 코드만 작성하는 사람이 아니라,
@@ -83,7 +94,9 @@ export default function Home() {
                 {item.number}
               </span>
               <h3 className="mt-3 text-lg font-semibold text-foreground">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
               <ul className="mt-4 space-y-2">
                 {item.details.map((detail) => (
                   <li key={detail} className="flex items-start gap-2 text-xs text-muted-foreground">
