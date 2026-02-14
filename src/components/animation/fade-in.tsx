@@ -77,7 +77,7 @@ export function FadeIn({
   }, [reducedMotion, delay, duration, direction, distance, once])
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} style={{ opacity: 0 }}>
       {children}
     </div>
   )

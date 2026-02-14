@@ -44,10 +44,15 @@ export function StaggerChildren({
   const reducedMotion = useReducedMotion()
 
   useGsapContext(containerRef, () => {
-    if (!containerRef.current || reducedMotion) return
+    if (!containerRef.current) return
 
     const items = containerRef.current.querySelectorAll(":scope > *")
     if (items.length === 0) return
+
+    if (reducedMotion) {
+      gsap.set(items, { opacity: 1, y: 0, scale: 1 })
+      return
+    }
 
     gsap.set(items, fromMap[animation])
 

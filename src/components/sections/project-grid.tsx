@@ -44,10 +44,15 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
   });
 
   useGsapContext(gridRef, () => {
-    if (!gridRef.current || reducedMotion) return;
+    if (!gridRef.current) return;
 
     const cards = gridRef.current.querySelectorAll("[data-project-card]");
     if (cards.length === 0) return;
+
+    if (reducedMotion) {
+      gsap.set(cards, {opacity: 1, y: 0, scale: 1});
+      return;
+    }
 
     cards.forEach((card, i) => {
       gsap.fromTo(
@@ -132,7 +137,7 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
 
           return (
             <BentoGridItem key={project.slug} colSpan={colSpan} rowSpan={rowSpan}>
-              <div data-project-card>
+              <div data-project-card style={{ opacity: 0 }}>
                 <ProjectCard project={project} featured={isFeatured} />
               </div>
             </BentoGridItem>

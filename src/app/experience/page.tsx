@@ -22,9 +22,9 @@ export default function ExperiencePage() {
   return (
     <Section spacing="lg" container>
       <div className="flex flex-col items-start gap-10 md:flex-row md:items-center md:gap-16">
-        <FadeIn className="shrink-0">
+        <div className="shrink-0">
           <ExperienceProfile />
-        </FadeIn>
+        </div>
 
         <FadeIn>
           <GradientText as="h1" gradient="primary" className="text-3xl font-bold">

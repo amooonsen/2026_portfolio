@@ -1,41 +1,5 @@
 import { cn } from "@/lib/utils"
 
-const columnsMap = {
-  2: "lg:grid-cols-2",
-  3: "lg:grid-cols-3",
-  4: "lg:grid-cols-4",
-} as const
-
-interface BentoGridProps {
-  children: React.ReactNode
-  className?: string
-  columns?: keyof typeof columnsMap
-}
-
-/**
- * 비대칭 카드 그리드 레이아웃 컴포넌트.
- * CSS Grid 기반으로 반응형 열 구성을 지원한다 (1 → 2 → columns).
- * @param props.columns - 최대 열 수 (2/3/4, 기본: 3)
- * @param props.className - 추가 CSS 클래스
- */
-export function BentoGrid({
-  children,
-  className,
-  columns = 3,
-}: BentoGridProps) {
-  return (
-    <div
-      className={cn(
-        "grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 auto-rows-[minmax(200px,auto)]",
-        columnsMap[columns],
-        className
-      )}
-    >
-      {children}
-    </div>
-  )
-}
-
 const colSpanMap = {
   1: "",
   2: "md:col-span-2",
