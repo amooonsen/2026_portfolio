@@ -11,51 +11,41 @@ import {
 const PROJECTS_DIR = path.join(process.cwd(), "content/projects")
 
 // ---------------------------------------------------------------------------
-// 파일 시스템 fallback (기존 로직)
+// 파일 시스템 fallback
 // ---------------------------------------------------------------------------
 
-function getProjectBySlugFromFiles(slug: string): Project & { content: string } {
-  const filePath = path.join(PROJECTS_DIR, `${slug}.md`)
-  const raw = fs.readFileSync(filePath, "utf-8")
-  const { data, content } = matter(raw)
-
+/** front-matter data → Project 공통 매핑 */
+function toProject(slug: string, data: Record<string, unknown>): Project {
   return {
     slug,
-    title: data.title,
-    description: data.description,
-    tags: data.tags ?? [],
-    year: data.year,
-    period: data.period,
-    featured: data.featured ?? false,
-    thumbnail: data.thumbnail,
-    images: data.images,
-    links: data.links,
-    content,
+    title: data.title as string,
+    description: data.description as string,
+    tags: (data.tags as string[]) ?? [],
+    year: data.year as number,
+    period: data.period as string | undefined,
+    featured: (data.featured as boolean) ?? false,
+    thumbnail: data.thumbnail as string | undefined,
+    images: data.images as string[] | undefined,
+    links: data.links as { github?: string; live?: string } | undefined,
   }
 }
 
-function getAllProjectsFromFiles(): Project[] {
-  const files = fs.readdirSync(PROJECTS_DIR).filter((f) => f.endsWith(".md"))
+function getProjectBySlugFromFiles(slug: string): Project & { content: string } {
+  const raw = fs.readFileSync(path.join(PROJECTS_DIR, `${slug}.md`), "utf-8")
+  const { data, content } = matter(raw)
+  return { ...toProject(slug, data), content }
+}
 
-  return files
+function getAllProjectsFromFiles(): Project[] {
+  return fs
+    .readdirSync(PROJECTS_DIR)
+    .filter((f) => f.endsWith(".md"))
     .map((file) => {
       const slug = file.replace(/\.md$/, "")
-      const filePath = path.join(PROJECTS_DIR, file)
-      const raw = fs.readFileSync(filePath, "utf-8")
-      const { data } = matter(raw)
-
-      return {
-        slug,
-        title: data.title,
-        description: data.description,
-        tags: data.tags ?? [],
-        year: data.year,
-        period: data.period,
-        featured: data.featured ?? false,
-        thumbnail: data.thumbnail,
-        images: data.images,
-        links: data.links,
-      }
+      const { data } = matter(
+        fs.readFileSync(path.join(PROJECTS_DIR, file), "utf-8"),
+      )
+      return toProject(slug, data)
     })
     .sort((a, b) => a.year - b.year)
 }

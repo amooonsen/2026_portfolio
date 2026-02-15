@@ -23,7 +23,7 @@ interface SendContactMailParams {
 export async function sendContactMail({ name, email, message }: SendContactMailParams) {
   await transporter.sendMail({
     from: `"포트폴리오 연락폼" <${process.env.GMAIL_USER}>`,
-    to: "chonghocho72@gmail.com",
+    to: process.env.GMAIL_USER!,
     replyTo: email,
     subject: `[포트폴리오] ${name}님의 연락`,
     text: `보낸 사람: ${name} (${email})\n\n${message}`,
