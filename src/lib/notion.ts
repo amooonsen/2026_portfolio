@@ -9,63 +9,107 @@ import type {
 import type { Project } from "@/components/sections/project-card"
 
 // ---------------------------------------------------------------------------
-// Client
+// Config
 // ---------------------------------------------------------------------------
 
+if (!process.env.NOTION_TOKEN || !process.env.NOTION_DATABASE_ID) {
+  console.warn("[notion] NOTION_TOKEN 또는 NOTION_DATABASE_ID 환경변수 누락")
+}
+
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
-const dataSourceId = process.env.NOTION_DATABASE_ID!
+const databaseId = process.env.NOTION_DATABASE_ID!
+
+/** Notion DB 프로퍼티명 — DB 스키마 변경 시 여기만 수정 */
+const PROP = {
+  title: "프로젝트 제목",
+  slug: "Slug",
+  description: "설명",
+  status: "상태",
+  public: "공개",
+  year: "연도",
+  tags: "태그",
+  period: "기간",
+  thumbnail: "썸네일",
+  images: "이미지",
+  github: "GitHub",
+  live: "Live",
+  url: "URL",
+} as const
+
+// ---------------------------------------------------------------------------
+// Database query — REST API 직접 호출
+// SDK v5.x dataSources.query() 비호환으로 안정적인 databases API 사용
+// ---------------------------------------------------------------------------
+
+async function queryDatabase(body: {
+  filter?: Record<string, unknown>
+  sorts?: Array<Record<string, unknown>>
+  start_cursor?: string
+  page_size?: number
+}) {
+  const res = await fetch(
+    `https://api.notion.com/v1/databases/${databaseId}/query`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_TOKEN}`,
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    },
+  )
+
+  if (!res.ok) {
+    const err = await res
+      .json()
+      .catch(() => ({ code: res.status, message: res.statusText }))
+    throw new Error(`Notion API error: ${err.code} — ${err.message}`)
+  }
+
+  return res.json() as Promise<{
+    results: PageObjectResponse[]
+    has_more: boolean
+    next_cursor: string | null
+  }>
+}
 
 // ---------------------------------------------------------------------------
 // Property helpers
 // ---------------------------------------------------------------------------
 
-/** Notion 페이지의 프로퍼티에서 값을 안전하게 추출하는 헬퍼 */
 type PageProperty = PageObjectResponse["properties"][string]
 
-function getTitle(prop: PageProperty | undefined): string {
-  if (prop?.type === "title") {
-    return prop.title.map((t) => t.plain_text).join("")
-  }
+/** title / rich_text 프로퍼티에서 plain text를 추출한다 */
+function getText(prop: PageProperty | undefined): string {
+  if (!prop) return ""
+  if (prop.type === "title") return prop.title.map((t) => t.plain_text).join("")
+  if (prop.type === "rich_text") return prop.rich_text.map((t) => t.plain_text).join("")
   return ""
 }
 
-function getRichText(prop: PageProperty | undefined): string {
-  if (prop?.type === "rich_text") {
-    return prop.rich_text.map((t) => t.plain_text).join("")
-  }
-  return ""
-}
-
-function getSelect(prop: PageProperty | undefined): string | null {
-  if (prop?.type === "select") {
-    return prop.select?.name ?? null
-  }
+function getStatus(prop: PageProperty | undefined): string | null {
+  if (prop?.type === "status") return prop.status?.name ?? null
   return null
 }
 
 function getMultiSelect(prop: PageProperty | undefined): string[] {
-  if (prop?.type === "multi_select") {
-    return prop.multi_select.map((s) => s.name)
-  }
+  if (prop?.type === "multi_select") return prop.multi_select.map((s) => s.name)
   return []
 }
 
 function getNumber(prop: PageProperty | undefined): number {
-  if (prop?.type === "number") {
-    return prop.number ?? 0
-  }
+  if (prop?.type === "number") return prop.number ?? 0
   return 0
 }
 
 function getUrl(prop: PageProperty | undefined): string | undefined {
-  if (prop?.type === "url") {
-    return prop.url ?? undefined
-  }
+  if (prop?.type === "url") return prop.url ?? undefined
   return undefined
 }
 
 // ---------------------------------------------------------------------------
-// Rich text → Markdown inline formatting
+// Rich text → Markdown
 // ---------------------------------------------------------------------------
 
 function richTextToMarkdown(richTexts: RichTextItemResponse[]): string {
@@ -73,9 +117,7 @@ function richTextToMarkdown(richTexts: RichTextItemResponse[]): string {
     .map((rt) => {
       let text = rt.plain_text
       const { bold, italic, strikethrough, code } = rt.annotations
-      const href = rt.href
 
-      // 인라인 코드는 다른 서식보다 우선
       if (code) {
         text = `\`${text}\``
       } else {
@@ -84,24 +126,21 @@ function richTextToMarkdown(richTexts: RichTextItemResponse[]): string {
         if (strikethrough) text = `~~${text}~~`
       }
 
-      if (href) {
-        text = `[${text}](${href})`
-      }
-
+      if (rt.href) text = `[${text}](${rt.href})`
       return text
     })
     .join("")
 }
 
 // ---------------------------------------------------------------------------
-// Notion page → Project 매핑
+// Page → Project 매핑
 // ---------------------------------------------------------------------------
 
 function pageToProject(page: PageObjectResponse): Project {
-  const props = page.properties
+  const p = page.properties
 
-  const status = getSelect(props["상태"])
-  const imagesRaw = getRichText(props["이미지"])
+  const status = getStatus(p[PROP.status])
+  const imagesRaw = getText(p[PROP.images])
   const images = imagesRaw
     ? imagesRaw
         .split(",")
@@ -109,19 +148,18 @@ function pageToProject(page: PageObjectResponse): Project {
         .filter(Boolean)
     : undefined
 
-  const github = getUrl(props["GitHub"])
-  const live = getUrl(props["Live"])
-  const links =
-    github || live ? { github, live } : undefined
+  const github = getUrl(p[PROP.github])
+  const live = getUrl(p[PROP.live]) ?? getUrl(p[PROP.url])
+  const links = github || live ? { github, live } : undefined
 
   return {
-    slug: getRichText(props["Slug"]),
-    title: getTitle(props["이름"]),
-    description: getRichText(props["설명"]),
-    thumbnail: getUrl(props["썸네일"]),
-    tags: getMultiSelect(props["태그"]),
-    year: getNumber(props["연도"]),
-    period: getRichText(props["기간"]) || undefined,
+    slug: getText(p[PROP.slug]),
+    title: getText(p[PROP.title]),
+    description: getText(p[PROP.description]),
+    thumbnail: getUrl(p[PROP.thumbnail]),
+    tags: getMultiSelect(p[PROP.tags]),
+    year: getNumber(p[PROP.year]),
+    period: getText(p[PROP.period]) || undefined,
     featured: status === "진행중",
     images,
     links,
@@ -132,7 +170,6 @@ function pageToProject(page: PageObjectResponse): Project {
 // Blocks → Markdown
 // ---------------------------------------------------------------------------
 
-/** 모든 블록을 재귀적으로 페이징하여 가져온다 */
 async function fetchAllBlocks(blockId: string): Promise<BlockObjectResponse[]> {
   const blocks: BlockObjectResponse[] = []
   let cursor: string | undefined
@@ -145,18 +182,17 @@ async function fetchAllBlocks(blockId: string): Promise<BlockObjectResponse[]> {
     })
 
     for (const block of response.results) {
-      if ("type" in block) {
-        blocks.push(block as BlockObjectResponse)
-      }
+      if ("type" in block) blocks.push(block as BlockObjectResponse)
     }
 
-    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined
+    cursor = response.has_more
+      ? (response.next_cursor ?? undefined)
+      : undefined
   } while (cursor)
 
   return blocks
 }
 
-/** has_children인 블록의 자식을 재귀적으로 가져와 마크다운으로 변환한다 */
 async function fetchChildMarkdown(
   blockId: string,
   indent: string = "  ",
@@ -169,7 +205,16 @@ async function fetchChildMarkdown(
     .join("\n")
 }
 
-/** Notion 블록 배열을 마크다운 문자열로 변환한다 */
+/** 다음 블록이 같은 타입이 아니면 빈 줄을 추가해야 함 (리스트 아이템 간격) */
+function isEndOfList(
+  blocks: BlockObjectResponse[],
+  index: number,
+  type: string,
+): boolean {
+  const next = blocks[index + 1]
+  return !next || next.type !== type
+}
+
 async function blocksToMarkdown(
   blocks: BlockObjectResponse[],
 ): Promise<string> {
@@ -179,7 +224,6 @@ async function blocksToMarkdown(
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i]
 
-    // numbered_list_item의 연속 인덱스 관리
     if (block.type === "numbered_list_item") {
       numberedIndex++
     } else {
@@ -188,64 +232,43 @@ async function blocksToMarkdown(
 
     switch (block.type) {
       case "paragraph": {
-        const text = richTextToMarkdown(block.paragraph.rich_text)
-        lines.push(text)
-        if (block.has_children) {
-          lines.push(await fetchChildMarkdown(block.id))
-        }
+        lines.push(richTextToMarkdown(block.paragraph.rich_text))
+        if (block.has_children) lines.push(await fetchChildMarkdown(block.id))
         lines.push("")
         break
       }
 
-      case "heading_2": {
-        const text = richTextToMarkdown(block.heading_2.rich_text)
-        lines.push(`## ${text}`)
-        lines.push("")
+      case "heading_2":
+        lines.push(`## ${richTextToMarkdown(block.heading_2.rich_text)}`, "")
         break
-      }
 
-      case "heading_3": {
-        const text = richTextToMarkdown(block.heading_3.rich_text)
-        lines.push(`### ${text}`)
-        lines.push("")
+      case "heading_3":
+        lines.push(`### ${richTextToMarkdown(block.heading_3.rich_text)}`, "")
         break
-      }
 
       case "bulleted_list_item": {
-        const text = richTextToMarkdown(block.bulleted_list_item.rich_text)
-        lines.push(`- ${text}`)
-        if (block.has_children) {
-          lines.push(await fetchChildMarkdown(block.id))
-        }
-        // 다음 블록이 bulleted_list_item이 아니면 빈 줄 추가
-        const nextBlock = blocks[i + 1]
-        if (!nextBlock || nextBlock.type !== "bulleted_list_item") {
-          lines.push("")
-        }
+        lines.push(`- ${richTextToMarkdown(block.bulleted_list_item.rich_text)}`)
+        if (block.has_children) lines.push(await fetchChildMarkdown(block.id))
+        if (isEndOfList(blocks, i, "bulleted_list_item")) lines.push("")
         break
       }
 
       case "numbered_list_item": {
-        const text = richTextToMarkdown(block.numbered_list_item.rich_text)
-        lines.push(`${numberedIndex}. ${text}`)
-        if (block.has_children) {
-          lines.push(await fetchChildMarkdown(block.id))
-        }
-        // 다음 블록이 numbered_list_item이 아니면 빈 줄 추가
-        const nextBlock = blocks[i + 1]
-        if (!nextBlock || nextBlock.type !== "numbered_list_item") {
-          lines.push("")
-        }
+        lines.push(`${numberedIndex}. ${richTextToMarkdown(block.numbered_list_item.rich_text)}`)
+        if (block.has_children) lines.push(await fetchChildMarkdown(block.id))
+        if (isEndOfList(blocks, i, "numbered_list_item")) lines.push("")
         break
       }
 
       case "code": {
-        const text = richTextToMarkdown(block.code.rich_text)
-        const lang = block.code.language === "plain text" ? "" : block.code.language
-        lines.push(`\`\`\`${lang}`)
-        lines.push(text)
-        lines.push("```")
-        lines.push("")
+        const lang =
+          block.code.language === "plain text" ? "" : block.code.language
+        lines.push(
+          `\`\`\`${lang}`,
+          richTextToMarkdown(block.code.rich_text),
+          "```",
+          "",
+        )
         break
       }
 
@@ -254,46 +277,35 @@ async function blocksToMarkdown(
           block.image.type === "external"
             ? block.image.external.url
             : block.image.file.url
-        const caption = block.image.caption.length > 0
-          ? richTextToMarkdown(block.image.caption)
-          : ""
-        lines.push(`![${caption}](${url})`)
-        lines.push("")
+        const caption =
+          block.image.caption.length > 0
+            ? richTextToMarkdown(block.image.caption)
+            : ""
+        lines.push(`![${caption}](${url})`, "")
         break
       }
 
       case "quote": {
-        const text = richTextToMarkdown(block.quote.rich_text)
-        lines.push(`> ${text}`)
-        if (block.has_children) {
-          const childMd = await fetchChildMarkdown(block.id, "> ")
-          lines.push(childMd)
-        }
-        lines.push("")
-        break
-      }
-
-      case "divider": {
-        lines.push("---")
+        lines.push(`> ${richTextToMarkdown(block.quote.rich_text)}`)
+        if (block.has_children)
+          lines.push(await fetchChildMarkdown(block.id, "> "))
         lines.push("")
         break
       }
 
       case "callout": {
-        const text = richTextToMarkdown(block.callout.rich_text)
         const icon = block.callout.icon
-        let emoji = ""
-        if (icon?.type === "emoji") {
-          emoji = `${icon.emoji} `
-        }
-        lines.push(`> ${emoji}${text}`)
-        if (block.has_children) {
-          const childMd = await fetchChildMarkdown(block.id, "> ")
-          lines.push(childMd)
-        }
+        const emoji = icon?.type === "emoji" ? `${icon.emoji} ` : ""
+        lines.push(`> ${emoji}${richTextToMarkdown(block.callout.rich_text)}`)
+        if (block.has_children)
+          lines.push(await fetchChildMarkdown(block.id, "> "))
         lines.push("")
         break
       }
+
+      case "divider":
+        lines.push("---", "")
+        break
 
       case "table": {
         const rows = await fetchAllBlocks(block.id)
@@ -303,13 +315,10 @@ async function blocksToMarkdown(
         )
 
         for (let rowIdx = 0; rowIdx < tableRows.length; rowIdx++) {
-          const row = tableRows[rowIdx]
-          const cells = row.table_row.cells.map((cell) =>
+          const cells = tableRows[rowIdx].table_row.cells.map((cell) =>
             richTextToMarkdown(cell),
           )
           lines.push(`| ${cells.join(" | ")} |`)
-
-          // 첫 번째 행(헤더) 뒤에 구분선 추가
           if (rowIdx === 0) {
             lines.push(`| ${cells.map(() => "---").join(" | ")} |`)
           }
@@ -319,7 +328,6 @@ async function blocksToMarkdown(
       }
 
       default:
-        // 지원하지 않는 블록 타입은 건너뛴다
         break
     }
   }
@@ -331,17 +339,10 @@ async function blocksToMarkdown(
 // DB 쿼리 공통 필터
 // ---------------------------------------------------------------------------
 
-/** 공개===true, 상태!==보류 필터 */
 const baseFilter = {
   and: [
-    {
-      property: "공개",
-      checkbox: { equals: true as const },
-    },
-    {
-      property: "상태",
-      select: { does_not_equal: "보류" },
-    },
+    { property: PROP.public, checkbox: { equals: true } },
+    { property: PROP.status, status: { does_not_equal: "보류" } },
   ],
 }
 
@@ -349,63 +350,47 @@ const baseFilter = {
 // Exported functions (React.cache로 중복 호출 방지)
 // ---------------------------------------------------------------------------
 
-/**
- * 모든 프로젝트를 조회한다.
- * 공개===true, 상태!==보류 필터 적용 후 연도 오름차순 정렬.
- */
 export const fetchAllProjects = cache(async (): Promise<Project[]> => {
   const pages: PageObjectResponse[] = []
   let cursor: string | undefined
 
   do {
-    const response = await notion.dataSources.query({
-      data_source_id: dataSourceId,
+    const response = await queryDatabase({
       filter: baseFilter,
-      sorts: [{ property: "연도", direction: "ascending" }],
+      sorts: [{ property: PROP.year, direction: "ascending" }],
       start_cursor: cursor,
       page_size: 100,
     })
 
     for (const page of response.results) {
-      if ("properties" in page) {
-        pages.push(page as PageObjectResponse)
-      }
+      if ("properties" in page) pages.push(page as PageObjectResponse)
     }
 
-    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined
+    cursor = response.has_more
+      ? (response.next_cursor ?? undefined)
+      : undefined
   } while (cursor)
 
   return pages.map(pageToProject)
 })
 
-/**
- * 슬러그로 단일 프로젝트를 조회하고 본문 블록을 마크다운으로 변환한다.
- * 해당 슬러그가 없거나 비공개/보류 상태이면 null을 반환한다.
- */
 export const fetchProjectBySlug = cache(
   async (slug: string): Promise<(Project & { content: string }) | null> => {
-    const response = await notion.dataSources.query({
-      data_source_id: dataSourceId,
+    const response = await queryDatabase({
       filter: {
         and: [
           ...baseFilter.and,
-          {
-            property: "Slug",
-            rich_text: { equals: slug },
-          },
+          { property: PROP.slug, rich_text: { equals: slug } },
         ],
       },
       page_size: 1,
     })
 
     const page = response.results[0]
-    if (!page || !("properties" in page)) {
-      return null
-    }
+    if (!page || !("properties" in page)) return null
 
     const typedPage = page as PageObjectResponse
     const project = pageToProject(typedPage)
-
     const blocks = await fetchAllBlocks(typedPage.id)
     const content = await blocksToMarkdown(blocks)
 
@@ -413,9 +398,6 @@ export const fetchProjectBySlug = cache(
   },
 )
 
-/**
- * generateStaticParams용 슬러그 목록을 반환한다.
- */
 export const fetchAllSlugs = cache(async (): Promise<string[]> => {
   const projects = await fetchAllProjects()
   return projects.map((p) => p.slug).filter(Boolean)
