@@ -2,14 +2,19 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 import type { Project } from "@/components/sections/project-card"
+import {
+  fetchAllProjects as fetchFromNotion,
+  fetchProjectBySlug as fetchSlugFromNotion,
+  fetchAllSlugs as fetchSlugsFromNotion,
+} from "./notion"
 
 const PROJECTS_DIR = path.join(process.cwd(), "content/projects")
 
-/**
- * 단일 마크다운 파일을 파싱하여 Project 객체를 반환한다.
- * @param slug - 파일명(확장자 제외)
- */
-export function getProjectBySlug(slug: string): Project & { content: string } {
+// ---------------------------------------------------------------------------
+// 파일 시스템 fallback (기존 로직)
+// ---------------------------------------------------------------------------
+
+function getProjectBySlugFromFiles(slug: string): Project & { content: string } {
   const filePath = path.join(PROJECTS_DIR, `${slug}.md`)
   const raw = fs.readFileSync(filePath, "utf-8")
   const { data, content } = matter(raw)
@@ -29,11 +34,7 @@ export function getProjectBySlug(slug: string): Project & { content: string } {
   }
 }
 
-/**
- * 모든 프로젝트의 메타데이터만 파싱하여 year 기준 오름차순으로 반환한다.
- * content 필드를 제외하여 직렬화 비용을 줄인다.
- */
-export function getAllProjects(): Project[] {
+function getAllProjectsFromFiles(): Project[] {
   const files = fs.readdirSync(PROJECTS_DIR).filter((f) => f.endsWith(".md"))
 
   return files
@@ -57,4 +58,52 @@ export function getAllProjects(): Project[] {
       }
     })
     .sort((a, b) => a.year - b.year)
+}
+
+// ---------------------------------------------------------------------------
+// 공개 API — Notion 우선, 실패 시 파일 시스템 fallback
+// ---------------------------------------------------------------------------
+
+/**
+ * 모든 프로젝트의 메타데이터를 반환한다.
+ * Notion API 호출을 시도하고, 실패 시 로컬 마크다운 파일을 사용한다.
+ */
+export async function getAllProjects(): Promise<Project[]> {
+  try {
+    return await fetchFromNotion()
+  } catch (error) {
+    console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
+    return getAllProjectsFromFiles()
+  }
+}
+
+/**
+ * 슬러그로 단일 프로젝트(본문 포함)를 반환한다.
+ * Notion API 호출을 시도하고, 실패 시 로컬 마크다운 파일을 사용한다.
+ */
+export async function getProjectBySlug(
+  slug: string,
+): Promise<(Project & { content: string }) | null> {
+  try {
+    return await fetchSlugFromNotion(slug)
+  } catch (error) {
+    console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
+    try {
+      return getProjectBySlugFromFiles(slug)
+    } catch {
+      return null
+    }
+  }
+}
+
+/**
+ * generateStaticParams용 슬러그 목록을 반환한다.
+ */
+export async function getAllSlugs(): Promise<string[]> {
+  try {
+    return await fetchSlugsFromNotion()
+  } catch (error) {
+    console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
+    return getAllProjectsFromFiles().map((p) => p.slug)
+  }
 }

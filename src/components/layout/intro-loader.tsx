@@ -374,6 +374,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
       progressTweenRef.current?.kill();
       clearTimeout(dismissTimer);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- dismiss uses refs internally and should not trigger re-subscription
   }, [isSceneReady, mode]);
 
   const showIntroOverlay = isMounted && mode === "intro";

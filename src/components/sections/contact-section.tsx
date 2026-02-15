@@ -139,6 +139,7 @@ export function ContactSection({email, socials}: ContactSectionProps) {
       ) : (
         <SlideUp delay={0.3}>
           <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
+            {/* eslint-disable-next-line react-hooks/refs -- onValid reads formRef.current in event handler, not during render */}
             <form ref={formRef} onSubmit={handleSubmit(onValid)} className="space-y-6" noValidate>
               {/* 이름 */}
               <div>

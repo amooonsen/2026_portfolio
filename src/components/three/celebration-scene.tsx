@@ -256,7 +256,9 @@ function SparkTrails({active}: {active: boolean}) {
   return (
     <points ref={ref} visible={active} frustumCulled={false}>
       <bufferGeometry>
+        {/* eslint-disable-next-line react-hooks/refs -- Three.js bufferAttribute requires ref values for initial geometry data */}
         <bufferAttribute attach="attributes-position" args={[positionsRef.current, 3]} />
+        {/* eslint-disable-next-line react-hooks/refs -- Three.js bufferAttribute requires ref values for initial geometry data */}
         <bufferAttribute attach="attributes-color" args={[colorsArr.current, 3]} />
       </bufferGeometry>
       <pointsMaterial

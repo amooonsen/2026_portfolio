@@ -1,12 +1,13 @@
 import Link from "next/link";
 import {ArrowRight} from "lucide-react";
 import {Section} from "@/components/ui/section";
-import {GradientText} from "@/components/ui/gradient-text";
 import {TechBadge} from "@/components/ui/tech-badge";
 import {FadeIn} from "@/components/animation/fade-in";
 import {ProjectGrid} from "@/components/sections/project-grid";
 import {getAllProjects} from "@/lib/projects";
 import {createMetadata} from "@/lib/metadata";
+
+export const revalidate = 3600
 
 export const metadata = createMetadata({
   title: "프로젝트",
@@ -20,9 +21,9 @@ export const metadata = createMetadata({
  * Featured 프로젝트를 상단에 인라인 배너로 표시하고, 나머지를 BentoGrid로 표시한다.
  * Section 래퍼와 Featured 배너는 서버에서 렌더링되고, 그리드는 클라이언트에서 애니메이션된다.
  */
-export default function ProjectsPage() {
-  const projects = getAllProjects();
-  const featuredProject = projects.find((p) => p.slug === "ai-caramel") ?? null;
+export default async function ProjectsPage() {
+  const projects = await getAllProjects();
+  const featuredProject = projects.find((p) => p.featured) ?? null;
   const gridProjects = featuredProject
     ? projects.filter((p) => p.slug !== featuredProject.slug)
     : projects;

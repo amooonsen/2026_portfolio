@@ -16,6 +16,7 @@ import type { SceneColors } from "@/hooks/use-theme-colors"
 function StarField({ count = 600, isMobile = false, color }: { count?: number; isMobile?: boolean; color: string }) {
   const ref = useRef<THREE.Points>(null)
 
+  /* eslint-disable react-hooks/purity -- Math.random is required for Three.js particle generation; ref guard ensures single initialization */
   const positionsRef = useRef<Float32Array | null>(null)
   if (!positionsRef.current || positionsRef.current.length !== count * 3) {
     const pos = new Float32Array(count * 3)
@@ -29,6 +30,7 @@ function StarField({ count = 600, isMobile = false, color }: { count?: number; i
     }
     positionsRef.current = pos
   }
+  /* eslint-enable react-hooks/purity */
   const positions = positionsRef.current
 
   useFrame((_, delta) => {
@@ -57,6 +59,7 @@ function StarField({ count = 600, isMobile = false, color }: { count?: number; i
 function NebulaParticles({ count = 150, isMobile = false, nebulaColors: colorHexes }: { count?: number; isMobile?: boolean; nebulaColors: readonly string[] }) {
   const ref = useRef<THREE.Points>(null)
 
+  /* eslint-disable react-hooks/purity -- Math.random is required for Three.js nebula particle generation; ref guard ensures single initialization */
   const dataRef = useRef<[Float32Array, Float32Array] | null>(null)
   if (!dataRef.current || dataRef.current[0].length !== count * 3) {
     const pos = new Float32Array(count * 3)
@@ -80,6 +83,7 @@ function NebulaParticles({ count = 150, isMobile = false, nebulaColors: colorHex
     }
     dataRef.current = [pos, col]
   }
+  /* eslint-enable react-hooks/purity */
   const [positions, colors] = dataRef.current
 
   useFrame((_, delta) => {
@@ -138,6 +142,7 @@ function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
     const targetX = mouseRef.current.x * 1.5
     const targetY = -mouseRef.current.y * 1
 
+    // eslint-disable-next-line react-hooks/immutability -- Three.js camera position must be mutated imperatively in useFrame
     camera.position.x += (targetX - camera.position.x) * 0.015
     camera.position.y += (targetY - camera.position.y) * 0.015
     camera.lookAt(0, 0, 0)
