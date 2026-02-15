@@ -7,8 +7,6 @@ import {ProjectGrid} from "@/components/sections/project-grid";
 import {getAllProjects} from "@/lib/projects";
 import {createMetadata} from "@/lib/metadata";
 
-export const revalidate = 3600
-
 export const metadata = createMetadata({
   title: "프로젝트",
   description:
@@ -34,7 +32,10 @@ export default async function ProjectsPage() {
         {/* Featured Project — 서버 렌더링 배너 */}
         {featuredProject && (
           <FadeIn>
-            <Link href={`/projects/${featuredProject.slug}`} className="group mt-8 block focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-xl">
+            <Link
+              href={`/projects/${featuredProject.slug}`}
+              className="group mt-8 block focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-xl"
+            >
               <div className="flex items-center gap-4 rounded-xl border border-border px-5 py-4 transition-colors duration-200 hover:border-accent-highlight/30 hover:bg-glass-hover-bg md:gap-6">
                 {/* 뱃지 + 타이틀 */}
                 <div className="min-w-0 flex-1">

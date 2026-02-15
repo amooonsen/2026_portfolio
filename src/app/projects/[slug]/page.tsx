@@ -15,8 +15,6 @@ import {ProjectSchema, BreadcrumbSchema} from "@/components/seo/json-ld";
 import {getProjectBySlug, getAllSlugs} from "@/lib/projects";
 import {createMetadata} from "@/lib/metadata";
 
-export const revalidate = 3600
-
 interface ProjectDetailPageProps {
   params: Promise<{slug: string}>;
 }
@@ -93,15 +91,13 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
           {/* 메인 콘텐츠 */}
           <div className="min-w-0">
             <FadeIn>
-              <nav aria-label="빵가루 네비게이션">
-                <Link
-                  href="/projects"
-                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg"
-                >
-                  <ArrowLeft className="size-4" />
-                  프로젝트 목록
-                </Link>
-              </nav>
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg"
+              >
+                <ArrowLeft className="size-4" />
+                프로젝트 목록
+              </Link>
             </FadeIn>
 
             <FadeIn delay={0.1}>
@@ -172,10 +168,7 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
             <FadeIn delay={0.45}>
               <div className="mt-16 flex justify-center border-t border-border/30 pt-8">
                 <Button variant="outline" asChild>
-                  <Link
-                    href="/projects"
-                    className="inline-flex items-center gap-2"
-                  >
+                  <Link href="/projects" className="inline-flex items-center gap-2">
                     <ArrowLeft className="size-4" aria-hidden="true" />
                     목록으로
                   </Link>
