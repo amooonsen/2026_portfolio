@@ -45,6 +45,57 @@
 - Three.js 컴포넌트: `next/dynamic`으로 `ssr: false` lazy load
 - React Compiler 활성화 → 수동 `useMemo`/`useCallback` 사용 금지
 
+### Server / Client Component children prop 흐름
+
+서버 컴포넌트에서 렌더링한 HTML을 클라이언트 컴포넌트의 `children` prop으로 주입하는 패턴을 사용한다.
+클라이언트 컴포넌트는 인터랙션(GSAP, 마우스, 스크롤)이 필요한 곳에만 적용한다.
+
+```
+layout.tsx (Server) ─ HTML 생성, 폰트·메타데이터·SEO
+ ├─ ThemeProvider (Client) ← children으로 전체 앱 주입
+ │   ├─ Header (Client), FloatingNav (Client)
+ │   ├─ <main>{children}</main> ← 페이지별 Server Component
+ │   └─ Footer (Server), ScrollToTop (Client)
+ │
+ └─ template.tsx (Client) ← 페이지 전환 애니메이션, children으로 페이지 주입
+
+page.tsx — / (Server)
+ └─ HomeClient (Client) ← children으로 서버 렌더 콘텐츠 주입
+     ├─ IntroLoader (Client) + CosmicScene (3D, ssr:false)
+     ├─ HeroSection (Client) ← props만, children 미사용
+     ├─ AboutHero (Client) ← props만, children 미사용
+     ├─ Section (Server) → FadeIn (Client) ← children으로 서버 콘텐츠 주입
+     │   └─ GradientText (Server), GlassCard (Server)
+     ├─ StaggerChildren (Client) ← children으로 GlassCard (Server) 목록 주입
+     ├─ TechStack (Client) ← props만
+     └─ PageEndCelebration (Client)
+
+projects/page.tsx (Server, async) ← Notion 데이터 패칭
+ └─ ProjectGrid (Client) ← children으로 Featured 배너 주입
+     └─ FadeIn (Client) → Link (Server-safe)
+
+projects/[slug]/page.tsx (Server, async) ← Notion 데이터 패칭
+ ├─ FadeIn (Client) ← children으로 서버 렌더 콘텐츠 주입
+ │   ├─ GradientText (Server), GlassCard (Server)
+ │   └─ MarkdownContent (Server, async) ← Shiki 서버 렌더
+ └─ TableOfContents (Client) ← props만
+
+experience/page.tsx (Server)
+ ├─ ExperienceProfile (Client) ← props 없음
+ ├─ FadeIn (Client) ← children으로 GradientText (Server) 주입
+ └─ ExperienceTabs (Client) ← props로 데이터 전달
+
+contact/page.tsx (Server)
+ └─ ContactSection (Client) ← props로 email, socials 전달
+     └─ Server Action (submitContactForm) 호출
+```
+
+**핵심 규칙**:
+- Server Component → 데이터 패칭, HTML 생성, SEO
+- Client Component → 상태, 이벤트 핸들러, GSAP/Three.js 애니메이션
+- `children` prop → 서버 렌더 결과를 클라이언트 래퍼에 주입 (번들 크기 최소화)
+- 서버 전용 코드(`fs`, `path`, DB)가 클라이언트에 유입되지 않도록 주의
+
 ### 테마 시스템: next-themes + CSS 변수
 
 - `next-themes`의 `ThemeProvider`가 `layout.tsx`에서 전체 앱을 래핑
@@ -67,12 +118,11 @@
 ## 라우트 구조 (실제)
 
 ```
-/               → src/app/page.tsx          (Landing + 3D + Overview)
-/about          → src/app/about/page.tsx     (소개 + 기술 스택 + 스킬)
-/projects       → src/app/projects/page.tsx  (프로젝트 그리드)
-/projects/[slug]→ src/app/projects/[slug]/page.tsx (프로젝트 상세 - Markdown)
-/experience     → src/app/experience/page.tsx(경력 타임라인)
-/contact        → src/app/contact/page.tsx   (Contact 폼)
+/               → src/app/page.tsx               (Landing + 3D + Overview + 철학 + 기술스택)
+/projects       → src/app/projects/page.tsx      (프로젝트 그리드)
+/projects/[slug]→ src/app/projects/[slug]/page.tsx(프로젝트 상세 - Notion/Markdown)
+/experience     → src/app/experience/page.tsx    (경력 타임라인)
+/contact        → src/app/contact/page.tsx       (Contact 폼)
 ```
 
 - Route Group `(portfolio)/`, `(content)/` 미사용 — 플랫 구조 채택
@@ -91,7 +141,8 @@ src/
 │   ├── page.tsx            # Landing (3D + Overview)
 │   ├── not-found.tsx
 │   ├── actions.ts          # Server Actions
-│   ├── about/
+│   ├── robots.ts           # robots.txt 생성
+│   ├── sitemap.ts          # sitemap.xml 생성
 │   ├── projects/
 │   ├── experience/
 │   └── contact/
@@ -99,8 +150,9 @@ src/
 │   ├── ui/                 # 기본 UI (Container, Section, GlassCard, BentoGrid 등)
 │   ├── layout/             # 레이아웃 (Header, FloatingNav, Footer, IntroLoader 등)
 │   ├── sections/           # 페이지 섹션 (HeroSection, ProjectGrid 등)
-│   ├── animation/          # GSAP 래퍼 (FadeIn, SlideUp, Parallax 등)
-│   └── three/              # Three.js (HeroScene, CosmicScene)
+│   ├── animation/          # GSAP 래퍼 (FadeIn, SlideUp, StaggerChildren)
+│   ├── three/              # Three.js (CosmicScene, SpaceAstronaut, CelebrationScene)
+│   └── seo/                # 구조화된 데이터 (JSON-LD)
 ├── hooks/                  # 커스텀 훅
 ├── lib/                    # 유틸리티
 ├── data/                   # 정적 데이터
@@ -118,7 +170,7 @@ content/
 
 ### UI (`src/components/ui/`)
 
-button, container, section, bento-grid, glass-card, gradient-text, magnetic, spotlight, tech-badge, icon-button, overview-card, markdown-content
+button, container, section, bento-grid, glass-card, gradient-text, magnetic, spotlight, tech-badge, icon-button, markdown-content, skeleton, table-of-contents, tabs
 
 ### Layout (`src/components/layout/`)
 
@@ -126,23 +178,27 @@ header, floating-nav, mobile-nav, footer, skip-nav, scroll-progress, scroll-to-t
 
 ### Sections (`src/components/sections/`)
 
-hero-section, about-hero, project-grid, project-card, project-gallery, experience-timeline, tech-stack, skill-bars, contact-section, blog-card
+hero-section, about-hero, project-grid, project-card, project-gallery, experience-timeline, experience-tabs, experience-journey, experience-profile, tech-stack, contact-section, contact-success, page-end-celebration
 
 ### Animation (`src/components/animation/`)
 
-fade-in, slide-up, stagger-children, parallax, text-reveal, count-up, magnetic-wrapper
+fade-in, slide-up, stagger-children
 
 ### Three.js (`src/components/three/`)
 
-hero-scene, cosmic-scene
+cosmic-scene, space-astronaut, celebration-scene
+
+### SEO (`src/components/seo/`)
+
+json-ld
 
 ### Hooks (`src/hooks/`)
 
-use-gsap, use-reduced-motion, use-media-query, use-scroll-progress, use-active-section, use-scroll-threshold, use-theme-colors
+use-gsap, use-reduced-motion, use-media-query, use-scroll-threshold, use-theme-colors, use-focus-trap
 
 ### Lib (`src/lib/`)
 
-utils, gsap, gsap-utils, lenis-store, projects, session-storage
+utils, gsap, gsap-utils, lenis-store, projects, notion, metadata, mail, session-storage, intro-context, astronaut-ready, validations
 
 ---
 
@@ -151,6 +207,7 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 | 항목             | DESIGN_SPEC 계획             | 실제 구현               |
 | ---------------- | ---------------------------- | ----------------------- |
 | Route Group      | `(portfolio)/`, `(content)/` | 플랫 구조               |
+| `/about` 라우트  | 독립 페이지                  | 삭제 — 홈 페이지에 AboutHero로 통합 |
 | 블로그           | 내부 MDX                     | 외부 링크               |
 | 폰트             | Geist Sans                   | Pretendard              |
 | 미들웨어         | `proxy.ts`                   | 미사용                  |
@@ -158,7 +215,8 @@ utils, gsap, gsap-utils, lenis-store, projects, session-storage
 | View Transitions | React 19.2 API               | template.tsx GSAP 전환  |
 | 스무스 스크롤    | 미계획                       | Lenis 도입              |
 | ThemeToggle      | 계획됨                       | 구현 완료 (next-themes + CSS 변수) |
-| 콘텐츠 파서      | MDX                          | gray-matter (Markdown)  |
+| 콘텐츠 파서      | MDX                          | gray-matter (Markdown) + Notion API |
+| 데이터 소스      | 로컬 Markdown만              | Notion 우선, 로컬 fallback |
 
 ---
 
