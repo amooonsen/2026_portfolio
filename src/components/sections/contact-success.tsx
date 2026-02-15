@@ -8,6 +8,17 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Home } from "lucide-react"
 
+/** 스파클 위치 — 원 주변 12개, 결정론적 의사 난수 분포 */
+const SPARKLE_POSITIONS = Array.from({ length: 12 }, (_, i) => {
+  const angle = (i / 12) * Math.PI * 2
+  const radius = 60 + (((i * 7 + 3) % 12) / 12) * 20
+  return {
+    x: Math.cos(angle) * radius,
+    y: Math.sin(angle) * radius,
+    size: 3 + (((i * 5 + 1) % 12) / 12) * 4,
+  }
+})
+
 /**
  * 연락 전송 성공 시 표시되는 애니메이션 컴포넌트.
  * GSAP 타임라인으로 체크마크 드로우 → 스파클 → 텍스트 리빌 → 버튼 등장을 빠르게 연출한다.
@@ -139,16 +150,8 @@ export function ContactSuccess() {
     }
   }, [reducedMotion])
 
-  // 스파클 위치 (원 주변 12개)
-  const sparklePositions = Array.from({ length: 12 }, (_, i) => {
-    const angle = (i / 12) * Math.PI * 2
-    const radius = 60 + Math.random() * 20
-    return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-      size: 3 + Math.random() * 4,
-    }
-  })
+  // 스파클 위치 (원 주변 12개) — 결정론적 분포
+  const sparklePositions = SPARKLE_POSITIONS
 
   const titleText = "감사합니다!"
 

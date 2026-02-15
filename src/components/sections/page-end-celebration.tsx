@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, useSyncExternalStore} from "react";
 import {createPortal} from "react-dom";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -15,6 +15,8 @@ const CelebrationScene = dynamic(
   {ssr: false},
 );
 
+const emptySubscribe = () => () => {};
+
 /**
  * 페이지 최하단 축하 애니메이션 컴포넌트.
  * 스크롤이 트리거 영역에 도달하면 3D 컨페티 파티클과 감사 메시지를 표시한다.
@@ -24,7 +26,7 @@ const CelebrationScene = dynamic(
 export function PageEndCelebration() {
   const triggerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [showMessage, setShowMessage] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const [showScene, setShowScene] = useState(false);
@@ -33,17 +35,14 @@ export function PageEndCelebration() {
   const celebratedRef = useRef(false);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!triggerRef.current || reducedMotion) {
-      if (reducedMotion) {
-        setShowMessage(true);
-        setShowCta(true);
-      }
+    if (reducedMotion) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync state with external reducedMotion preference
+      setShowMessage(true);
+      setShowCta(true);
       return;
     }
+
+    if (!triggerRef.current) return;
 
     const st = ScrollTrigger.create({
       trigger: triggerRef.current,

@@ -149,47 +149,50 @@ export function TechStack({categories}: TechStackProps) {
 
     const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]")
 
-    function handleMouseMove(this: HTMLElement, e: MouseEvent) {
-      const rect = this.getBoundingClientRect()
-      const x = (e.clientX - rect.left) / rect.width - 0.5
-      const y = (e.clientY - rect.top) / rect.height - 0.5
-
-      gsap.to(this, {
-        rotateY: x * 10,
-        rotateX: -y * 10,
-        duration: 0.4,
-        ease: "power2.out",
-      })
-
-      // 마우스 위치에 따라 내부 광원 효과
-      const inner = this.querySelector<HTMLElement>("[data-card-glow]")
-      if (inner) {
-        inner.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(var(--card-rgb), 0.15) 0%, transparent 60%)`
-      }
-    }
-
-    function handleMouseLeave(this: HTMLElement) {
-      gsap.to(this, {
-        rotateY: 0,
-        rotateX: 0,
-        duration: 0.5,
-        ease: "power2.out",
-      })
-      const inner = this.querySelector<HTMLElement>("[data-card-glow]")
-      if (inner) {
-        inner.style.background = "transparent"
-      }
-    }
+    const controllers: Array<{ card: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = []
 
     cards.forEach((card) => {
+      function handleMouseMove(e: MouseEvent) {
+        const rect = card.getBoundingClientRect()
+        const x = (e.clientX - rect.left) / rect.width - 0.5
+        const y = (e.clientY - rect.top) / rect.height - 0.5
+
+        gsap.to(card, {
+          rotateY: x * 10,
+          rotateX: -y * 10,
+          duration: 0.4,
+          ease: "power2.out",
+        })
+
+        // 마우스 위치에 따라 내부 광원 효과
+        const inner = card.querySelector<HTMLElement>("[data-card-glow]")
+        if (inner) {
+          inner.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(var(--card-rgb), 0.15) 0%, transparent 60%)`
+        }
+      }
+
+      function handleMouseLeave() {
+        gsap.to(card, {
+          rotateY: 0,
+          rotateX: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        })
+        const inner = card.querySelector<HTMLElement>("[data-card-glow]")
+        if (inner) {
+          inner.style.background = "transparent"
+        }
+      }
+
       card.addEventListener("mousemove", handleMouseMove)
       card.addEventListener("mouseleave", handleMouseLeave)
+      controllers.push({ card, move: handleMouseMove, leave: handleMouseLeave })
     })
 
     return () => {
-      cards.forEach((card) => {
-        card.removeEventListener("mousemove", handleMouseMove)
-        card.removeEventListener("mouseleave", handleMouseLeave)
+      controllers.forEach(({ card, move, leave }) => {
+        card.removeEventListener("mousemove", move)
+        card.removeEventListener("mouseleave", leave)
       })
     }
   }, [reducedMotion])

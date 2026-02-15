@@ -7,8 +7,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cho-kyeongmoon.dev"
  * 동적 sitemap 생성.
  * 정적 페이지와 프로젝트 페이지를 포함한다.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
-  const projects = getAllProjects();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const projects = await getAllProjects();
 
   // 정적 페이지
   const staticPages = [

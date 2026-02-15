@@ -54,7 +54,7 @@ export default function Home() {
           <FadeIn delay={0.1}>
             <p className="mt-6 text-lg leading-relaxed text-foreground/80">
               개발, 더 나아가 제품을 만들 때 가장 중요한 것은
-              <span className="text-accent-highlight"> "왜?"라는 질문</span>이라고 생각합니다.
+              <span className="text-accent-highlight"> &ldquo;왜?&rdquo;라는 질문</span>이라고 생각합니다.
               <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
               이유가 있을 때,
               <br />

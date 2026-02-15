@@ -12,8 +12,10 @@ import {ProjectGallery} from "@/components/sections/project-gallery";
 import {MarkdownContent, extractHeadings} from "@/components/ui/markdown-content";
 import {TableOfContents} from "@/components/ui/table-of-contents";
 import {ProjectSchema, BreadcrumbSchema} from "@/components/seo/json-ld";
-import {getAllProjects, getProjectBySlug} from "@/lib/projects";
+import {getProjectBySlug, getAllSlugs} from "@/lib/projects";
 import {createMetadata} from "@/lib/metadata";
+
+export const revalidate = 3600
 
 interface ProjectDetailPageProps {
   params: Promise<{slug: string}>;
@@ -23,8 +25,9 @@ interface ProjectDetailPageProps {
  * 정적 경로 생성.
  * 빌드 시 모든 프로젝트 slug에 대한 페이지를 미리 생성한다.
  */
-export function generateStaticParams() {
-  return getAllProjects().map((p) => ({slug: p.slug}));
+export async function generateStaticParams() {
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({slug}));
 }
 
 /**
@@ -32,25 +35,25 @@ export function generateStaticParams() {
  */
 export async function generateMetadata({params}: ProjectDetailPageProps): Promise<Metadata> {
   const {slug} = await params;
-  try {
-    const project = getProjectBySlug(slug);
-    const description =
-      project.description || `${project.title} 프로젝트 - ${project.tags.join(", ")}`;
-    const image = project.thumbnail || project.images?.[0] || "/og-image.png";
-
-    return createMetadata({
-      title: project.title,
-      description,
-      image,
-      path: `/projects/${slug}`,
-    });
-  } catch {
+  const project = await getProjectBySlug(slug);
+  if (!project) {
     return createMetadata({
       title: "프로젝트",
       path: `/projects/${slug}`,
       noIndex: true,
     });
   }
+
+  const description =
+    project.description || `${project.title} 프로젝트 - ${project.tags.join(", ")}`;
+  const image = project.thumbnail || project.images?.[0] || "/og-image.png";
+
+  return createMetadata({
+    title: project.title,
+    description,
+    image,
+    path: `/projects/${slug}`,
+  });
 }
 
 /**
@@ -61,10 +64,8 @@ export async function generateMetadata({params}: ProjectDetailPageProps): Promis
 export default async function ProjectDetailPage({params}: ProjectDetailPageProps) {
   const {slug} = await params;
 
-  let project;
-  try {
-    project = getProjectBySlug(slug);
-  } catch {
+  const project = await getProjectBySlug(slug);
+  if (!project) {
     notFound();
   }
 

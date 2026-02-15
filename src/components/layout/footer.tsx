@@ -1,4 +1,3 @@
-import {Mail} from "lucide-react";
 import {Container} from "@/components/ui/container";
 import {IconButton} from "@/components/ui/icon-button";
 import {cn} from "@/lib/utils";

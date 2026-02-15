@@ -183,7 +183,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
       />
 
       <div className="space-y-0">
-        {items.map((item, i) => (
+        {items.map((item) => (
           <article
             key={item.year}
             data-journey-item
