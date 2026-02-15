@@ -26,7 +26,11 @@ const emptySubscribe = () => () => {};
 export function PageEndCelebration() {
   const triggerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const isMounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
   const [showMessage, setShowMessage] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const [showScene, setShowScene] = useState(false);
@@ -57,7 +61,7 @@ export function PageEndCelebration() {
         setTimeout(() => setShowCta(true), 1200);
         setTimeout(() => setCelebrating(false), 6000);
         setTimeout(() => setSceneFading(true), 7000);
-        setTimeout(() => setShowScene(false), 8000);
+        setTimeout(() => setShowScene(false), 10000);
       },
     });
 
@@ -67,7 +71,6 @@ export function PageEndCelebration() {
   return (
     <>
       <div ref={triggerRef} className="flex flex-col items-center gap-4 py-20">
-        {/* 감사 메시지 — 한번 표시되면 유지 */}
         <div
           className={cn(
             "text-center transition-all duration-700",
@@ -76,7 +79,7 @@ export function PageEndCelebration() {
         >
           <PartyPopper className="mx-auto h-10 w-10 text-accent-highlight" strokeWidth={1.5} />
           <GradientText as="p" gradient="primary" className="mt-2 text-xl font-bold">
-            여기까지 봐주셔서 감사합니다!
+            여기까지 봐주셔서 감사합니다.
           </GradientText>
           <p className="mt-1 text-sm text-muted-foreground">
             함께 성장할 기회를 기다리고 있습니다.
@@ -95,7 +98,7 @@ export function PageEndCelebration() {
             className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-accent-indigo-muted bg-accent-indigo-subtle px-8 py-4 text-lg font-semibold text-foreground backdrop-blur-sm transition-all duration-300 hover:border-accent-indigo/60 hover:bg-accent-indigo-subtle hover:shadow-lg hover:shadow-accent-indigo-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-accent-indigo/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
-            <span className="relative">연락하기</span>
+            <span className="relative">Contact</span>
             <ArrowRight className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>

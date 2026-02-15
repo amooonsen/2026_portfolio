@@ -4,8 +4,7 @@ import type {TechCategory} from "@/components/sections/tech-stack";
 /* ─── 네비게이션 ─── */
 
 export const navItems = [
-  {label: "홈", href: "/"},
-  {label: "프로젝트", href: "/projects"},
+  {label: "Projects", href: "/projects"},
   {label: "Experience", href: "/experience"},
   // { label: "블로그", href: "https://blog.example.com", external: true },
   {label: "Contact", href: "/contact"},
