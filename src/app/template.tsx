@@ -19,18 +19,11 @@ if (typeof window !== "undefined") {
   });
 }
 
-/**
- * 특정 경로에서는 항상 스크롤을 최상단으로 리셋해야 하는지 판별한다.
- */
-function shouldAlwaysScrollTop(pathname: string): boolean {
-  return /^\/projects\/[^/]+$/.test(pathname);
-}
+const PROJECT_DETAIL_RE = /^\/projects\/[^/]+$/;
 
-/**
- * 프로젝트 상세 페이지인지 판별한다.
- */
+/** 프로젝트 상세 페이지인지 판별한다 (스크롤 리셋 + 전환 애니메이션에서 공유) */
 function isProjectDetail(pathname: string): boolean {
-  return /^\/projects\/[^/]+$/.test(pathname);
+  return PROJECT_DETAIL_RE.test(pathname);
 }
 
 /**
@@ -50,7 +43,7 @@ export default function Template({children}: {children: React.ReactNode}) {
     const wasTraversal = isTraversal;
     isTraversal = false;
 
-    if (wasTraversal && !shouldAlwaysScrollTop(pathname)) {
+    if (wasTraversal && !isProjectDetail(pathname)) {
       return;
     }
 

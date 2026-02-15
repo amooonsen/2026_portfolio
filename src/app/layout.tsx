@@ -15,6 +15,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider"
 import { PersonSchema, WebsiteSchema } from "@/components/seo/json-ld"
 import { navItems } from "@/data/portfolio-data"
 import { socials } from "@/data/socials"
+import { siteConfig } from "@/lib/metadata"
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -29,52 +30,36 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://cho-kyeongmoon.dev"
-  ),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "조경문 | Frontend Developer",
-    template: "%s | 조경문",
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.author.name}`,
   },
-  description:
-    "4년 경력 프론트엔드 개발자 조경문의 포트폴리오입니다. React, Next.js, TypeScript를 주력으로 하며, Claude Code·Antigravity 등 AI 도구를 활용해 모던 웹 애플리케이션을 구축합니다.",
-  keywords: [
-    "프론트엔드 개발자",
-    "Frontend Developer",
-    "React",
-    "Next.js",
-    "TypeScript",
-    "AI 활용 개발",
-    "Claude Code",
-    "웹 개발",
-    "조경문",
-    "포트폴리오",
-  ],
-  authors: [{ name: "조경문", url: "https://cho-kyeongmoon.dev" }],
-  creator: "조경문",
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
+  creator: siteConfig.author.name,
   openGraph: {
     type: "website",
     locale: "ko_KR",
     url: "/",
-    title: "조경문 | Frontend Developer",
-    description:
-      "4년 경력 프론트엔드 개발자 조경문의 포트폴리오입니다. React, Next.js, TypeScript를 주력으로 하며, Claude Code·Antigravity 등 AI 도구를 활용해 모던 웹 애플리케이션을 구축합니다.",
-    siteName: "조경문 | Frontend Developer",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
     images: [
       {
-        url: "/og-image.png",
+        url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: "조경문 포트폴리오",
+        alt: `${siteConfig.author.name} 포트폴리오`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "조경문 | Frontend Developer",
-    description:
-      "4년 경력 프론트엔드 개발자 조경문의 포트폴리오입니다. React, Next.js, TypeScript를 주력으로 하며, Claude Code·Antigravity 등 AI 도구를 활용해 모던 웹 애플리케이션을 구축합니다.",
-    images: ["/og-image.png"],
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
     creator: "@cho_kyeongmoon",
   },
   robots: {
@@ -87,11 +72,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  verification: {
-    // Google Search Console 인증 코드를 아래에 입력하세요.
-    // https://search.google.com/search-console 에서 발급받을 수 있습니다.
-    // google: "실제-인증-코드-입력",
   },
   alternates: {
     canonical: "/",
