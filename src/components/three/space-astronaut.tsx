@@ -374,7 +374,7 @@ function RobotSceneInner({palette, greeting}: {palette: RobotPalette; greeting: 
     }
 
     window.addEventListener("pointermove", handlePointerMove, {passive: true});
-    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointerup", handlePointerUp, {passive: true});
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);

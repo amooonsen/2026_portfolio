@@ -135,7 +135,7 @@ function FireworkParticles({active}: {active: boolean}) {
         // 위치 = 중심 + 방향 * 속도 * (1 - e^(-kt)) / k
         // 적분 기반이므로 항상 바깥으로 퍼짐 (되돌아오지 않음)
         const k = 0.8;
-        const spread = burst.speeds[i] * (1 - Math.exp(-k * t)) / k;
+        const spread = (burst.speeds[i] * (1 - Math.exp(-k * t))) / k;
 
         const dx = burst.directions[i * 3];
         const dy = burst.directions[i * 3 + 1];
@@ -256,9 +256,7 @@ function SparkTrails({active}: {active: boolean}) {
   return (
     <points ref={ref} visible={active} frustumCulled={false}>
       <bufferGeometry>
-        {/* eslint-disable-next-line react-hooks/refs -- Three.js bufferAttribute requires ref values for initial geometry data */}
         <bufferAttribute attach="attributes-position" args={[positionsRef.current, 3]} />
-        {/* eslint-disable-next-line react-hooks/refs -- Three.js bufferAttribute requires ref values for initial geometry data */}
         <bufferAttribute attach="attributes-color" args={[colorsArr.current, 3]} />
       </bufferGeometry>
       <pointsMaterial
@@ -298,7 +296,10 @@ export function CelebrationScene({active, className}: CelebrationSceneProps) {
       className={className}
       style={{
         position: "fixed",
-        inset: 0,
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100dvh",
         zIndex: 1,
         pointerEvents: "none",
         overflow: "hidden",

@@ -12,6 +12,8 @@ const transporter = nodemailer.createTransport({
 
 interface SendContactMailParams {
   name: string
+  organization?: string
+  position?: string
   email: string
   message: string
 }
@@ -20,13 +22,15 @@ interface SendContactMailParams {
  * 포트폴리오 연락 폼에서 수신된 메시지를 Gmail로 전송한다.
  * Gmail SMTP + App Password를 사용한다.
  */
-export async function sendContactMail({ name, email, message }: SendContactMailParams) {
+export async function sendContactMail({ name, organization, position, email, message }: SendContactMailParams) {
+  const senderInfo = [name, organization, position].filter(Boolean).join(" / ")
+
   await transporter.sendMail({
     from: `"포트폴리오 연락폼" <${process.env.GMAIL_USER}>`,
     to: process.env.GMAIL_USER!,
     replyTo: email,
-    subject: `[포트폴리오] ${name}님의 연락`,
-    text: `보낸 사람: ${name} (${email})\n\n${message}`,
+    subject: `[포트폴리오] ${senderInfo}님의 연락`,
+    text: `보낸 사람: ${name}\n소속: ${organization || "-"}\n직위: ${position || "-"}\n이메일: ${email}\n\n${message}`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #818cf8;">새로운 연락이 도착했습니다</h2>
@@ -34,6 +38,14 @@ export async function sendContactMail({ name, email, message }: SendContactMailP
           <tr>
             <td style="padding: 8px 12px; font-weight: bold; color: #666; width: 80px;">이름</td>
             <td style="padding: 8px 12px;">${name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; font-weight: bold; color: #666;">소속</td>
+            <td style="padding: 8px 12px;">${organization || "-"}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; font-weight: bold; color: #666;">직위</td>
+            <td style="padding: 8px 12px;">${position || "-"}</td>
           </tr>
           <tr>
             <td style="padding: 8px 12px; font-weight: bold; color: #666;">이메일</td>

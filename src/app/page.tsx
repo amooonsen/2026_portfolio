@@ -54,28 +54,35 @@ export default function Home() {
           <FadeIn delay={0.1}>
             <p className="mt-6 text-lg leading-relaxed text-foreground/80">
               개발, 더 나아가 제품을 만들 때 가장 중요한 것은
-              <span className="text-accent-highlight"> &ldquo;왜?&rdquo;라는 질문</span>이라고 생각합니다.
-              <br /> 왜 이 라이브러리를 선택했는지, 왜 이 구조가 더 나은지. 기술 선택에 명확한
-              이유가 있을 때,
+              <span className="text-accent-highlight"> &ldquo;왜?&rdquo;라는 질문</span>이라고
+              생각합니다.
+              <br /> 왜 이 라이브러리를 선택했는지. 왜 이 구조가 더 나은지. 기술 선택에 명확한
+              이유가 있을 때
               <br />
-              <span className="text-accent-highlight"> 확장 가능하고 유지보수하기 쉬운 시스템</span>
+              <span className="text-accent-highlight">
+                비로소 확장 가능하고 유지보수하기 쉬운 시스템
+              </span>
               이 만들어집니다.
             </p>
           </FadeIn>
-          <FadeIn delay={0.4}>
+          <FadeIn delay={0.3}>
             <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-              기술적 의사결정뿐만 아니라{" "}
+              기술적 의사결정뿐만 아니라&nbsp;
               <span className="text-accent-highlight">팀과 함께 성장하는 것</span>을 중요하게
               생각합니다.
               <br /> 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화 하였습니다.
-              <br />
-              <span className="text-accent-highlight">
-                AI는 개발자를 대체하는 것이 아니라, 더 본질적인 문제에 집중하게 해주는 도구
-              </span>
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.5}>
+            <p className="mt-4 text-lg leading-relaxed text-foreground/80">
+              AI는 개발자를 대체하는 것이 아닌&nbsp;
+              <span className="text-accent-highlight">더 본질적인 문제에 집중하게 해주는 도구</span>
               라고 생각합니다.
               <br />
-              개발자는 코드만 작성하는 사람이 아니라,
-              <span className="text-accent-highlight">문제를 해결하고 가치를 만드는 사람</span>
+              개발자는
+              <span className="text-accent-highlight">
+                문제를 해결하고 가치를 만드는 사람&nbsp;
+              </span>
               이라고 믿습니다.
             </p>
           </FadeIn>

@@ -179,7 +179,7 @@ function CosmicSceneInner({ isMobile = false, colors }: { isMobile?: boolean; co
 
 function StaticBackground({ colors }: { colors: SceneColors }) {
   return (
-    <div className="fixed inset-0 bg-scene-bg">
+    <div className="fixed top-0 left-0 h-dvh w-screen overflow-hidden bg-scene-bg">
       <div className={`absolute -top-1/2 -left-1/4 h-[600px] w-[600px] rounded-full ${colors.staticOrbs[0].color} ${colors.staticOrbs[0].blur}`} />
       <div className={`absolute -top-1/4 -right-1/4 h-[500px] w-[500px] rounded-full ${colors.staticOrbs[1].color} ${colors.staticOrbs[1].blur}`} />
       <div className={`absolute -bottom-1/4 left-1/3 h-[550px] w-[550px] rounded-full ${colors.staticOrbs[2].color} ${colors.staticOrbs[2].blur}`} />
@@ -225,8 +225,13 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
     if (!visible || hasRevealedRef.current || !containerRef.current) return
     hasRevealedRef.current = true
 
+    // 모바일에서 페이지 복귀 시 R3F Canvas가 잘못된 크기로 초기화될 수 있으므로
+    // resize 이벤트를 발생시켜 캔버스 크기를 강제 재계산한다.
+    const triggerResize = () => { window.dispatchEvent(new Event("resize")) }
+
     if (reducedMotion) {
       gsap.set(containerRef.current, { opacity: 1 })
+      triggerResize()
       return
     }
 
@@ -235,6 +240,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
       duration: 1,
       delay: 0.5,
       ease: "power2.out",
+      onStart: triggerResize,
     })
   }, [visible, reducedMotion])
 
@@ -246,7 +252,16 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
     <div
       ref={containerRef}
       className={className}
-      style={{ position: "fixed", inset: 0, zIndex: 0, opacity: 0 }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100dvh",
+        zIndex: 0,
+        opacity: 0,
+        overflow: "hidden",
+      }}
       aria-hidden="true"
     >
       <Canvas

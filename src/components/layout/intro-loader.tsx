@@ -97,9 +97,10 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
   /** 프로그레스 UI 동시 갱신 (카운터 텍스트 + 인트로 바 + 미니멀 바) */
   function updateProgressUI() {
     const val = Math.round(progressObjRef.current.value);
-    const pct = `${progressObjRef.current.value}%`;
-    if (progressBarRef.current) progressBarRef.current.style.width = pct;
-    if (loadingBarRef.current) loadingBarRef.current.style.width = pct;
+    const scale = progressObjRef.current.value / 100;
+    // GPU 가속: width 대신 scaleX transform 사용 (레이아웃 리플로우 방지)
+    if (progressBarRef.current) progressBarRef.current.style.transform = `scaleX(${scale})`;
+    if (loadingBarRef.current) loadingBarRef.current.style.transform = `scaleX(${scale})`;
 
     // 카운터: 정수 변경 시에만 텍스트 갱신 + 아래에서 슬라이드업 (오도미터 효과)
     if (counterRef.current && val !== prevCounterValRef.current) {
@@ -165,7 +166,9 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
   function dismiss() {
     if (dismissedRef.current) return;
     dismissedRef.current = true;
-    // 인사 타임라인은 kill하지 않음 — 오버레이 페이드아웃과 함께 자연스럽게 사라짐
+    // 인사 타임라인 정리 — stale 참조 방지
+    greetingTlRef.current?.kill();
+    greetingTlRef.current = null;
 
     if (isFirstVisitRef.current) {
       setSessionItem(INTRO_CACHE_KEY, "1");
@@ -449,8 +452,8 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
                 <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                   <div
                     ref={progressBarRef}
-                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.5)]"
-                    style={{width: "0%"}}
+                    className="absolute inset-y-0 left-0 w-full origin-left rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.5)] will-change-transform"
+                    style={{transform: "scaleX(0)"}}
                   />
                 </div>
               </div>
@@ -482,8 +485,8 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
               <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                 <div
                   ref={loadingBarRef}
-                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_12px_rgba(139,92,246,0.4)]"
-                  style={{width: "0%"}}
+                  className="absolute inset-y-0 left-0 w-full origin-left rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_12px_rgba(139,92,246,0.4)] will-change-transform"
+                  style={{transform: "scaleX(0)"}}
                 />
               </div>
             </div>

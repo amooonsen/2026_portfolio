@@ -70,6 +70,7 @@ export default function Template({children}: {children: React.ReactNode}) {
 
     if (reducedMotion) {
       gsap.set(ref.current, {opacity: 1, y: 0, filter: "none", scale: 1});
+      ref.current.style.willChange = "auto";
       ScrollTrigger.refresh();
       return;
     }
@@ -83,7 +84,12 @@ export default function Template({children}: {children: React.ReactNode}) {
           opacity: 1,
           duration: 0.3,
           ease: "power2.out",
-          onComplete: () => ScrollTrigger.refresh(),
+          onComplete: () => {
+            if (ref.current) {
+              ref.current.style.willChange = "auto";
+            }
+            ScrollTrigger.refresh();
+          },
         },
       );
       return;

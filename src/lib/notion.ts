@@ -1,5 +1,4 @@
 import { cache } from "react"
-import { Client } from "@notionhq/client"
 import type {
   BlockObjectResponse,
   PageObjectResponse,
@@ -16,8 +15,17 @@ if (!process.env.NOTION_TOKEN || !process.env.NOTION_DATABASE_ID) {
   console.warn("[notion] NOTION_TOKEN 또는 NOTION_DATABASE_ID 환경변수 누락")
 }
 
-const notion = new Client({ auth: process.env.NOTION_TOKEN })
 const databaseId = process.env.NOTION_DATABASE_ID!
+
+/** 모든 Notion API 호출에 적용하는 캐시 설정 (1시간) */
+const REVALIDATE_SECONDS = 3600
+
+/** Notion REST API 공통 헤더 */
+const notionHeaders = {
+  Authorization: `Bearer ${process.env.NOTION_TOKEN}`,
+  "Notion-Version": "2022-06-28",
+  "Content-Type": "application/json",
+} as const
 
 /** Notion DB 프로퍼티명 — DB 스키마 변경 시 여기만 수정 */
 const PROP = {
@@ -51,12 +59,9 @@ async function queryDatabase(body: {
     `https://api.notion.com/v1/databases/${databaseId}/query`,
     {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.NOTION_TOKEN}`,
-        "Notion-Version": "2022-06-28",
-        "Content-Type": "application/json",
-      },
+      headers: notionHeaders,
       body: JSON.stringify(body),
+      next: { revalidate: REVALIDATE_SECONDS },
     },
   )
 
@@ -170,16 +175,41 @@ function pageToProject(page: PageObjectResponse): Project {
 // Blocks → Markdown
 // ---------------------------------------------------------------------------
 
+async function queryBlocks(
+  blockId: string,
+  startCursor?: string,
+): Promise<{
+  results: BlockObjectResponse[]
+  has_more: boolean
+  next_cursor: string | null
+}> {
+  const params = new URLSearchParams({ page_size: "100" })
+  if (startCursor) params.set("start_cursor", startCursor)
+
+  const res = await fetch(
+    `https://api.notion.com/v1/blocks/${blockId}/children?${params}`,
+    {
+      headers: notionHeaders,
+      next: { revalidate: REVALIDATE_SECONDS },
+    },
+  )
+
+  if (!res.ok) {
+    const err = await res
+      .json()
+      .catch(() => ({ code: res.status, message: res.statusText }))
+    throw new Error(`Notion Blocks API error: ${err.code} — ${err.message}`)
+  }
+
+  return res.json()
+}
+
 async function fetchAllBlocks(blockId: string): Promise<BlockObjectResponse[]> {
   const blocks: BlockObjectResponse[] = []
   let cursor: string | undefined
 
   do {
-    const response = await notion.blocks.children.list({
-      block_id: blockId,
-      start_cursor: cursor,
-      page_size: 100,
-    })
+    const response = await queryBlocks(blockId, cursor)
 
     for (const block of response.results) {
       if ("type" in block) blocks.push(block as BlockObjectResponse)

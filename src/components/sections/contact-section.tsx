@@ -12,21 +12,8 @@ import {GradientText} from "@/components/ui/gradient-text";
 import {Button} from "@/components/ui/button";
 import {FadeIn} from "@/components/animation/fade-in";
 import {SlideUp} from "@/components/animation/slide-up";
-import {StaggerChildren} from "@/components/animation/stagger-children";
 import {ContactSuccess} from "@/components/sections/contact-success";
-import {Mail, ArrowUpRight} from "lucide-react";
 import {cn} from "@/lib/utils";
-
-interface Social {
-  platform: string;
-  url: string;
-  icon: React.ReactNode;
-}
-
-interface ContactSectionProps {
-  email: string;
-  socials: Social[];
-}
 
 const inputBaseClass =
   "w-full rounded-lg border border-border bg-background/50 px-4 py-3 text-sm placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary";
@@ -37,7 +24,7 @@ const inputErrorClass = "border-destructive/60 focus:border-destructive focus:ri
  * React Hook Form + Zod 클라이언트 검증 + Server Action 서버 검증을 이중으로 적용한다.
  * 전송 성공 시 폼 대신 성공 애니메이션 컴포넌트를 표시한다.
  */
-export function ContactSection({email, socials}: ContactSectionProps) {
+export function ContactSection() {
   const [serverState, serverAction, isPending] = useActionState(submitContactForm, {
     success: false,
     message: "",
@@ -60,6 +47,12 @@ export function ContactSection({email, socials}: ContactSectionProps) {
     if (serverState.errors) {
       if (serverState.errors.name?.[0]) {
         setError("name", {message: serverState.errors.name[0]});
+      }
+      if (serverState.errors.organization?.[0]) {
+        setError("organization", {message: serverState.errors.organization[0]});
+      }
+      if (serverState.errors.position?.[0]) {
+        setError("position", {message: serverState.errors.position[0]});
       }
       if (serverState.errors.email?.[0]) {
         setError("email", {message: serverState.errors.email[0]});
@@ -89,44 +82,19 @@ export function ContactSection({email, socials}: ContactSectionProps) {
           </GradientText>
           <FadeIn delay={0.1}>
             <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-              <span className="text-accent-highlight">채용 문의</span>나{" "}
-              <span className="text-accent-highlight">협업 제안</span>,
-              커피챗까지 편하게 연락해 주세요.
-              <br />
-              성함과 소속을 함께 남겨주시면 더 빠르게 답변 드리겠습니다.
+              프로젝트를 살펴봐 주셨다면, 이미 저와{" "}
+              <span className="text-accent-highlight">같은 고민을 하고 계신 분</span>일지도 모릅니다.
             </p>
           </FadeIn>
-        </div>
-      </FadeIn>
-
-      {/* 이메일 + 소셜 링크 */}
-      <FadeIn delay={0.2}>
-        <div className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-5">
-          {/* 이메일 */}
-          <a
-            href={`mailto:${email}`}
-            className="group inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-5 py-2.5 text-sm font-medium text-foreground/90 transition-all duration-200 hover:border-glass-hover-border hover:bg-glass-hover-bg hover:text-foreground"
-          >
-            <Mail className="h-4 w-4 text-accent-highlight" />
-            {email}
-            <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
-
-          {/* 소셜 링크 */}
-          <StaggerChildren className="flex items-center gap-3" stagger={0.08}>
-            {socials.map((social) => (
-              <a
-                key={social.platform}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.platform}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg text-foreground/70 transition-all duration-200 hover:border-glass-hover-border hover:bg-glass-hover-bg hover:text-foreground hover:-translate-y-0.5 hover:shadow-md"
-              >
-                {social.icon}
-              </a>
-            ))}
-          </StaggerChildren>
+          <FadeIn delay={0.2}>
+            <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+              <span className="text-accent-highlight">채용 문의</span>,{" "}
+              <span className="text-accent-highlight">협업 제안</span>, 기술적인 대화까지
+              — 어떤 주제든 편하게 남겨주세요.
+              <br />
+              소속과 직위를 함께 적어주시면 더 빠르고 정확하게 답변드리겠습니다.
+            </p>
+          </FadeIn>
         </div>
       </FadeIn>
 
@@ -144,7 +112,7 @@ export function ContactSection({email, socials}: ContactSectionProps) {
               {/* 이름 */}
               <div>
                 <label htmlFor="name" className="mb-2 block text-sm font-medium">
-                  이름
+                  이름 <span className="text-destructive">*</span>
                 </label>
                 <input
                   id="name"
@@ -157,14 +125,58 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   {...register("name")}
                 />
                 {errors.name && (
-                  <p id="name-error" role="alert" className="mt-1.5 text-xs text-destructive">{errors.name.message}</p>
+                  <p id="name-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                    {errors.name.message}
+                  </p>
                 )}
+              </div>
+
+              {/* 소속 / 직위 — 한 줄 2칸 */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="organization" className="mb-2 block text-sm font-medium">
+                    소속
+                  </label>
+                  <input
+                    id="organization"
+                    type="text"
+                    placeholder="회사 또는 팀"
+                    aria-invalid={!!errors.organization}
+                    aria-describedby={errors.organization ? "organization-error" : undefined}
+                    className={cn(inputBaseClass, errors.organization && inputErrorClass)}
+                    {...register("organization")}
+                  />
+                  {errors.organization && (
+                    <p id="organization-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                      {errors.organization.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="position" className="mb-2 block text-sm font-medium">
+                    직위
+                  </label>
+                  <input
+                    id="position"
+                    type="text"
+                    placeholder="직함 또는 역할"
+                    aria-invalid={!!errors.position}
+                    aria-describedby={errors.position ? "position-error" : undefined}
+                    className={cn(inputBaseClass, errors.position && inputErrorClass)}
+                    {...register("position")}
+                  />
+                  {errors.position && (
+                    <p id="position-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                      {errors.position.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* 이메일 */}
               <div>
                 <label htmlFor="email" className="mb-2 block text-sm font-medium">
-                  이메일
+                  이메일 <span className="text-destructive">*</span>
                 </label>
                 <input
                   id="email"
@@ -177,14 +189,16 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p id="email-error" role="alert" className="mt-1.5 text-xs text-destructive">{errors.email.message}</p>
+                  <p id="email-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
               {/* 메시지 */}
               <div>
                 <label htmlFor="message" className="mb-2 block text-sm font-medium">
-                  메시지
+                  메시지 <span className="text-destructive">*</span>
                 </label>
                 <textarea
                   id="message"
@@ -197,13 +211,17 @@ export function ContactSection({email, socials}: ContactSectionProps) {
                   {...register("message")}
                 />
                 {errors.message && (
-                  <p id="message-error" role="alert" className="mt-1.5 text-xs text-destructive">{errors.message.message}</p>
+                  <p id="message-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                    {errors.message.message}
+                  </p>
                 )}
               </div>
 
               {/* 서버 에러 메시지 */}
               {serverState.message && !serverState.success && (
-                <p role="alert" className="text-sm text-destructive">{serverState.message}</p>
+                <p role="alert" className="text-sm text-destructive">
+                  {serverState.message}
+                </p>
               )}
 
               <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
