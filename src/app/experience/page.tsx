@@ -3,7 +3,6 @@ import {GradientText} from "@/components/ui/gradient-text";
 import {FadeIn} from "@/components/animation/fade-in";
 import {ExperienceTabs} from "@/components/sections/experience-tabs";
 import {ExperienceProfile} from "@/components/sections/experience-profile";
-import {experiences} from "@/data/portfolio-data";
 import {journeyItems} from "@/data/constants/home";
 import {createMetadata} from "@/lib/metadata";
 
@@ -47,7 +46,7 @@ export default function ExperiencePage() {
         </FadeIn>
       </div>
 
-      <ExperienceTabs experiences={experiences} journeyItems={journeyItems} />
+      <ExperienceTabs journeyItems={journeyItems} />
     </Section>
   );
 }
