@@ -8,6 +8,8 @@ export interface ContactFormState {
   message: string;
   errors?: {
     name?: string[];
+    organization?: string[];
+    position?: string[];
     email?: string[];
     message?: string[];
   };
@@ -23,6 +25,8 @@ export async function submitContactForm(
 ): Promise<ContactFormState> {
   const raw = {
     name: formData.get("name"),
+    organization: formData.get("organization") || "",
+    position: formData.get("position") || "",
     email: formData.get("email"),
     message: formData.get("message"),
   };
@@ -36,6 +40,8 @@ export async function submitContactForm(
       message: "입력값을 확인해 주세요.",
       errors: {
         name: fieldErrors.name,
+        organization: fieldErrors.organization,
+        position: fieldErrors.position,
         email: fieldErrors.email,
         message: fieldErrors.message,
       },

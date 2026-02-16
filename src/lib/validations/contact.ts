@@ -5,6 +5,16 @@ export const contactSchema = z.object({
     .string()
     .min(1, "이름을 입력해 주세요.")
     .max(50, "이름은 50자 이내로 입력해 주세요."),
+  organization: z
+    .string()
+    .max(100, "소속은 100자 이내로 입력해 주세요.")
+    .optional()
+    .or(z.literal("")),
+  position: z
+    .string()
+    .max(50, "직위는 50자 이내로 입력해 주세요.")
+    .optional()
+    .or(z.literal("")),
   email: z
     .string()
     .min(1, "이메일을 입력해 주세요.")

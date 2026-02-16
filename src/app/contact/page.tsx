@@ -1,6 +1,4 @@
 import {ContactSection} from "@/components/sections/contact-section";
-import {contactEmail} from "@/data/portfolio-data";
-import {socials} from "@/data/socials";
 import {createMetadata} from "@/lib/metadata";
 
 export const metadata = createMetadata({
@@ -11,8 +9,8 @@ export const metadata = createMetadata({
 
 /**
  * Contact 페이지.
- * 문의 폼과 소셜 링크를 표시한다.
+ * 문의 폼을 표시한다.
  */
 export default function ContactPage() {
-  return <ContactSection email={contactEmail} socials={socials} />;
+  return <ContactSection />;
 }
