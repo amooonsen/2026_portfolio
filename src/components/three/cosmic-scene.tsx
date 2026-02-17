@@ -261,6 +261,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
         zIndex: 0,
         opacity: 0,
         overflow: "hidden",
+        background: colors.background,
       }}
       aria-hidden="true"
     >
@@ -268,6 +269,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
         camera={{ position: [0, 0, 25], fov: 60, near: 0.1, far: 300 }}
         dpr={isMobile ? [1, 1] : [1, 1.5]}
         gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
+        style={{ background: colors.background }}
         onCreated={onCreated}
       >
         <CosmicSceneInner isMobile={isMobile} colors={colors} />
