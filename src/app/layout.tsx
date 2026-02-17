@@ -39,6 +39,20 @@ export const metadata: Metadata = {
   keywords: siteConfig.keywords,
   authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
   creator: siteConfig.author.name,
+  icons: {
+    icon: [
+      { url: "/icons/icon-light-32.png", sizes: "32x32", type: "image/png", media: "(prefers-color-scheme: light)" },
+      { url: "/icons/icon-dark-32.png", sizes: "32x32", type: "image/png", media: "(prefers-color-scheme: dark)" },
+      { url: "/icons/icon-light-16.png", sizes: "16x16", type: "image/png", media: "(prefers-color-scheme: light)" },
+      { url: "/icons/icon-dark-16.png", sizes: "16x16", type: "image/png", media: "(prefers-color-scheme: dark)" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "icon", url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "ko_KR",
@@ -46,20 +60,11 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.ogImage,
-        width: 1200,
-        height: 630,
-        alt: `${siteConfig.author.name} 포트폴리오`,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [siteConfig.ogImage],
     creator: "@cho_kyeongmoon",
   },
   robots: {

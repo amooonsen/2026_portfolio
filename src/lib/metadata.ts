@@ -13,7 +13,7 @@ export const siteConfig = {
     email: "cho.kyeongmoon@example.com",
     url: "https://cho-kyeongmoon.dev",
   },
-  ogImage: "/og-image.png",
+  ogImage: "/opengraph-image.png",
   keywords: [
     "프론트엔드 개발자",
     "Frontend Developer",
