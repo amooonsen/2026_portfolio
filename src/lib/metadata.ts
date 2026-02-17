@@ -10,7 +10,7 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://cho-kyeongmoon.dev",
   author: {
     name: "조경문",
-    email: "cho.kyeongmoon@example.com",
+    email: "chonghocho72@gmail.com",
     url: "https://cho-kyeongmoon.dev",
   },
   ogImage: "/opengraph-image.png",
