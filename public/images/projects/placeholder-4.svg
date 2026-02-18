@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a0a00"/>
+      <stop offset="100%" stop-color="#2d1a0a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg4)"/>
+  <!-- Warm ambient glow -->
+  <circle cx="600" cy="340" r="400" fill="#f97316" opacity="0.03"/>
+  <!-- Browser mockup -->
+  <rect x="100" y="60" width="1000" height="555" rx="12" fill="#1c1917" opacity="0.9"/>
+  <rect x="100" y="60" width="1000" height="44" rx="12" fill="#292524"/>
+  <circle cx="130" cy="82" r="6" fill="#ef4444" opacity="0.7"/>
+  <circle cx="150" cy="82" r="6" fill="#eab308" opacity="0.7"/>
+  <circle cx="170" cy="82" r="6" fill="#22c55e" opacity="0.7"/>
+  <!-- URL bar -->
+  <rect x="260" y="70" width="480" height="24" rx="12" fill="#1c1917" opacity="0.8"/>
+  <rect x="280" y="78" width="120" height="8" rx="4" fill="#a8a29e" opacity="0.3"/>
+  <!-- E-commerce Header -->
+  <rect x="100" y="104" width="1000" height="50" fill="#1c1917"/>
+  <rect x="130" y="120" width="80" height="14" rx="4" fill="#f97316" opacity="0.6"/>
+  <rect x="500" y="124" width="60" height="8" rx="4" fill="#a8a29e" opacity="0.3"/>
+  <rect x="580" y="124" width="50" height="8" rx="4" fill="#a8a29e" opacity="0.3"/>
+  <rect x="650" y="124" width="70" height="8" rx="4" fill="#a8a29e" opacity="0.3"/>
+  <rect x="1000" y="118" width="70" height="20" rx="10" fill="#f97316" opacity="0.5"/>
+  <!-- Hero banner -->
+  <rect x="100" y="154" width="1000" height="180" fill="#f97316" opacity="0.08"/>
+  <rect x="160" y="200" width="300" height="20" rx="4" fill="#fbbf24" opacity="0.3"/>
+  <rect x="160" y="232" width="400" height="12" rx="4" fill="#e2e8f0" opacity="0.1"/>
+  <rect x="160" y="254" width="350" height="12" rx="4" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="160" y="286" width="120" height="32" rx="8" fill="#f97316" opacity="0.6"/>
+  <!-- Product grid -->
+  <rect x="130" y="360" width="200" height="14" rx="7" fill="#e2e8f0" opacity="0.15"/>
+  <g>
+    <!-- Product 1 -->
+    <rect x="130" y="394" width="220" height="180" rx="10" fill="#292524" opacity="0.6"/>
+    <rect x="140" y="404" width="200" height="110" rx="8" fill="#f97316" opacity="0.06"/>
+    <rect x="140" y="526" width="120" height="10" rx="5" fill="#e2e8f0" opacity="0.12"/>
+    <rect x="140" y="544" width="60" height="10" rx="5" fill="#f97316" opacity="0.4"/>
+    <rect x="140" y="560" width="80" height="8" rx="4" fill="#a8a29e" opacity="0.2"/>
+    <!-- Product 2 -->
+    <rect x="370" y="394" width="220" height="180" rx="10" fill="#292524" opacity="0.6"/>
+    <rect x="380" y="404" width="200" height="110" rx="8" fill="#f97316" opacity="0.06"/>
+    <rect x="380" y="526" width="140" height="10" rx="5" fill="#e2e8f0" opacity="0.12"/>
+    <rect x="380" y="544" width="70" height="10" rx="5" fill="#f97316" opacity="0.4"/>
+    <rect x="380" y="560" width="90" height="8" rx="4" fill="#a8a29e" opacity="0.2"/>
+    <!-- Product 3 -->
+    <rect x="610" y="394" width="220" height="180" rx="10" fill="#292524" opacity="0.6"/>
+    <rect x="620" y="404" width="200" height="110" rx="8" fill="#f97316" opacity="0.06"/>
+    <rect x="620" y="526" width="110" height="10" rx="5" fill="#e2e8f0" opacity="0.12"/>
+    <rect x="620" y="544" width="55" height="10" rx="5" fill="#f97316" opacity="0.4"/>
+    <rect x="620" y="560" width="70" height="8" rx="4" fill="#a8a29e" opacity="0.2"/>
+    <!-- Product 4 -->
+    <rect x="850" y="394" width="220" height="180" rx="10" fill="#292524" opacity="0.6"/>
+    <rect x="860" y="404" width="200" height="110" rx="8" fill="#f97316" opacity="0.06"/>
+    <rect x="860" y="526" width="130" height="10" rx="5" fill="#e2e8f0" opacity="0.12"/>
+    <rect x="860" y="544" width="65" height="10" rx="5" fill="#f97316" opacity="0.4"/>
+    <rect x="860" y="560" width="85" height="8" rx="4" fill="#a8a29e" opacity="0.2"/>
+  </g>
+</svg>

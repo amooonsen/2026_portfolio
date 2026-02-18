@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#021a1a"/>
+      <stop offset="100%" stop-color="#0a2540"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg6)"/>
+  <!-- Network grid -->
+  <g stroke="#14b8a6" opacity="0.05" stroke-width="1">
+    <line x1="0" y1="0" x2="1200" y2="675"/><line x1="400" y1="0" x2="1200" y2="450"/>
+    <line x1="800" y1="0" x2="1200" y2="225"/><line x1="0" y1="225" x2="800" y2="675"/>
+    <line x1="0" y1="450" x2="400" y2="675"/><line x1="1200" y1="0" x2="0" y2="675"/>
+  </g>
+  <!-- Cloud / Infrastructure diagram -->
+  <!-- Top: Cloud region -->
+  <rect x="350" y="60" width="500" height="200" rx="16" fill="#134e4a" opacity="0.2" stroke="#14b8a6" stroke-width="1" stroke-dasharray="6 4" opacity="0.3"/>
+  <rect x="370" y="74" width="100" height="12" rx="6" fill="#14b8a6" opacity="0.4"/>
+  <!-- Server nodes -->
+  <rect x="400" y="110" width="100" height="70" rx="8" fill="#0f766e" opacity="0.3"/>
+  <rect x="416" y="126" width="68" height="8" rx="4" fill="#5eead4" opacity="0.4"/>
+  <rect x="416" y="142" width="50" height="6" rx="3" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="416" y="154" width="40" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="550" y="110" width="100" height="70" rx="8" fill="#0f766e" opacity="0.3"/>
+  <rect x="566" y="126" width="68" height="8" rx="4" fill="#5eead4" opacity="0.4"/>
+  <rect x="566" y="142" width="50" height="6" rx="3" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="566" y="154" width="40" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="700" y="110" width="100" height="70" rx="8" fill="#0f766e" opacity="0.3"/>
+  <rect x="716" y="126" width="68" height="8" rx="4" fill="#5eead4" opacity="0.4"/>
+  <rect x="716" y="142" width="50" height="6" rx="3" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="716" y="154" width="40" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <!-- Load balancer -->
+  <rect x="520" y="200" width="160" height="44" rx="22" fill="#0d9488" opacity="0.3" stroke="#14b8a6" stroke-width="1" opacity="0.4"/>
+  <rect x="552" y="216" width="96" height="8" rx="4" fill="#5eead4" opacity="0.3"/>
+  <!-- Connections top -->
+  <line x1="450" y1="180" x2="560" y2="200" stroke="#14b8a6" stroke-width="1.5" opacity="0.2"/>
+  <line x1="600" y1="180" x2="600" y2="200" stroke="#14b8a6" stroke-width="1.5" opacity="0.2"/>
+  <line x1="750" y1="180" x2="640" y2="200" stroke="#14b8a6" stroke-width="1.5" opacity="0.2"/>
+  <!-- Middle: API / Microservices -->
+  <rect x="200" y="310" width="800" height="140" rx="16" fill="#134e4a" opacity="0.15" stroke="#14b8a6" stroke-width="1" stroke-dasharray="6 4" opacity="0.2"/>
+  <rect x="220" y="324" width="120" height="12" rx="6" fill="#14b8a6" opacity="0.3"/>
+  <!-- Service boxes -->
+  <rect x="240" y="356" width="140" height="70" rx="8" fill="#0f766e" opacity="0.25"/>
+  <rect x="256" y="372" width="60" height="8" rx="4" fill="#2dd4bf" opacity="0.4"/>
+  <rect x="256" y="388" width="100" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="256" y="400" width="80" height="6" rx="3" fill="#e2e8f0" opacity="0.05"/>
+  <rect x="420" y="356" width="140" height="70" rx="8" fill="#0f766e" opacity="0.25"/>
+  <rect x="436" y="372" width="80" height="8" rx="4" fill="#2dd4bf" opacity="0.4"/>
+  <rect x="436" y="388" width="90" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="436" y="400" width="70" height="6" rx="3" fill="#e2e8f0" opacity="0.05"/>
+  <rect x="600" y="356" width="140" height="70" rx="8" fill="#0f766e" opacity="0.25"/>
+  <rect x="616" y="372" width="70" height="8" rx="4" fill="#2dd4bf" opacity="0.4"/>
+  <rect x="616" y="388" width="110" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="616" y="400" width="85" height="6" rx="3" fill="#e2e8f0" opacity="0.05"/>
+  <rect x="780" y="356" width="140" height="70" rx="8" fill="#0f766e" opacity="0.25"/>
+  <rect x="796" y="372" width="90" height="8" rx="4" fill="#2dd4bf" opacity="0.4"/>
+  <rect x="796" y="388" width="100" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="796" y="400" width="60" height="6" rx="3" fill="#e2e8f0" opacity="0.05"/>
+  <!-- Connection LB to services -->
+  <line x1="600" y1="244" x2="600" y2="310" stroke="#14b8a6" stroke-width="1.5" opacity="0.2"/>
+  <!-- Bottom: Database layer -->
+  <rect x="300" y="510" width="600" height="110" rx="16" fill="#134e4a" opacity="0.1" stroke="#14b8a6" stroke-width="1" stroke-dasharray="6 4" opacity="0.2"/>
+  <rect x="320" y="524" width="80" height="12" rx="6" fill="#14b8a6" opacity="0.25"/>
+  <!-- DB icons -->
+  <ellipse cx="420" cy="570" rx="40" ry="16" fill="#0f766e" opacity="0.3"/>
+  <rect x="380" y="555" width="80" height="15" fill="#0f766e" opacity="0.3"/>
+  <ellipse cx="420" cy="555" rx="40" ry="16" fill="#0f766e" opacity="0.4" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
+  <ellipse cx="600" cy="570" rx="40" ry="16" fill="#0f766e" opacity="0.3"/>
+  <rect x="560" y="555" width="80" height="15" fill="#0f766e" opacity="0.3"/>
+  <ellipse cx="600" cy="555" rx="40" ry="16" fill="#0f766e" opacity="0.4" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
+  <ellipse cx="780" cy="570" rx="40" ry="16" fill="#0f766e" opacity="0.3"/>
+  <rect x="740" y="555" width="80" height="15" fill="#0f766e" opacity="0.3"/>
+  <ellipse cx="780" cy="555" rx="40" ry="16" fill="#0f766e" opacity="0.4" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
+  <!-- Connection services to DB -->
+  <line x1="310" y1="450" x2="420" y2="510" stroke="#14b8a6" stroke-width="1" opacity="0.15"/>
+  <line x1="600" y1="450" x2="600" y2="510" stroke="#14b8a6" stroke-width="1" opacity="0.15"/>
+  <line x1="850" y1="450" x2="780" y2="510" stroke="#14b8a6" stroke-width="1" opacity="0.15"/>
+  <!-- Monitoring sidebar -->
+  <rect x="40" y="200" width="120" height="280" rx="10" fill="#134e4a" opacity="0.15"/>
+  <rect x="52" y="216" width="60" height="8" rx="4" fill="#14b8a6" opacity="0.3"/>
+  <rect x="52" y="240" width="96" height="32" rx="6" fill="#0f766e" opacity="0.2"/>
+  <rect x="62" y="250" width="40" height="8" rx="4" fill="#22c55e" opacity="0.4"/>
+  <rect x="62" y="262" width="20" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="52" y="288" width="96" height="32" rx="6" fill="#0f766e" opacity="0.2"/>
+  <rect x="62" y="298" width="50" height="8" rx="4" fill="#eab308" opacity="0.4"/>
+  <rect x="62" y="310" width="30" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+  <rect x="52" y="336" width="96" height="32" rx="6" fill="#0f766e" opacity="0.2"/>
+  <rect x="62" y="346" width="36" height="8" rx="4" fill="#14b8a6" opacity="0.4"/>
+  <rect x="62" y="358" width="24" height="6" rx="3" fill="#e2e8f0" opacity="0.06"/>
+</svg>

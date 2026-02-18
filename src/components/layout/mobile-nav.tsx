@@ -47,7 +47,7 @@ export function MobileNav({items, isOpen, onClose}: MobileNavProps) {
       </div>
 
       <nav className="flex flex-col items-center justify-center gap-8 mt-16">
-        {items.map((item, index) => {
+        {[{label: "Home", href: "/"}, ...items].map((item, index) => {
           const sharedClassName = cn(
             "text-3xl font-semibold text-foreground hover:text-primary transition-all duration-300",
             "focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg",

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a0533"/>
+      <stop offset="100%" stop-color="#2d1b69"/>
+    </linearGradient>
+    <linearGradient id="screen3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg3)"/>
+  <!-- Decorative circles -->
+  <circle cx="200" cy="100" r="300" fill="#7c3aed" opacity="0.04"/>
+  <circle cx="1000" cy="550" r="250" fill="#a78bfa" opacity="0.04"/>
+  <!-- Phone mockup -->
+  <rect x="460" y="50" width="280" height="575" rx="32" fill="#1a1a2e" stroke="#4c1d95" stroke-width="2"/>
+  <rect x="472" y="70" width="256" height="535" rx="24" fill="#0f0f1a"/>
+  <!-- Status bar -->
+  <rect x="540" y="56" width="120" height="5" rx="3" fill="#2a2a3e"/>
+  <rect x="492" y="82" width="40" height="6" rx="3" fill="#e2e8f0" opacity="0.2"/>
+  <rect x="668" y="82" width="40" height="6" rx="3" fill="#e2e8f0" opacity="0.2"/>
+  <!-- App header -->
+  <rect x="472" y="100" width="256" height="56" fill="#7c3aed" opacity="0.2"/>
+  <rect x="492" y="120" width="100" height="14" rx="7" fill="#a78bfa" opacity="0.6"/>
+  <circle cx="700" cy="128" r="12" fill="#a78bfa" opacity="0.3"/>
+  <!-- Content cards -->
+  <rect x="488" y="172" width="224" height="100" rx="12" fill="#1e1b4b" opacity="0.6"/>
+  <rect x="504" y="188" width="80" height="10" rx="5" fill="#a78bfa" opacity="0.5"/>
+  <rect x="504" y="208" width="180" height="8" rx="4" fill="#e2e8f0" opacity="0.1"/>
+  <rect x="504" y="224" width="140" height="8" rx="4" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="504" y="248" width="60" height="8" rx="4" fill="#7c3aed" opacity="0.5"/>
+  <rect x="488" y="288" width="224" height="100" rx="12" fill="#1e1b4b" opacity="0.6"/>
+  <rect x="504" y="304" width="100" height="10" rx="5" fill="#c084fc" opacity="0.5"/>
+  <rect x="504" y="324" width="160" height="8" rx="4" fill="#e2e8f0" opacity="0.1"/>
+  <rect x="504" y="340" width="190" height="8" rx="4" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="504" y="364" width="70" height="8" rx="4" fill="#7c3aed" opacity="0.5"/>
+  <rect x="488" y="404" width="224" height="100" rx="12" fill="#1e1b4b" opacity="0.6"/>
+  <rect x="504" y="420" width="90" height="10" rx="5" fill="#a78bfa" opacity="0.5"/>
+  <rect x="504" y="440" width="170" height="8" rx="4" fill="#e2e8f0" opacity="0.1"/>
+  <rect x="504" y="456" width="130" height="8" rx="4" fill="#e2e8f0" opacity="0.08"/>
+  <rect x="504" y="480" width="50" height="8" rx="4" fill="#7c3aed" opacity="0.5"/>
+  <!-- Bottom nav -->
+  <rect x="472" y="536" width="256" height="69" rx="0" fill="#1e1b4b" opacity="0.5"/>
+  <circle cx="520" cy="570" r="10" fill="#a78bfa" opacity="0.4"/>
+  <circle cx="580" cy="570" r="10" fill="#a78bfa" opacity="0.2"/>
+  <circle cx="640" cy="570" r="10" fill="#a78bfa" opacity="0.2"/>
+  <circle cx="700" cy="570" r="10" fill="#a78bfa" opacity="0.2"/>
+  <!-- Floating UI elements left -->
+  <rect x="100" y="160" width="300" height="160" rx="16" fill="#1e1b4b" opacity="0.4" transform="rotate(-6 250 240)"/>
+  <rect x="120" y="180" width="120" height="12" rx="6" fill="#a78bfa" opacity="0.3" transform="rotate(-6 250 240)"/>
+  <rect x="120" y="204" width="240" height="8" rx="4" fill="#e2e8f0" opacity="0.06" transform="rotate(-6 250 240)"/>
+  <rect x="120" y="220" width="200" height="8" rx="4" fill="#e2e8f0" opacity="0.05" transform="rotate(-6 250 240)"/>
+  <!-- Floating UI elements right -->
+  <rect x="800" y="200" width="300" height="140" rx="16" fill="#1e1b4b" opacity="0.4" transform="rotate(4 950 270)"/>
+  <rect x="820" y="220" width="100" height="12" rx="6" fill="#c084fc" opacity="0.3" transform="rotate(4 950 270)"/>
+  <rect x="820" y="244" width="220" height="8" rx="4" fill="#e2e8f0" opacity="0.06" transform="rotate(4 950 270)"/>
+  <rect x="820" y="260" width="180" height="8" rx="4" fill="#e2e8f0" opacity="0.05" transform="rotate(4 950 270)"/>
+</svg>
