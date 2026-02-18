@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -15,6 +15,7 @@ interface MagneticProps {
 /**
  * 마우스 커서에 자석처럼 끌리는 효과 컴포넌트.
  * 감지 반경(radius) 내에 커서가 들어오면 요소가 커서를 향해 이동한다.
+ * ref-based DOM 조작으로 React 리렌더 없이 transform을 직접 업데이트한다.
  * prefers-reduced-motion 또는 disabled 시 효과가 비활성화된다.
  * @param props.strength - 자석 강도 (0~1, 기본: 0.3)
  * @param props.radius - 감지 반경 (px, 기본: 150)
@@ -29,7 +30,6 @@ export function Magnetic({
 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
-  const [transform, setTransform] = useState({ x: 0, y: 0 })
 
   const isActive = !disabled && !reducedMotion
 
@@ -45,18 +45,17 @@ export function Magnetic({
 
     if (distance < radius) {
       const factor = 1 - distance / radius
-      setTransform({
-        x: distX * strength * factor,
-        y: distY * strength * factor,
-      })
+      ref.current.style.transform = `translate(${distX * strength * factor}px, ${distY * strength * factor}px)`
     } else {
-      setTransform({ x: 0, y: 0 })
+      ref.current.style.transform = "translate(0px, 0px)"
     }
   }
 
-  /** 마우스 이탈 시 스프링 애니메이션으로 원위치 복귀한다. */
+  /** 마우스 이탈 시 CSS transition으로 원위치 복귀한다. */
   function handleMouseLeave() {
-    setTransform({ x: 0, y: 0 })
+    if (ref.current) {
+      ref.current.style.transform = "translate(0px, 0px)"
+    }
   }
 
   return (
@@ -68,11 +67,6 @@ export function Magnetic({
       )}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{
-        transform: isActive
-          ? `translate(${transform.x}px, ${transform.y}px)`
-          : undefined,
-      }}
     >
       {children}
     </div>

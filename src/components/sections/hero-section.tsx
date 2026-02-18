@@ -174,7 +174,7 @@ export function HeroSection({
         </span>
       ) : (
         <span key={i} className="inline-block overflow-hidden">
-          <span data-char className="inline-block will-change-transform">
+          <span data-char className="inline-block">
             {char}
           </span>
         </span>
@@ -189,7 +189,7 @@ export function HeroSection({
         <span className="inline-block overflow-hidden">
           <span
             data-word
-            className="inline-block will-change-[transform,opacity,filter] bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
+            className="inline-block bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
           >
             {word}
           </span>

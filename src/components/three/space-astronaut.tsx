@@ -1,7 +1,7 @@
 "use client";
 
-import {useRef, useEffect} from "react";
-import {Canvas, useFrame} from "@react-three/fiber";
+import {useRef, useEffect, useState} from "react";
+import {Canvas, useFrame, useThree} from "@react-three/fiber";
 import {Float} from "@react-three/drei";
 import * as THREE from "three";
 import {useTheme} from "next-themes";
@@ -127,13 +127,13 @@ function RobotHead({
     <group ref={groupRef}>
       {/* 헬멧 셸 */}
       <mesh>
-        <sphereGeometry args={[1, 48, 48]} />
+        <sphereGeometry args={[1, 24, 24]} />
         <meshStandardMaterial color={palette.body} metalness={0.15} roughness={0.3} />
       </mesh>
 
       {/* 왼쪽 눈 */}
       <mesh ref={leftEyeRef} position={[-0.28, 0.12, 0.9]}>
-        <sphereGeometry args={[0.12, 24, 24]} />
+        <sphereGeometry args={[0.12, 12, 12]} />
         <meshStandardMaterial
           color={palette.glow}
           emissive={palette.glow}
@@ -144,7 +144,7 @@ function RobotHead({
 
       {/* 오른쪽 눈 */}
       <mesh ref={rightEyeRef} position={[0.28, 0.12, 0.9]}>
-        <sphereGeometry args={[0.12, 24, 24]} />
+        <sphereGeometry args={[0.12, 12, 12]} />
         <meshStandardMaterial
           color={palette.glow}
           emissive={palette.glow}
@@ -179,7 +179,7 @@ function RobotHead({
 
       {/* 헤드밴드 링 */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.01, 0.02, 8, 48]} />
+        <torusGeometry args={[1.01, 0.02, 6, 24]} />
         <meshStandardMaterial color={palette.accent} metalness={0.5} roughness={0.25} />
       </mesh>
 
@@ -223,7 +223,7 @@ function RobotBody({palette}: {palette: RobotPalette}) {
 
       {/* 메인 몸통 */}
       <mesh>
-        <capsuleGeometry args={[0.45, 0.45, 12, 24]} />
+        <capsuleGeometry args={[0.45, 0.45, 8, 16]} />
         <meshStandardMaterial color={palette.body} metalness={0.15} roughness={0.3} />
       </mesh>
 
@@ -296,11 +296,11 @@ function FloatingArms({interaction, palette}: {interaction: React.RefObject<Inte
   return (
     <>
       <mesh ref={leftRef} position={[-0.85, -1.3, 0]}>
-        <sphereGeometry args={[0.14, 16, 16]} />
+        <sphereGeometry args={[0.14, 10, 10]} />
         <meshStandardMaterial color={palette.body} metalness={0.15} roughness={0.3} />
       </mesh>
       <mesh ref={rightRef} position={[0.85, -1.3, 0]}>
-        <sphereGeometry args={[0.14, 16, 16]} />
+        <sphereGeometry args={[0.14, 10, 10]} />
         <meshStandardMaterial color={palette.body} metalness={0.15} roughness={0.3} />
       </mesh>
     </>
@@ -312,7 +312,7 @@ function FloatingArms({interaction, palette}: {interaction: React.RefObject<Inte
 function BottomGlow({palette}: {palette: RobotPalette}) {
   return (
     <mesh position={[0, -2.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <circleGeometry args={[0.5, 32]} />
+      <circleGeometry args={[0.5, 16]} />
       <meshBasicMaterial color={palette.glow} transparent opacity={0.1} />
     </mesh>
   );
@@ -402,12 +402,10 @@ function RobotSceneInner({palette, greeting}: {palette: RobotPalette; greeting: 
 
   return (
     <>
-      {/* 조명 셋업 */}
+      {/* 조명 셋업 — 3개로 경량화 (ambient + main directional + eye glow) */}
       <ambientLight intensity={palette.ambientIntensity} />
       <directionalLight position={[5, 5, 5]} intensity={palette.mainLightIntensity} color="#f0f4ff" />
-      <directionalLight position={[-3, 2, -3]} intensity={0.5} color="#a78bfa" />
       <pointLight position={[0, 0.12, 2]} intensity={0.8} color={palette.glow} distance={4} />
-      <pointLight position={[0, -3, 0]} intensity={0.3} color={palette.panel} distance={6} />
 
       <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.6} floatingRange={[-0.15, 0.15]}>
         <group ref={robotGroupRef} scale={0.85}>
@@ -438,7 +436,7 @@ function RobotSceneInner({palette, greeting}: {palette: RobotPalette; greeting: 
               document.body.style.cursor = "grabbing";
             }}
           >
-            <capsuleGeometry args={[1.2, 1.5, 8, 16]} />
+            <capsuleGeometry args={[1.2, 1.5, 4, 8]} />
             <meshBasicMaterial transparent opacity={0} depthWrite={false} />
           </mesh>
 
@@ -451,6 +449,20 @@ function RobotSceneInner({palette, greeting}: {palette: RobotPalette; greeting: 
       <BottomGlow palette={palette} />
     </>
   );
+}
+
+/* ─── Canvas 프레임루프 제어 ─── */
+
+function FrameloopController({ paused }: { paused: boolean }) {
+  const set = useThree((s) => s.set)
+  const invalidate = useThree((s) => s.invalidate)
+
+  useEffect(() => {
+    set({ frameloop: paused ? 'never' : 'always' })
+    if (!paused) invalidate()
+  }, [paused, set, invalidate])
+
+  return null
 }
 
 /* ─── 퍼블릭 API ─── */
@@ -473,16 +485,33 @@ interface SpaceAstronautProps {
 export function SpaceAstronaut({className, greeting = false}: SpaceAstronautProps) {
   const {resolvedTheme} = useTheme();
   const palette = resolvedTheme === "dark" ? darkPalette : lightPalette;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // 뷰포트 이탈 시 Canvas 렌더링 일시정지.
+  // rootMargin 200px로 스크롤 복귀 시 미리 렌더링을 재개하여 팝인 방지.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      {rootMargin: "200px"},
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className={className} aria-hidden="true">
+    <div ref={containerRef} className={className} aria-hidden="true">
       <Canvas
         camera={{position: [0, -0.5, 5.5], fov: 45}}
-        dpr={[1, 1.5]}
-        gl={{antialias: true, alpha: true, powerPreference: "high-performance"}}
+        dpr={[1, 1]}
+        gl={{antialias: false, alpha: true, powerPreference: "high-performance"}}
         style={{background: "transparent"}}
         onCreated={() => signalAstronautReady()}
       >
+        <FrameloopController paused={!isVisible} />
         <RobotSceneInner palette={palette} greeting={greeting} />
       </Canvas>
     </div>

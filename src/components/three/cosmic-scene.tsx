@@ -113,10 +113,10 @@ function GlowOrb({ position, color, scale = 1 }: { position: [number, number, nu
   return (
     <Float speed={1.5} rotationIntensity={0} floatIntensity={2}>
       <mesh position={position}>
-        <sphereGeometry args={[scale, 16, 16]} />
+        <sphereGeometry args={[scale, 8, 8]} />
         <meshBasicMaterial color={color} transparent opacity={0.08} />
       </mesh>
-      <pointLight position={position} color={color} intensity={1.5} distance={30} />
+      <pointLight position={position} color={color} intensity={0.8} distance={15} />
     </Float>
   )
 }
@@ -147,6 +147,20 @@ function CameraRig({ isMobile = false }: { isMobile?: boolean }) {
     camera.position.y += (targetY - camera.position.y) * 0.015
     camera.lookAt(0, 0, 0)
   })
+
+  return null
+}
+
+/* ─── Canvas 프레임루프 제어 ─── */
+
+function FrameloopController({ paused }: { paused: boolean }) {
+  const set = useThree((s) => s.set)
+  const invalidate = useThree((s) => s.invalidate)
+
+  useEffect(() => {
+    set({ frameloop: paused ? 'never' : 'always' })
+    if (!paused) invalidate()
+  }, [paused, set, invalidate])
 
   return null
 }
@@ -218,6 +232,8 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
   const isMobile = useMediaQuery("(max-width: 767px)")
   const colors = useSceneColors()
 
+  const canvasPaused = !visible
+
   // visible이 true가 되면 캔버스 컨테이너를 페이드인.
   // 0.5s 딜레이로 template.tsx 애니메이션(~0.6s) 완료 후 노출하여
   // containing block 변경에 의한 파티클 리사이즈 시프트를 방지한다.
@@ -272,6 +288,7 @@ export function CosmicScene({ className, onCreated, visible = true }: CosmicScen
         style={{ background: colors.background }}
         onCreated={onCreated}
       >
+        <FrameloopController paused={canvasPaused} />
         <CosmicSceneInner isMobile={isMobile} colors={colors} />
       </Canvas>
     </div>
