@@ -116,7 +116,7 @@ export function ProjectCard({
               {showTags && (
                 <div className="mt-auto flex flex-wrap gap-2 pt-4">
                   {project.tags.map((tag) => (
-                    <TechBadge key={tag} name={tag} variant="outline" size="sm" />
+                    <TechBadge key={tag} name={tag} variant="outline" size="sm" showIcon />
                   ))}
                 </div>
               )}
