@@ -1,3 +1,4 @@
+import {Code2} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {getTechIcon} from "@/lib/tech-icons";
 
@@ -56,8 +57,9 @@ export function TechBadge({
   );
 }
 
-function renderAutoIcon(name: string, size: keyof typeof iconSizeMap): React.ReactNode | null {
+function renderAutoIcon(name: string, size: keyof typeof iconSizeMap): React.ReactNode {
   const Icon = getTechIcon(name);
-  if (!Icon) return null;
-  return <Icon className={iconSizeMap[size]} />;
+  const cls = iconSizeMap[size];
+  if (Icon) return <Icon className={cls} />;
+  return <Code2 className={cls} />;
 }

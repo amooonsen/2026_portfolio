@@ -1,7 +1,7 @@
 "use client";
 
 import {useRef, useEffect} from "react";
-import {Canvas, useFrame} from "@react-three/fiber";
+import {Canvas, useFrame, useThree} from "@react-three/fiber";
 import * as THREE from "three";
 
 /** 폭죽 한 발당 파티클 수 */
@@ -272,9 +272,24 @@ function SparkTrails({active}: {active: boolean}) {
   );
 }
 
+/* ─── Canvas 프레임루프 제어 ─── */
+
+function FrameloopController({ paused }: { paused: boolean }) {
+  const set = useThree((s) => s.set)
+  const invalidate = useThree((s) => s.invalidate)
+
+  useEffect(() => {
+    set({ frameloop: paused ? 'never' : 'always' })
+    if (!paused) invalidate()
+  }, [paused, set, invalidate])
+
+  return null
+}
+
 function CelebrationInner({active}: {active: boolean}) {
   return (
     <>
+      <FrameloopController paused={!active} />
       <FireworkParticles active={active} />
       <SparkTrails active={active} />
     </>

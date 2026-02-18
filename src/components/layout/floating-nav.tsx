@@ -3,7 +3,7 @@
 import {useEffect, useRef, useState} from "react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import gsap from "gsap";
+import {gsap} from "@/lib/gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {cn} from "@/lib/utils";
 
@@ -55,24 +55,33 @@ export function FloatingNav({items, className}: FloatingNavProps) {
   const allItems: FloatingNavItem[] = [{label: "Home", href: "/", icon: <HomeIcon />}, ...items];
 
   useEffect(() => {
+    let rafId: number | null = null;
+
     function handleScroll() {
-      const currentY = window.scrollY;
-      const delta = currentY - lastScrollY.current;
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY.current;
 
-      if (currentY < 50) {
-        // 최상단: 헤더가 보이므로 FloatingNav 숨김
-        setIsVisible(false);
-      } else if (Math.abs(delta) > 5) {
-        // 스크롤 다운 → 표시, 스크롤 업 → 숨김
-        // 최소 delta 임계값으로 Lenis 스무스 스크롤 및 sticky 구간에서 미세 방향 변동 방지
-        setIsVisible(delta > 0);
-      }
+        if (currentY < 50) {
+          // 최상단: 헤더가 보이므로 FloatingNav 숨김
+          setIsVisible(false);
+        } else if (Math.abs(delta) > 5) {
+          // 스크롤 다운 → 표시, 스크롤 업 → 숨김
+          // 최소 delta 임계값으로 Lenis 스무스 스크롤 및 sticky 구간에서 미세 방향 변동 방지
+          setIsVisible(delta > 0);
+        }
 
-      lastScrollY.current = currentY;
+        lastScrollY.current = currentY;
+        rafId = null;
+      });
     }
 
     window.addEventListener("scroll", handleScroll, {passive: true});
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {

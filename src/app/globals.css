@@ -75,6 +75,10 @@
   --gradient-accent-to: oklch(0.6 0.2 340);
   /* Accent highlight */
   --accent-highlight: #0064FF;
+  /* Scrollbar */
+  --scrollbar-thumb: oklch(0 0 0 / 20%);
+  --scrollbar-thumb-hover: oklch(0 0 0 / 35%);
+  --scrollbar-track: transparent;
 }
 
 /* Dark theme */
@@ -111,6 +115,10 @@
   --gradient-accent-to: oklch(0.72 0.2 340);
   /* Accent highlight */
   --accent-highlight: #0064FF;
+  /* Scrollbar */
+  --scrollbar-thumb: oklch(1 0 0 / 18%);
+  --scrollbar-thumb-hover: oklch(1 0 0 / 30%);
+  --scrollbar-track: transparent;
 }
 
 @layer base {
@@ -151,6 +159,31 @@
     overflow-x: hidden;
     line-height: 1.7;
     word-break: keep-all;
+  }
+
+  /* Custom Scrollbar — Webkit (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+
+  /* Custom Scrollbar — Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
 }
 
@@ -231,13 +264,24 @@
   font-weight: 600;
 }
 
-/* Shiki dual theme support — light/dark switching
-   dark 테마가 첫 번째 키이므로 인라인 스타일로 적용됨 (CSS 오버라이드 불필요).
-   light 모드에서만 CSS 변수로 전환한다. */
+/* Shiki dual theme — defaultColor: false 사용.
+   인라인 color/background-color 없이 CSS 변수만 출력됨.
+   dark/light 모드 모두 명시적 CSS로 전환한다. */
+
+/* Dark mode */
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+}
+
+.dark pre.shiki {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* Light mode */
 html:not(.dark) .shiki,
 html:not(.dark) .shiki span {
   color: var(--shiki-light) !important;
-  background-color: var(--shiki-light-bg) !important;
 }
 
 /* Light 모드 코드블록 배경 — 페이지 배경(warm white)과 구분되도록 */

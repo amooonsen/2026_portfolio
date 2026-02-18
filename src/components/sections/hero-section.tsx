@@ -137,6 +137,13 @@ export function HeroSection({
             setRobotGreeting(true);
             setTimeout(() => setRobotGreeting(false), 2000);
           },
+          onComplete: () => {
+            // GSAP inline transform 제거 — R3F Canvas가 포인터 이벤트 시
+            // getBoundingClientRect 기반 크기 재계산으로 리사이즈되는 것을 방지
+            if (astronautRef.current) {
+              astronautRef.current.style.transform = "none";
+            }
+          },
         },
         "-=1.4",
       );
@@ -174,7 +181,7 @@ export function HeroSection({
         </span>
       ) : (
         <span key={i} className="inline-block overflow-hidden">
-          <span data-char className="inline-block will-change-transform">
+          <span data-char className="inline-block">
             {char}
           </span>
         </span>
@@ -189,7 +196,7 @@ export function HeroSection({
         <span className="inline-block overflow-hidden">
           <span
             data-word
-            className="inline-block will-change-[transform,opacity,filter] bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
+            className="inline-block bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
           >
             {word}
           </span>

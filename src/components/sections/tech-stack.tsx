@@ -78,63 +78,58 @@ export function TechStack({categories}: TechStackProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  // GSAP 스크롤 등장 애니메이션
+  // GSAP 스크롤 등장 애니메이션 — ScrollTrigger 2개로 통합 (기존 10개 → 2개)
   useGsapContext(gridRef, () => {
     if (!gridRef.current || reducedMotion) return
 
     const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]")
     if (cards.length === 0) return
 
-    // 카드별 교차 방향 진입 (좌/우 교대) + 회전 + 스케일
-    cards.forEach((card, i) => {
-      const fromLeft = i % 2 === 0
-      gsap.set(card, {
-        opacity: 0,
-        x: fromLeft ? -80 : 80,
-        y: 40,
-        rotateY: fromLeft ? -8 : 8,
-        scale: 0.92,
-      })
-
-      gsap.to(card, {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        rotateY: 0,
-        scale: 1,
-        duration: 0.8,
-        delay: i * 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: gridRef.current!,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      })
+    // 카드 교차 방향 진입 — 단일 ScrollTrigger + stagger
+    gsap.set(cards, {
+      opacity: 0,
+      x: (i: number) => i % 2 === 0 ? -80 : 80,
+      y: 40,
+      rotateY: (i: number) => i % 2 === 0 ? -8 : 8,
+      scale: 0.92,
     })
 
-    // 카드 내 뱃지 stagger 등장 + 바운스
-    cards.forEach((card) => {
-      const badges = card.querySelectorAll("[data-tech-badge]")
-      if (badges.length === 0) return
+    gsap.to(cards, {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      rotateY: 0,
+      scale: 1,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: gridRef.current,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      },
+    })
 
-      gsap.set(badges, {opacity: 0, scale: 0.6, y: 20, rotateX: -30})
+    // 뱃지 stagger 등장 — 단일 ScrollTrigger
+    const allBadges = gridRef.current.querySelectorAll("[data-tech-badge]")
+    if (allBadges.length > 0) {
+      gsap.set(allBadges, {opacity: 0, scale: 0.6, y: 20, rotateX: -30})
 
-      gsap.to(badges, {
+      gsap.to(allBadges, {
         opacity: 1,
         scale: 1,
         y: 0,
         rotateX: 0,
         duration: 0.5,
-        stagger: 0.06,
+        stagger: 0.03,
         ease: "back.out(2)",
         scrollTrigger: {
-          trigger: card,
+          trigger: gridRef.current,
           start: "top 80%",
           toggleActions: "play none none none",
         },
       })
-    })
+    }
 
     // 카테고리 도트 펄스 — CSS @keyframes로 위임 (off-screen 시 GPU 유휴)
     const dots = gridRef.current.querySelectorAll<HTMLElement>("[data-category-dot]")
@@ -143,7 +138,7 @@ export function TechStack({categories}: TechStackProps) {
     })
   }, [reducedMotion])
 
-  // 3D tilt 효과 (마우스 트래킹)
+  // 3D tilt 효과 — gsap.quickTo()로 mousemove당 tween 재생성 방지
   useEffect(() => {
     if (!gridRef.current || reducedMotion) return
 
@@ -152,35 +147,28 @@ export function TechStack({categories}: TechStackProps) {
     const controllers: Array<{ card: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = []
 
     cards.forEach((card) => {
+      const qRotateY = gsap.quickTo(card, "rotateY", { duration: 0.4, ease: "power2.out" })
+      const qRotateX = gsap.quickTo(card, "rotateX", { duration: 0.4, ease: "power2.out" })
+      const glowEl = card.querySelector<HTMLElement>("[data-card-glow]")
+
       function handleMouseMove(e: MouseEvent) {
         const rect = card.getBoundingClientRect()
         const x = (e.clientX - rect.left) / rect.width - 0.5
         const y = (e.clientY - rect.top) / rect.height - 0.5
 
-        gsap.to(card, {
-          rotateY: x * 10,
-          rotateX: -y * 10,
-          duration: 0.4,
-          ease: "power2.out",
-        })
+        qRotateY(x * 10)
+        qRotateX(-y * 10)
 
-        // 마우스 위치에 따라 내부 광원 효과
-        const inner = card.querySelector<HTMLElement>("[data-card-glow]")
-        if (inner) {
-          inner.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(var(--card-rgb), 0.15) 0%, transparent 60%)`
+        if (glowEl) {
+          glowEl.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(var(--card-rgb), 0.15) 0%, transparent 60%)`
         }
       }
 
       function handleMouseLeave() {
-        gsap.to(card, {
-          rotateY: 0,
-          rotateX: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        })
-        const inner = card.querySelector<HTMLElement>("[data-card-glow]")
-        if (inner) {
-          inner.style.background = "transparent"
+        qRotateY(0)
+        qRotateX(0)
+        if (glowEl) {
+          glowEl.style.background = "transparent"
         }
       }
 
@@ -279,7 +267,7 @@ export function TechStack({categories}: TechStackProps) {
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium",
                       "border-glass-border bg-glass-bg text-foreground/90",
-                      "transition-all duration-200",
+                      "transition-[color,background-color,border-color,transform,box-shadow] duration-200",
                       "hover:border-glass-hover-border hover:bg-glass-hover-bg hover:text-foreground",
                       "hover:-translate-y-0.5 hover:shadow-md",
                     )}
