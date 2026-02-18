@@ -80,17 +80,11 @@ export function ContactSection() {
           <GradientText as="h1" gradient="accent" className="text-3xl font-bold">
             Get in Touch
           </GradientText>
-          <FadeIn delay={0.1}>
-            <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-              프로젝트를 살펴봐 주셨다면, 이미 저와{" "}
-              <span className="text-accent-highlight">같은 고민을 하고 계신 분</span>일지도 모릅니다.
-            </p>
-          </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mt-2 text-base leading-relaxed text-muted-foreground">
               <span className="text-accent-highlight">채용 문의</span>,{" "}
-              <span className="text-accent-highlight">협업 제안</span>, 기술적인 대화까지
-              — 어떤 주제든 편하게 남겨주세요.
+              <span className="text-accent-highlight">협업 제안</span>, 기술적인 대화까지 — 어떤
+              주제든 편하게 남겨주세요.
               <br />
               소속과 직위를 함께 적어주시면 더 빠르고 정확하게 답변드리겠습니다.
             </p>
@@ -147,7 +141,11 @@ export function ContactSection() {
                     {...register("organization")}
                   />
                   {errors.organization && (
-                    <p id="organization-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                    <p
+                      id="organization-error"
+                      role="alert"
+                      className="mt-1.5 text-xs text-destructive"
+                    >
                       {errors.organization.message}
                     </p>
                   )}
