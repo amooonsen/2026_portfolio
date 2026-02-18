@@ -109,7 +109,7 @@ export default async function ProjectDetailPage({params}: ProjectDetailPageProps
             <FadeIn delay={0.2}>
               <div className="mt-4 flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
-                  <TechBadge key={tag} name={tag} variant="outline" />
+                  <TechBadge key={tag} name={tag} variant="outline" showIcon />
                 ))}
               </div>
             </FadeIn>
