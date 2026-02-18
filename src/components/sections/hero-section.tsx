@@ -137,6 +137,13 @@ export function HeroSection({
             setRobotGreeting(true);
             setTimeout(() => setRobotGreeting(false), 2000);
           },
+          onComplete: () => {
+            // GSAP inline transform 제거 — R3F Canvas가 포인터 이벤트 시
+            // getBoundingClientRect 기반 크기 재계산으로 리사이즈되는 것을 방지
+            if (astronautRef.current) {
+              astronautRef.current.style.transform = "none";
+            }
+          },
         },
         "-=1.4",
       );

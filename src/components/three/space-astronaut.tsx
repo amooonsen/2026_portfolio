@@ -506,8 +506,8 @@ export function SpaceAstronaut({className, greeting = false}: SpaceAstronautProp
     <div ref={containerRef} className={className} aria-hidden="true">
       <Canvas
         camera={{position: [0, -0.5, 5.5], fov: 45}}
-        dpr={[1, 1]}
-        gl={{antialias: false, alpha: true, powerPreference: "high-performance"}}
+        dpr={[1, 2]}
+        gl={{antialias: true, alpha: true, powerPreference: "high-performance"}}
         style={{background: "transparent"}}
         onCreated={() => signalAstronautReady()}
       >
