@@ -110,6 +110,7 @@ function createMarkedInstance(): Marked {
                 dark: "github-dark-dimmed",
                 light: "github-light",
               },
+              defaultColor: false,
             });
             return (
               `<div class="relative mt-4 mb-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border/50 [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_code]:font-mono">` +
