@@ -36,7 +36,7 @@ export function GlassCard({
         "rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl",
         paddingMap[padding],
         hover && [
-          "transition-all duration-300",
+          "transition-[background-color,border-color,box-shadow] duration-300",
           "hover:bg-glass-hover-bg hover:border-glass-hover-border",
           "hover:shadow-lg hover:shadow-glass-shadow",
         ],
