@@ -231,15 +231,17 @@
   font-weight: 600;
 }
 
-/* Shiki dual theme support — light/dark switching */
-html.dark .shiki,
-html.dark .shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}
-
+/* Shiki dual theme support — light/dark switching
+   dark 테마가 첫 번째 키이므로 인라인 스타일로 적용됨 (CSS 오버라이드 불필요).
+   light 모드에서만 CSS 변수로 전환한다. */
 html:not(.dark) .shiki,
 html:not(.dark) .shiki span {
   color: var(--shiki-light) !important;
   background-color: var(--shiki-light-bg) !important;
+}
+
+/* Light 모드 코드블록 배경 — 페이지 배경(warm white)과 구분되도록 */
+html:not(.dark) pre.shiki {
+  background-color: oklch(0.95 0.003 260) !important;
+  border-color: oklch(0 0 0 / 12%) !important;
 }
