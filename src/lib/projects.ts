@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 import type { Project } from "@/components/sections/project-card"
+import { getPlaceholderThumbnail } from "@/data/project-thumbnails"
 import {
   fetchAllProjects as fetchFromNotion,
   fetchProjectBySlug as fetchSlugFromNotion,
@@ -54,16 +55,24 @@ function getAllProjectsFromFiles(): Project[] {
 // 공개 API — Notion 우선, 실패 시 파일 시스템 fallback
 // ---------------------------------------------------------------------------
 
+/** 썸네일이 없는 프로젝트에 placeholder를 할당한다. */
+function assignPlaceholderThumbnails(projects: Project[]): Project[] {
+  return projects.map((p, i) => ({
+    ...p,
+    thumbnail: p.thumbnail || getPlaceholderThumbnail(i),
+  }))
+}
+
 /**
  * 모든 프로젝트의 메타데이터를 반환한다.
  * Notion API 호출을 시도하고, 실패 시 로컬 마크다운 파일을 사용한다.
  */
 export async function getAllProjects(): Promise<Project[]> {
   try {
-    return await fetchFromNotion()
+    return assignPlaceholderThumbnails(await fetchFromNotion())
   } catch (error) {
     console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
-    return getAllProjectsFromFiles()
+    return assignPlaceholderThumbnails(getAllProjectsFromFiles())
   }
 }
 
@@ -74,16 +83,21 @@ export async function getAllProjects(): Promise<Project[]> {
 export async function getProjectBySlug(
   slug: string,
 ): Promise<(Project & { content: string }) | null> {
+  let project: (Project & { content: string }) | null = null
   try {
-    return await fetchSlugFromNotion(slug)
+    project = await fetchSlugFromNotion(slug)
   } catch (error) {
     console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
     try {
-      return getProjectBySlugFromFiles(slug)
+      project = getProjectBySlugFromFiles(slug)
     } catch {
       return null
     }
   }
+  if (project && !project.thumbnail) {
+    project = { ...project, thumbnail: getPlaceholderThumbnail(0) }
+  }
+  return project
 }
 
 /**

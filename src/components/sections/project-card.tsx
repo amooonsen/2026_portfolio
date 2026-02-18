@@ -65,6 +65,7 @@ export function ProjectCard({
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 hover:scale-105"
+                unoptimized={project.thumbnail.endsWith(".svg")}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-muted-foreground/50" aria-hidden="true">

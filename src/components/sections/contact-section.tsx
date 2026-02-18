@@ -6,11 +6,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {submitContactForm} from "@/app/actions";
 import type {ContactFormState} from "@/app/actions";
 import {contactSchema, type ContactFormData} from "@/lib/validations/contact";
-import {Section} from "@/components/ui/section";
 import {GlassCard} from "@/components/ui/glass-card";
-import {GradientText} from "@/components/ui/gradient-text";
 import {Button} from "@/components/ui/button";
-import {FadeIn} from "@/components/animation/fade-in";
 import {SlideUp} from "@/components/animation/slide-up";
 import {ContactSuccess} from "@/components/sections/contact-success";
 import {cn} from "@/lib/utils";
@@ -20,11 +17,13 @@ const inputBaseClass =
 const inputErrorClass = "border-destructive/60 focus:border-destructive focus:ring-destructive/30";
 
 /**
- * Contact 섹션 컴포넌트.
+ * Contact 폼 클라이언트 컴포넌트.
  * React Hook Form + Zod 클라이언트 검증 + Server Action 서버 검증을 이중으로 적용한다.
  * 전송 성공 시 폼 대신 성공 애니메이션 컴포넌트를 표시한다.
+ *
+ * 헤딩과 Section 래퍼는 page.tsx(Server Component)에서 렌더링한다.
  */
-export function ContactSection() {
+export function ContactForm() {
   const [serverState, serverAction, isPending] = useActionState(submitContactForm, {
     success: false,
     message: "",
@@ -73,164 +72,145 @@ export function ContactSection() {
     }
   }
 
+  if (serverState.success) {
+    return (
+      <div role="status" aria-live="polite">
+        <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
+          <ContactSuccess />
+        </GlassCard>
+      </div>
+    );
+  }
+
   return (
-    <Section spacing="lg" container containerSize="md">
-      <FadeIn>
-        <div className="text-center">
-          <GradientText as="h1" gradient="accent" className="text-3xl font-bold">
-            Get in Touch
-          </GradientText>
-          <FadeIn delay={0.1}>
-            <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-              프로젝트를 살펴봐 주셨다면, 이미 저와{" "}
-              <span className="text-accent-highlight">같은 고민을 하고 계신 분</span>일지도 모릅니다.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-              <span className="text-accent-highlight">채용 문의</span>,{" "}
-              <span className="text-accent-highlight">협업 제안</span>, 기술적인 대화까지
-              — 어떤 주제든 편하게 남겨주세요.
-              <br />
-              소속과 직위를 함께 적어주시면 더 빠르고 정확하게 답변드리겠습니다.
-            </p>
-          </FadeIn>
-        </div>
-      </FadeIn>
+    <SlideUp delay={0.3}>
+      <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
+        {/* eslint-disable-next-line react-hooks/refs -- onValid reads formRef.current in event handler, not during render */}
+        <form ref={formRef} onSubmit={handleSubmit(onValid)} className="space-y-6" noValidate>
+          {/* 이름 */}
+          <div>
+            <label htmlFor="name" className="mb-2 block text-sm font-medium">
+              이름 <span className="text-destructive">*</span>
+            </label>
+            <input
+              id="name"
+              type="text"
+              placeholder="홍길동"
+              aria-required="true"
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
+              className={cn(inputBaseClass, errors.name && inputErrorClass)}
+              {...register("name")}
+            />
+            {errors.name && (
+              <p id="name-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
 
-      {serverState.success ? (
-        <div role="status" aria-live="polite">
-          <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
-            <ContactSuccess />
-          </GlassCard>
-        </div>
-      ) : (
-        <SlideUp delay={0.3}>
-          <GlassCard padding="lg" className="mx-auto mt-10 max-w-xl">
-            {/* eslint-disable-next-line react-hooks/refs -- onValid reads formRef.current in event handler, not during render */}
-            <form ref={formRef} onSubmit={handleSubmit(onValid)} className="space-y-6" noValidate>
-              {/* 이름 */}
-              <div>
-                <label htmlFor="name" className="mb-2 block text-sm font-medium">
-                  이름 <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="홍길동"
-                  aria-required="true"
-                  aria-invalid={!!errors.name}
-                  aria-describedby={errors.name ? "name-error" : undefined}
-                  className={cn(inputBaseClass, errors.name && inputErrorClass)}
-                  {...register("name")}
-                />
-                {errors.name && (
-                  <p id="name-error" role="alert" className="mt-1.5 text-xs text-destructive">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 소속 / 직위 — 한 줄 2칸 */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="organization" className="mb-2 block text-sm font-medium">
-                    소속
-                  </label>
-                  <input
-                    id="organization"
-                    type="text"
-                    placeholder="회사 또는 팀"
-                    aria-invalid={!!errors.organization}
-                    aria-describedby={errors.organization ? "organization-error" : undefined}
-                    className={cn(inputBaseClass, errors.organization && inputErrorClass)}
-                    {...register("organization")}
-                  />
-                  {errors.organization && (
-                    <p id="organization-error" role="alert" className="mt-1.5 text-xs text-destructive">
-                      {errors.organization.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="position" className="mb-2 block text-sm font-medium">
-                    직위
-                  </label>
-                  <input
-                    id="position"
-                    type="text"
-                    placeholder="직함 또는 역할"
-                    aria-invalid={!!errors.position}
-                    aria-describedby={errors.position ? "position-error" : undefined}
-                    className={cn(inputBaseClass, errors.position && inputErrorClass)}
-                    {...register("position")}
-                  />
-                  {errors.position && (
-                    <p id="position-error" role="alert" className="mt-1.5 text-xs text-destructive">
-                      {errors.position.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* 이메일 */}
-              <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-medium">
-                  이메일 <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="hello@example.com"
-                  aria-required="true"
-                  aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? "email-error" : undefined}
-                  className={cn(inputBaseClass, errors.email && inputErrorClass)}
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p id="email-error" role="alert" className="mt-1.5 text-xs text-destructive">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 메시지 */}
-              <div>
-                <label htmlFor="message" className="mb-2 block text-sm font-medium">
-                  메시지 <span className="text-destructive">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  rows={5}
-                  placeholder="프로젝트에 대해 알려주세요."
-                  aria-required="true"
-                  aria-invalid={!!errors.message}
-                  aria-describedby={errors.message ? "message-error" : undefined}
-                  className={cn(inputBaseClass, "resize-none", errors.message && inputErrorClass)}
-                  {...register("message")}
-                />
-                {errors.message && (
-                  <p id="message-error" role="alert" className="mt-1.5 text-xs text-destructive">
-                    {errors.message.message}
-                  </p>
-                )}
-              </div>
-
-              {/* 서버 에러 메시지 */}
-              {serverState.message && !serverState.success && (
-                <p role="alert" className="text-sm text-destructive">
-                  {serverState.message}
+          {/* 소속 / 직위 — 한 줄 2칸 */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="organization" className="mb-2 block text-sm font-medium">
+                소속
+              </label>
+              <input
+                id="organization"
+                type="text"
+                placeholder="회사 또는 팀"
+                aria-invalid={!!errors.organization}
+                aria-describedby={errors.organization ? "organization-error" : undefined}
+                className={cn(inputBaseClass, errors.organization && inputErrorClass)}
+                {...register("organization")}
+              />
+              {errors.organization && (
+                <p
+                  id="organization-error"
+                  role="alert"
+                  className="mt-1.5 text-xs text-destructive"
+                >
+                  {errors.organization.message}
                 </p>
               )}
+            </div>
+            <div>
+              <label htmlFor="position" className="mb-2 block text-sm font-medium">
+                직위
+              </label>
+              <input
+                id="position"
+                type="text"
+                placeholder="직함 또는 역할"
+                aria-invalid={!!errors.position}
+                aria-describedby={errors.position ? "position-error" : undefined}
+                className={cn(inputBaseClass, errors.position && inputErrorClass)}
+                {...register("position")}
+              />
+              {errors.position && (
+                <p id="position-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                  {errors.position.message}
+                </p>
+              )}
+            </div>
+          </div>
 
-              <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
-                {isPending ? "전송 중..." : "메시지 보내기"}
-              </Button>
-            </form>
-          </GlassCard>
-        </SlideUp>
-      )}
-    </Section>
+          {/* 이메일 */}
+          <div>
+            <label htmlFor="email" className="mb-2 block text-sm font-medium">
+              이메일 <span className="text-destructive">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="hello@example.com"
+              aria-required="true"
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              className={cn(inputBaseClass, errors.email && inputErrorClass)}
+              {...register("email")}
+            />
+            {errors.email && (
+              <p id="email-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* 메시지 */}
+          <div>
+            <label htmlFor="message" className="mb-2 block text-sm font-medium">
+              메시지 <span className="text-destructive">*</span>
+            </label>
+            <textarea
+              id="message"
+              rows={5}
+              placeholder="프로젝트에 대해 알려주세요."
+              aria-required="true"
+              aria-invalid={!!errors.message}
+              aria-describedby={errors.message ? "message-error" : undefined}
+              className={cn(inputBaseClass, "resize-none", errors.message && inputErrorClass)}
+              {...register("message")}
+            />
+            {errors.message && (
+              <p id="message-error" role="alert" className="mt-1.5 text-xs text-destructive">
+                {errors.message.message}
+              </p>
+            )}
+          </div>
+
+          {/* 서버 에러 메시지 */}
+          {serverState.message && !serverState.success && (
+            <p role="alert" className="text-sm text-destructive">
+              {serverState.message}
+            </p>
+          )}
+
+          <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
+            {isPending ? "전송 중..." : "메시지 보내기"}
+          </Button>
+        </form>
+      </GlassCard>
+    </SlideUp>
   );
 }
