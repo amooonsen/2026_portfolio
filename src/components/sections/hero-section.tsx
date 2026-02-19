@@ -195,7 +195,7 @@ export function HeroSection({
           {"\u00A0"}
         </span>
       ) : (
-        <span key={i} className="inline-block overflow-hidden">
+        <span key={i} className="inline-block overflow-hidden leading-tight">
           <span data-char className="inline-block">
             {char}
           </span>
@@ -208,7 +208,7 @@ export function HeroSection({
   function splitWords(text: string) {
     return text.split(" ").map((word, i, arr) => (
       <span key={i}>
-        <span className="inline-block overflow-hidden">
+        <span className="inline-block overflow-hidden leading-tight">
           <span
             data-word
             className="inline-block bg-gradient-to-r from-gradient-accent-from via-gradient-accent-via to-gradient-accent-to bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"

@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <HomeClient>
       <HeroSection
-        title="Crafting Interfaces That Matter"
+        title="Crafting Digital Experiences"
         subtitle="개발자 조경문"
         description="React, Next.js, TypeScript 기반의 4년차 프론트엔드 개발자 입니다.<br/> 팀의 개발 표준을 세우고 AI를 통해 반복을 덜어내고 있습니다.<br/> Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여<br/> 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
         ctaLabel="View Projects"
@@ -31,8 +31,8 @@ export default function Home() {
 
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
-        text="기술 선택에는 이유가 있어야 하고, 코드는 레거시가 되어도 이해할 수 있어야 합니다.
-              AI를 적극 활용하되, 생성된 코드를 이해하고 검증하는 것이 개발자의 역할이라고 생각합니다.
+        text="기술 선택에는 이유가 있어야 하고 코드는 레거시가 되어도 이해할 수 있어야 합니다.
+              AI를 적극 활용하되 생성된 코드를 이해하고 검증하는 것이 개발자의 역할이라고 생각합니다.
               성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
       />
 
@@ -47,8 +47,8 @@ export default function Home() {
               개발, 더 나아가 제품을 만들 때 가장 중요한 것은
               <span className="text-accent-highlight"> &ldquo;왜?&rdquo;라는 질문</span>이라고
               생각합니다.
-              <br /> 왜 이 라이브러리를 선택했는지. 왜 이 구조가 더 나은지. 기술 선택에 명확한
-              이유가 있을 때
+              <br /> 왜 이 스펙을 선택했는지. 왜 이 구조가 더 나은지. 기술 선택에 명확한 이유가 있을
+              때
               <br />
               <span className="text-accent-highlight">
                 비로소 확장 가능하고 유지보수하기 쉬운 시스템

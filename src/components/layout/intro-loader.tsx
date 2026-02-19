@@ -418,10 +418,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
               <div className="relative">
                 <div ref={counterGroupRef} className="flex items-baseline gap-1">
                   {/* clip-path로 오도미터 슬라이드업 영역 마스킹 (overflow:hidden과 달리 baseline 유지) */}
-                  <span
-                    className="inline-block min-w-[3ch] text-right text-7xl font-bold leading-[1.15] text-foreground tabular-nums tracking-tighter md:text-8xl"
-                    style={{clipPath: "inset(-5% 0)"}}
-                  >
+                  <span className="inline-block min-w-[3ch] text-7xl font-bold leading-[1.15] text-foreground tabular-nums tracking-tighter md:text-8xl text-center">
                     <span ref={counterRef} className="inline-block tabular-nums">
                       0
                     </span>
