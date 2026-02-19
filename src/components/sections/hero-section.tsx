@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {Section} from "@/components/ui/section";
@@ -26,6 +26,21 @@ interface HeroSectionProps {
   ctaHref?: string;
   secondaryLabel?: string;
   secondaryHref?: string;
+}
+
+/**
+ * description 문자열에서 <br/>, <br class="pc-only"/>, <br class="mo-only"/>를 파싱해 ReactNode 배열로 반환.
+ * pc-only: md 이상에서만 개행 (hidden md:block)
+ * mo-only: md 미만에서만 개행 (block md:hidden)
+ */
+function parseBreaks(text: string): React.ReactNode[] {
+  const parts = text.split(/(<br\s*(?:class="[^"]*")?\s*\/?>)/gi);
+  return parts.flatMap<React.ReactNode>((part, i) => {
+    if (!/^<br/i.test(part)) return part ? [part] : [];
+    if (/class="pc-only"/i.test(part)) return [<br key={i} className="hidden md:block" />];
+    if (/class="mo-only"/i.test(part)) return [<br key={i} className="block md:hidden" />];
+    return [<br key={i} />];
+  });
 }
 
 /**
@@ -240,7 +255,7 @@ export function HeroSection({
 
             {/* 설명 */}
             <p ref={descRef} className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-              {description}
+              {parseBreaks(description)}
             </p>
 
             {/* CTA 버튼 */}

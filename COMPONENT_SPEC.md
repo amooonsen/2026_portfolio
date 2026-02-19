@@ -1033,8 +1033,8 @@ interface MagneticWrapperProps {
 function useReducedMotion(): boolean;
 ```
 
-`prefers-reduced-motion: reduce` 미디어 쿼리 감지.
-모든 애니메이션 컴포넌트에서 필수 사용.
+`useMediaQuery("(prefers-reduced-motion: reduce)")`의 시맨틱 래퍼.
+모든 애니메이션 컴포넌트에서 필수 사용 — 애니메이션 접근성 체크 시 `useMediaQuery`를 직접 호출하지 말 것.
 
 ---
 
@@ -1058,8 +1058,9 @@ function useScrollProgress(): number; // 0 ~ 1
 function useMediaQuery(query: string): boolean;
 ```
 
-미디어 쿼리 매칭 상태 반환.
+범용 미디어 쿼리 매칭 상태 반환. 모든 훅의 구현 기반.
 SSR hydration mismatch 방지: 초기값 false, mount 후 업데이트.
+반응형 브레이크포인트에 사용 (`useReducedMotion`이 이 훅을 내부적으로 사용함).
 
 ---
 

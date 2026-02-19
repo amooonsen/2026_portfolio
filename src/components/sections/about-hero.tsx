@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef} from "react";
+import React, {useRef} from "react";
 import {gsap} from "@/lib/gsap";
 import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
@@ -9,6 +9,33 @@ import {cn} from "@/lib/utils";
 interface AboutHeroProps {
   text: string;
   className?: string;
+}
+
+type Token = {type: "word"; text: string} | {type: "br"; className?: string};
+
+/**
+ * text 문자열을 단어 토큰과 <br> 토큰으로 분해.
+ * pc-only: md 이상에서만 개행 (hidden md:block)
+ * mo-only: md 미만에서만 개행 (block md:hidden)
+ */
+function tokenize(text: string): Token[] {
+  const tokens: Token[] = [];
+  const parts = text.split(/(<br\s*(?:class="[^"]*")?\s*\/?>)/gi);
+  for (const part of parts) {
+    if (/^<br/i.test(part)) {
+      const className = /class="pc-only"/i.test(part)
+        ? "hidden md:block"
+        : /class="mo-only"/i.test(part)
+          ? "block md:hidden"
+          : undefined;
+      tokens.push({type: "br", className});
+    } else {
+      for (const word of part.split(" ").filter(Boolean)) {
+        tokens.push({type: "word", text: word});
+      }
+    }
+  }
+  return tokens;
 }
 
 /**
@@ -41,27 +68,28 @@ export function AboutHero({text, className}: AboutHeroProps) {
     });
   }, [reducedMotion, text]);
 
-  const words = text.split(" ");
+  const tokens = tokenize(text);
 
   return (
     <div ref={wrapperRef} className={cn("relative h-[300vh]", className)}>
       <div className="sticky top-16 flex min-h-[calc(100vh-4rem)] items-center">
         <div className="mx-auto max-w-5xl px-6">
           <p ref={textRef} aria-label={text} className="font-bold leading-relaxed text-[7vw] sm:text-[5vw] md:text-[4vw] lg:text-[3.5vw] xl:text-[3vw] 2xl:text-[2.5vw]">
-            {reducedMotion ? (
-              <span className="text-foreground">{text}</span>
-            ) : (
-              words.map((word, i) => (
+            {tokens.map((token, i) => {
+              if (token.type === "br") return <br key={i} className={token.className} />;
+              return reducedMotion ? (
+                <span key={i} className="text-foreground">{token.text}{" "}</span>
+              ) : (
                 <span
                   key={i}
                   data-word
                   className="mr-[0.25em] inline-block text-foreground"
                   style={{opacity: 0.15}}
                 >
-                  {word}
+                  {token.text}
                 </span>
-              ))
-            )}
+              );
+            })}
           </p>
         </div>
       </div>
