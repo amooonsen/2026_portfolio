@@ -23,9 +23,6 @@ const GREETINGS = [
   "你好世界！",
   "Hola Mundo!",
   "Bonjour le Monde!",
-  "Hallo Welt!",
-  "Ciao Mondo!",
-  "Olá Mundo!",
   "Привет Мир!",
 ];
 /** 인사 순회 횟수 */
@@ -51,9 +48,6 @@ interface IntroLoaderProps {
  * 리소스 인식 로딩 오버레이.
  *
  * **첫 방문**: 풀 브랜디드 인트로(타이틀 + 프로그레스)를 즉시 표시.
- * **재방문**: 유예 시간(GRACE_PERIOD) 동안 리소스 로딩을 대기.
- *   - 유예 내 완료 → 로더 없이 콘텐츠 즉시 노출 (부드러운 페이드인).
- *   - 유예 초과 → 미니멀 프로그레스 바를 표시하고 완료 시 페이드아웃.
  *
  * 콘텐츠는 항상 DOM에 렌더링되어(opacity: 0) 리소스가 병렬 로드된다.
  * 오버레이를 body에 portal로 렌더링하여 template.tsx의 transform scope를 벗어난다.
@@ -159,8 +153,6 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
       setBackgroundInert(false);
     };
   }, []);
-
-  // grace 모드는 더 이상 사용하지 않음 — 재방문 시 항상 loading 모드로 진입
 
   // ─── 종료 시퀀스 ───
   function dismiss() {
@@ -377,7 +369,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
       progressTweenRef.current?.kill();
       clearTimeout(dismissTimer);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- dismiss uses refs internally and should not trigger re-subscription
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- dismiss uses refs internally and should not trigger re-subscription
   }, [isSceneReady, mode]);
 
   const showIntroOverlay = isMounted && mode === "intro";
@@ -390,7 +382,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         createPortal(
           <div
             ref={introRef}
-            className="fixed inset-0 z-[9999] h-screen bg-scene-bg"
+            className="fixed inset-0 z-9999 h-screen bg-scene-bg"
             role="progressbar"
             aria-valuenow={Math.round(progressObjRef.current.value)}
             aria-valuemin={0}
@@ -452,7 +444,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
                 <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-glass-bg">
                   <div
                     ref={progressBarRef}
-                    className="absolute inset-y-0 left-0 w-full origin-left rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.5)] will-change-transform"
+                    className="absolute inset-y-0 left-0 w-full origin-left rounded-full bg-linear-to-r from-violet-500 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.5)] will-change-transform"
                     style={{transform: "scaleX(0)"}}
                   />
                 </div>
@@ -467,7 +459,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
         createPortal(
           <div
             ref={loadingRef}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-scene-bg"
+            className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-scene-bg"
             role="progressbar"
             aria-valuenow={Math.round(progressObjRef.current.value)}
             aria-valuemin={0}

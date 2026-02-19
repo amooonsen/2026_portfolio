@@ -12,16 +12,9 @@ import type {Project} from "./project-card";
 
 type SortOrder = "latest" | "oldest";
 
-/**
- * BentoGrid 레이아웃 규칙을 결정하는 함수.
- * - 첫 번째 프로젝트: 2x1 (와이드 카드)
- * - 이후 7번째마다: 2x1 (와이드 카드)
- * - 나머지: 1x1 (일반 카드)
- */
-function getGridSize(index: number): {colSpan: 1 | 2; rowSpan: 1 | 2} {
-  if (index === 0 || index % 7 === 0) return {colSpan: 2, rowSpan: 1};
-  return {colSpan: 1, rowSpan: 1};
-}
+// ---------------------------------------------------------------------------
+// ProjectGrid 컴포넌트
+// ---------------------------------------------------------------------------
 
 interface ProjectGridProps {
   projects: Project[];
@@ -30,6 +23,7 @@ interface ProjectGridProps {
 
 /**
  * 프로젝트 그리드 컴포넌트.
+ * 블록 기반 Bento 레이아웃으로 빈 영역 없이 프로젝트를 배치한다.
  * 정렬 컨트롤과 스크롤 위치에 따른 개별 stagger 등장 애니메이션을 포함한다.
  * children 슬롯으로 서버에서 렌더링된 featured 배너를 삽입할 수 있다.
  */
@@ -84,9 +78,8 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
             Projects
           </GradientText>
           <p className="mt-2 max-w-xl text-muted-foreground leading-relaxed">
-            다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한
-            프로젝트들입니다. 모던 기술 스택을 활용하여 실질적인 가치를
-            만들어냈습니다.
+            다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한 프로젝트들입니다. 모던 기술
+            스택을 활용하여 실질적인 가치를 만들어냈습니다.
           </p>
         </FadeIn>
 
@@ -129,16 +122,19 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
       {/* 프로젝트 그리드 */}
       <div
         ref={gridRef}
-        className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 auto-rows-[minmax(200px,auto)]"
+        className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 grid-flow-dense auto-rows-[minmax(200px,auto)]"
       >
         {sortedProjects.map((project, i) => {
-          const {colSpan, rowSpan} = getGridSize(i);
-          const isFeatured = colSpan === 2 && rowSpan === 2;
+          // featured 프로젝트는 2x2, 나머지는 1x1
+          const isFeatured = project.featured;
+          const colSpan = isFeatured ? 2 : 1;
+          const rowSpan = isFeatured ? 2 : 1;
+          const cardType = isFeatured ? "featured" : "default";
 
           return (
             <BentoGridItem key={project.slug} colSpan={colSpan} rowSpan={rowSpan}>
-              <div data-project-card style={{ opacity: 0 }}>
-                <ProjectCard project={project} featured={isFeatured} />
+              <div data-project-card style={{opacity: 0}} className="h-full">
+                <ProjectCard project={project} size={cardType} />
               </div>
             </BentoGridItem>
           );
