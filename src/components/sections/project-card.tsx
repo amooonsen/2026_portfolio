@@ -1,46 +1,40 @@
-import Image from "next/image"
-import Link from "next/link"
-import { GlassCard } from "@/components/ui/glass-card"
-import { TechBadge } from "@/components/ui/tech-badge"
-import { Spotlight } from "@/components/ui/spotlight"
-import { cn } from "@/lib/utils"
+import Image from "next/image";
+import Link from "next/link";
+import {GlassCard} from "@/components/ui/glass-card";
+import {TechBadge} from "@/components/ui/tech-badge";
+import {Spotlight} from "@/components/ui/spotlight";
+import {cn} from "@/lib/utils";
 
 interface Project {
-  slug: string
-  title: string
-  description: string
-  thumbnail?: string
-  tags: string[]
-  year: number
-  period?: string
-  featured?: boolean
-  images?: string[]
-  content?: string
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail?: string;
+  tags: string[];
+  year: number;
+  period?: string;
+  featured?: boolean;
+  images?: string[];
+  content?: string;
   links?: {
-    github?: string
-    live?: string
-  }
+    github?: string;
+    live?: string;
+  };
 }
 
-type CardSize = "default" | "wide" | "featured" | "banner"
+type CardSize = "default" | "wide" | "featured" | "banner";
 
 interface ProjectCardProps {
-  project: Project
+  project: Project;
   /** @deprecated Use `size` instead */
-  featured?: boolean
-  size?: CardSize
-  showTitle?: boolean
-  showDescription?: boolean
-  showTags?: boolean
+  featured?: boolean;
+  size?: CardSize;
+  showTitle?: boolean;
+  showDescription?: boolean;
+  showTags?: boolean;
 }
 
-function ThumbnailImage({
-  project,
-  isFeatured,
-}: {
-  project: Project
-  isFeatured: boolean
-}) {
+function ThumbnailImage({project, isFeatured}: {project: Project; isFeatured: boolean}) {
   if (project.thumbnail) {
     return (
       <Image
@@ -53,9 +47,9 @@ function ThumbnailImage({
             : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         }
         className="object-cover transition-transform duration-500 hover:scale-105"
-        unoptimized={project.thumbnail.endsWith(".svg")}
+        // unoptimized={project.thumbnail.endsWith(".svg")}
       />
-    )
+    );
   }
 
   return (
@@ -79,7 +73,7 @@ function ThumbnailImage({
         <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
       </svg>
     </div>
-  )
+  );
 }
 
 /** 기본 세로 레이아웃 (1×1, 2×1, 2×2) */
@@ -90,14 +84,14 @@ function VerticalLayout({
   showDescription,
   showTags,
 }: {
-  project: Project
-  size: CardSize
-  showTitle: boolean
-  showDescription: boolean
-  showTags: boolean
+  project: Project;
+  size: CardSize;
+  showTitle: boolean;
+  showDescription: boolean;
+  showTags: boolean;
 }) {
-  const isFeatured = size === "featured"
-  const isWide = size === "wide"
+  const isFeatured = size === "featured";
+  const isWide = size === "wide";
 
   return (
     <GlassCard hover padding="lg" className="flex h-full flex-col">
@@ -125,9 +119,7 @@ function VerticalLayout({
             </h3>
           )}
           {project.period && (
-            <span className="mt-1 text-xs text-foreground/50">
-              {project.period}
-            </span>
+            <span className="mt-1 text-xs text-foreground/50">{project.period}</span>
           )}
           {showDescription && (
             <p
@@ -152,7 +144,7 @@ function VerticalLayout({
         </div>
       )}
     </GlassCard>
-  )
+  );
 }
 
 /** 가로 배너 레이아웃 (3×1 풀와이드) — md 이상에서 가로, 모바일에서 세로 */
@@ -162,10 +154,10 @@ function BannerLayout({
   showDescription,
   showTags,
 }: {
-  project: Project
-  showTitle: boolean
-  showDescription: boolean
-  showTags: boolean
+  project: Project;
+  showTitle: boolean;
+  showDescription: boolean;
+  showTags: boolean;
 }) {
   return (
     <GlassCard hover padding="lg" className="flex h-full flex-col md:flex-row md:items-stretch">
@@ -178,14 +170,10 @@ function BannerLayout({
       {(showTitle || showDescription || showTags) && (
         <div className="flex flex-1 flex-col justify-center pt-4 md:pl-8 md:pt-0">
           {showTitle && (
-            <h3 className="text-xl font-semibold text-foreground md:text-2xl">
-              {project.title}
-            </h3>
+            <h3 className="text-xl font-semibold text-foreground md:text-2xl">{project.title}</h3>
           )}
           {project.period && (
-            <span className="mt-1 text-xs text-foreground/50">
-              {project.period}
-            </span>
+            <span className="mt-1 text-xs text-foreground/50">{project.period}</span>
           )}
           {showDescription && (
             <p className="mt-2 text-sm text-foreground/65 md:text-base md:line-clamp-3">
@@ -203,7 +191,7 @@ function BannerLayout({
         </div>
       )}
     </GlassCard>
-  )
+  );
 }
 
 /**
@@ -225,7 +213,7 @@ export function ProjectCard({
   showDescription = true,
   showTags = true,
 }: ProjectCardProps) {
-  const size = sizeProp ?? (featured ? "featured" : "default")
+  const size = sizeProp ?? (featured ? "featured" : "default");
 
   return (
     <Link
@@ -251,7 +239,7 @@ export function ProjectCard({
         )}
       </Spotlight>
     </Link>
-  )
+  );
 }
 
-export type { Project, CardSize }
+export type {Project, CardSize};
