@@ -10,6 +10,7 @@ interface Project {
   title: string;
   description: string;
   thumbnail?: string;
+  blurDataURL?: string;
   tags: string[];
   year: number;
   period?: string;
@@ -36,6 +37,7 @@ interface ProjectCardProps {
 
 function ThumbnailImage({project, isFeatured}: {project: Project; isFeatured: boolean}) {
   if (project.thumbnail) {
+    const isSvg = project.thumbnail.endsWith(".svg");
     return (
       <Image
         src={project.thumbnail}
@@ -47,7 +49,9 @@ function ThumbnailImage({project, isFeatured}: {project: Project; isFeatured: bo
             : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         }
         className="object-cover transition-transform duration-500 hover:scale-105"
-        // unoptimized={project.thumbnail.endsWith(".svg")}
+        unoptimized={isSvg}
+        placeholder={project.blurDataURL ? "blur" : "empty"}
+        blurDataURL={project.blurDataURL}
       />
     );
   }

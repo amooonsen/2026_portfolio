@@ -3,6 +3,7 @@ import path from "path"
 import matter from "gray-matter"
 import type { Project } from "@/components/sections/project-card"
 import { getPlaceholderThumbnail } from "@/data/project-thumbnails"
+import { getBlurDataURL } from "@/lib/image"
 import {
   fetchAllProjects as fetchFromNotion,
   fetchProjectBySlug as fetchSlugFromNotion,
@@ -74,12 +75,17 @@ function getLocalThumbnail(slug: string): string | undefined {
  * 1. Notion에 설정된 thumbnail URL
  * 2. public/images/projects/{slug}.{jpg|png|webp}
  * 3. 로컬 placeholder SVG
+ *
+ * 썸네일 확정 후 로컬 이미지에 대해 blur data URL을 생성한다.
  */
-function assignThumbnails(projects: Project[]): Project[] {
-  return projects.map((p, i) => ({
-    ...p,
-    thumbnail: p.thumbnail ?? getLocalThumbnail(p.slug) ?? getPlaceholderThumbnail(i),
-  }))
+async function assignThumbnails(projects: Project[]): Promise<Project[]> {
+  return Promise.all(
+    projects.map(async (p, i) => {
+      const thumbnail = p.thumbnail ?? getLocalThumbnail(p.slug) ?? getPlaceholderThumbnail(i)
+      const blurDataURL = await getBlurDataURL(thumbnail)
+      return { ...p, thumbnail, blurDataURL }
+    }),
+  )
 }
 
 /**
@@ -88,10 +94,10 @@ function assignThumbnails(projects: Project[]): Project[] {
  */
 export async function getAllProjects(): Promise<Project[]> {
   try {
-    return assignThumbnails(await fetchFromNotion())
+    return await assignThumbnails(await fetchFromNotion())
   } catch (error) {
     console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
-    return assignThumbnails(getAllProjectsFromFiles())
+    return await assignThumbnails(getAllProjectsFromFiles())
   }
 }
 
@@ -113,8 +119,10 @@ export async function getProjectBySlug(
       return null
     }
   }
-  if (project && !project.thumbnail) {
-    project = { ...project, thumbnail: getLocalThumbnail(slug) ?? getPlaceholderThumbnail(0) }
+  if (project) {
+    const thumbnail = project.thumbnail ?? getLocalThumbnail(slug) ?? getPlaceholderThumbnail(0)
+    const blurDataURL = await getBlurDataURL(thumbnail)
+    project = { ...project, thumbnail, blurDataURL }
   }
   return project
 }
