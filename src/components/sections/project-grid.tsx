@@ -12,16 +12,98 @@ import type {Project} from "./project-card";
 
 type SortOrder = "latest" | "oldest";
 
-/**
- * BentoGrid 레이아웃 규칙을 결정하는 함수.
- * - 첫 번째 프로젝트: 2x1 (와이드 카드)
- * - 이후 7번째마다: 2x1 (와이드 카드)
- * - 나머지: 1x1 (일반 카드)
- */
-function getGridSize(index: number): {colSpan: 1 | 2; rowSpan: 1 | 2} {
-  if (index === 0 || index % 7 === 0) return {colSpan: 2, rowSpan: 1};
-  return {colSpan: 1, rowSpan: 1};
+// ---------------------------------------------------------------------------
+// Bento 레이아웃 생성기
+// ---------------------------------------------------------------------------
+
+type GridSize = {colSpan: 1 | 2 | 3; rowSpan: 1 | 2};
+type CardSize = "default" | "wide" | "featured" | "banner";
+
+interface LayoutItem {
+  grid: GridSize;
+  card: CardSize;
 }
+
+/** 행을 완전히 채우는 블록 정의 (3열 기준) */
+const BLOCKS = {
+  /** 2×2 피처드 + 1×1 × 2 → 3 아이템, 2행 */
+  featured: [
+    {grid: {colSpan: 2, rowSpan: 2}, card: "featured"},
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+  ],
+  /** 1×1 × 3 → 3 아이템, 1행 */
+  triple: [
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+  ],
+  /** 2×1 와이드(좌) + 1×1 → 2 아이템, 1행 */
+  wideLeft: [
+    {grid: {colSpan: 2, rowSpan: 1}, card: "wide"},
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+  ],
+  /** 1×1 + 2×1 와이드(우) → 2 아이템, 1행 */
+  wideRight: [
+    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
+    {grid: {colSpan: 2, rowSpan: 1}, card: "wide"},
+  ],
+  /** 3×1 풀 와이드 배너 → 1 아이템, 1행 */
+  banner: [
+    {grid: {colSpan: 3, rowSpan: 1}, card: "banner"},
+  ],
+} satisfies Record<string, LayoutItem[]>;
+
+/** 시각적 다양성을 위한 블록 순환 시퀀스 */
+const BLOCK_SEQUENCE: LayoutItem[][] = [
+  BLOCKS.featured,   // 3 아이템 → 2행
+  BLOCKS.wideRight,  // 2 아이템 → 1행
+  BLOCKS.triple,     // 3 아이템 → 1행
+  BLOCKS.wideLeft,   // 2 아이템 → 1행
+];
+// 사이클 합계: 10 아이템
+
+/**
+ * 3열 Bento 그리드에서 빈 영역 없이 아이템을 배치하는 레이아웃 생성기.
+ * 블록 단위로 아이템을 배치하며, 각 블록은 행을 완전히 채운다.
+ * 나머지 아이템도 빈 영역 없이 처리한다.
+ */
+function generateBentoLayout(count: number): LayoutItem[] {
+  if (count === 0) return [];
+
+  const layout: LayoutItem[] = [];
+  let remaining = count;
+  let seqIndex = 0;
+
+  while (remaining > 0) {
+    const block = BLOCK_SEQUENCE[seqIndex % BLOCK_SEQUENCE.length];
+
+    if (remaining >= block.length) {
+      layout.push(...block);
+      remaining -= block.length;
+      seqIndex++;
+    } else {
+      // 나머지 아이템 — 빈 영역 없이 채우기
+      if (remaining >= 3) {
+        layout.push(...BLOCKS.triple);
+        remaining -= 3;
+      } else if (remaining === 2) {
+        layout.push(...BLOCKS.wideLeft);
+        remaining -= 2;
+      } else {
+        // 1개 남음 → 풀 와이드 배너
+        layout.push(...BLOCKS.banner);
+        remaining -= 1;
+      }
+    }
+  }
+
+  return layout;
+}
+
+// ---------------------------------------------------------------------------
+// ProjectGrid 컴포넌트
+// ---------------------------------------------------------------------------
 
 interface ProjectGridProps {
   projects: Project[];
@@ -30,6 +112,7 @@ interface ProjectGridProps {
 
 /**
  * 프로젝트 그리드 컴포넌트.
+ * 블록 기반 Bento 레이아웃으로 빈 영역 없이 프로젝트를 배치한다.
  * 정렬 컨트롤과 스크롤 위치에 따른 개별 stagger 등장 애니메이션을 포함한다.
  * children 슬롯으로 서버에서 렌더링된 featured 배너를 삽입할 수 있다.
  */
@@ -42,6 +125,8 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
     if (sortOrder === "latest") return b.year - a.year;
     return a.year - b.year;
   });
+
+  const layout = generateBentoLayout(sortedProjects.length);
 
   useGsapContext(gridRef, () => {
     if (!gridRef.current) return;
@@ -129,16 +214,15 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
       {/* 프로젝트 그리드 */}
       <div
         ref={gridRef}
-        className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 auto-rows-[minmax(200px,auto)]"
+        className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 grid-flow-dense auto-rows-[minmax(200px,auto)]"
       >
         {sortedProjects.map((project, i) => {
-          const {colSpan, rowSpan} = getGridSize(i);
-          const isFeatured = colSpan === 2 && rowSpan === 2;
+          const {grid, card} = layout[i];
 
           return (
-            <BentoGridItem key={project.slug} colSpan={colSpan} rowSpan={rowSpan}>
-              <div data-project-card style={{ opacity: 0 }}>
-                <ProjectCard project={project} featured={isFeatured} />
+            <BentoGridItem key={project.slug} colSpan={grid.colSpan} rowSpan={grid.rowSpan}>
+              <div data-project-card style={{opacity: 0}}>
+                <ProjectCard project={project} size={card} />
               </div>
             </BentoGridItem>
           );
