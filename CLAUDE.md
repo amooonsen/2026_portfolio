@@ -37,6 +37,7 @@
 - `src/lib/gsap.ts`에서 플러그인 등록 (ScrollTrigger 등)
 - `useGsapContext` 훅 (`src/hooks/use-gsap.ts`)으로 GSAP context + cleanup 자동화
 - 모든 애니메이션 컴포넌트에서 `useReducedMotion()` 체크 필수
+- `useReducedMotion`은 `useMediaQuery("(prefers-reduced-motion: reduce)")`의 래퍼 — 애니메이션 접근성에는 반드시 `useReducedMotion` 사용, 반응형 브레이크포인트에는 `useMediaQuery` 사용
 
 ### 컴포넌트 패턴
 
