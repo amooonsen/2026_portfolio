@@ -22,7 +22,7 @@ export default function Home() {
       <HeroSection
         title="Crafting Interfaces That Matter"
         subtitle="개발자 조경문"
-        description="React, Next.js, TypeScript 기반의 4년차 프론트엔드 개발자 입니다.<br/> 비즈니스 문제를 기술로 해결합니다.<br/> Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
+        description="React, Next.js, TypeScript 기반의 4년차 프론트엔드 개발자 입니다.<br/> 팀의 개발 표준을 세우고 AI를 통해 반복을 덜어내고 있습니다.<br/> Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여<br/> 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
         ctaLabel="View Projects"
         ctaHref="/projects"
         secondaryLabel="My Journey"
