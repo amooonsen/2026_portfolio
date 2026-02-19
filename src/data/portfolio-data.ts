@@ -73,6 +73,3 @@ export const techCategories: TechCategory[] = [
   },
 ];
 
-/* ─── Contact ─── */
-
-export const contactEmail = "chonghocho72@gmail.com";

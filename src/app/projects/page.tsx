@@ -21,7 +21,11 @@ export const metadata = createMetadata({
  */
 export default async function ProjectsPage() {
   const projects = await getAllProjects();
-  const featuredProject = projects.find((p) => p.featured) ?? null;
+  // 진행중 프로젝트 중 가장 최근 연도 기준으로 배너에 표시할 1개 선택
+  const featuredProject =
+    [...projects]
+      .filter((p) => p.featured)
+      .sort((a, b) => b.year - a.year)[0] ?? null;
   const gridProjects = featuredProject
     ? projects.filter((p) => p.slug !== featuredProject.slug)
     : projects;
