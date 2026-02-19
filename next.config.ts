@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "acpbvflnvlyyxniwbpxp.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
   },
 
   turbopack: {

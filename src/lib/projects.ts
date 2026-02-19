@@ -10,6 +10,7 @@ import {
 } from "./notion"
 
 const PROJECTS_DIR = path.join(process.cwd(), "content/projects")
+const THUMBNAILS_DIR = path.join(process.cwd(), "public/images/projects")
 
 // ---------------------------------------------------------------------------
 // 파일 시스템 fallback
@@ -55,11 +56,29 @@ function getAllProjectsFromFiles(): Project[] {
 // 공개 API — Notion 우선, 실패 시 파일 시스템 fallback
 // ---------------------------------------------------------------------------
 
-/** 썸네일이 없는 프로젝트에 placeholder를 할당한다. */
-function assignPlaceholderThumbnails(projects: Project[]): Project[] {
+/**
+ * public/images/projects/{slug}.{jpg|png|webp} 파일이 있으면 경로를 반환한다.
+ * 없으면 undefined.
+ */
+function getLocalThumbnail(slug: string): string | undefined {
+  for (const ext of ["jpg", "jpeg", "png", "webp"]) {
+    if (fs.existsSync(path.join(THUMBNAILS_DIR, `${slug}.${ext}`))) {
+      return `/images/projects/${slug}.${ext}`
+    }
+  }
+  return undefined
+}
+
+/**
+ * 썸네일 우선순위:
+ * 1. Notion에 설정된 thumbnail URL
+ * 2. public/images/projects/{slug}.{jpg|png|webp}
+ * 3. 로컬 placeholder SVG
+ */
+function assignThumbnails(projects: Project[]): Project[] {
   return projects.map((p, i) => ({
     ...p,
-    thumbnail: p.thumbnail || getPlaceholderThumbnail(i),
+    thumbnail: p.thumbnail ?? getLocalThumbnail(p.slug) ?? getPlaceholderThumbnail(i),
   }))
 }
 
@@ -69,10 +88,10 @@ function assignPlaceholderThumbnails(projects: Project[]): Project[] {
  */
 export async function getAllProjects(): Promise<Project[]> {
   try {
-    return assignPlaceholderThumbnails(await fetchFromNotion())
+    return assignThumbnails(await fetchFromNotion())
   } catch (error) {
     console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
-    return assignPlaceholderThumbnails(getAllProjectsFromFiles())
+    return assignThumbnails(getAllProjectsFromFiles())
   }
 }
 
@@ -95,7 +114,7 @@ export async function getProjectBySlug(
     }
   }
   if (project && !project.thumbnail) {
-    project = { ...project, thumbnail: getPlaceholderThumbnail(0) }
+    project = { ...project, thumbnail: getLocalThumbnail(slug) ?? getPlaceholderThumbnail(0) }
   }
   return project
 }

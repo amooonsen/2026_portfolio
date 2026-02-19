@@ -1,4 +1,4 @@
-import { siteConfig } from "@/lib/metadata"
+import {siteConfig} from "@/lib/metadata";
 
 /**
  * Person Schema (개인 프로필)
@@ -24,18 +24,15 @@ export function PersonSchema() {
     ],
     sameAs: [
       // 실제 소셜 미디어 링크로 교체하세요
-      "https://github.com/cho-kyeongmoon",
-      "https://linkedin.com/in/cho-kyeongmoon",
-      "https://twitter.com/cho_kyeongmoon",
+      "https://github.com/amoonsen",
+      // "https://linkedin.com/in/cho-kyeongmoon",
+      "https://www.instagram.com/_mo___on/",
     ],
-  }
+  };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(schema)}} />
+  );
 }
 
 /**
@@ -53,20 +50,17 @@ export function WebsiteSchema() {
       name: siteConfig.author.name,
     },
     inLanguage: "ko-KR",
-  }
+  };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(schema)}} />
+  );
 }
 
 /**
- * BreadcrumbList Schema (빵가루 네비게이션)
+ * BreadcrumbList Schema
  */
-export function BreadcrumbSchema({ items }: { items: Array<{ name: string; url: string }> }) {
+export function BreadcrumbSchema({items}: {items: Array<{name: string; url: string}>}) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -76,14 +70,11 @@ export function BreadcrumbSchema({ items }: { items: Array<{ name: string; url: 
       name: item.name,
       item: `${siteConfig.url}${item.url}`,
     })),
-  }
+  };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(schema)}} />
+  );
 }
 
 /**
@@ -96,11 +87,11 @@ export function ProjectSchema({
   datePublished,
   tags,
 }: {
-  title: string
-  description: string
-  image?: string
-  datePublished?: string
-  tags?: string[]
+  title: string;
+  description: string;
+  image?: string;
+  datePublished?: string;
+  tags?: string[];
 }) {
   const schema = {
     "@context": "https://schema.org",
@@ -111,15 +102,12 @@ export function ProjectSchema({
       "@type": "Person",
       name: siteConfig.author.name,
     },
-    ...(image && { image }),
-    ...(datePublished && { datePublished }),
-    ...(tags && { keywords: tags.join(", ") }),
-  }
+    ...(image && {image}),
+    ...(datePublished && {datePublished}),
+    ...(tags && {keywords: tags.join(", ")}),
+  };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(schema)}} />
+  );
 }
