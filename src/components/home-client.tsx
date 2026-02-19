@@ -56,7 +56,7 @@ export function HomeClient({children}: HomeClientProps) {
         <CosmicScene onCreated={handleCosmicCreated} visible={isIntroComplete} />
 
         {/* 콘텐츠 — 배경 위에 표시 */}
-        <div className="relative z-10 sm:overflow-x-hidden xl:overflow-x-visible">{children}</div>
+        <div className="relative z-10 overflow-x-clip">{children}</div>
       </IntroLoader>
     </IntroProvider>
   );

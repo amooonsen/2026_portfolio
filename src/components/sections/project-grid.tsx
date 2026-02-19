@@ -13,95 +13,6 @@ import type {Project} from "./project-card";
 type SortOrder = "latest" | "oldest";
 
 // ---------------------------------------------------------------------------
-// Bento 레이아웃 생성기
-// ---------------------------------------------------------------------------
-
-type GridSize = {colSpan: 1 | 2 | 3; rowSpan: 1 | 2};
-type CardSize = "default" | "wide" | "featured" | "banner";
-
-interface LayoutItem {
-  grid: GridSize;
-  card: CardSize;
-}
-
-/** 행을 완전히 채우는 블록 정의 (3열 기준) */
-const BLOCKS = {
-  /** 2×2 피처드 + 1×1 × 2 → 3 아이템, 2행 */
-  featured: [
-    {grid: {colSpan: 2, rowSpan: 2}, card: "featured"},
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-  ],
-  /** 1×1 × 3 → 3 아이템, 1행 */
-  triple: [
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-  ],
-  /** 2×1 와이드(좌) + 1×1 → 2 아이템, 1행 */
-  wideLeft: [
-    {grid: {colSpan: 2, rowSpan: 1}, card: "wide"},
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-  ],
-  /** 1×1 + 2×1 와이드(우) → 2 아이템, 1행 */
-  wideRight: [
-    {grid: {colSpan: 1, rowSpan: 1}, card: "default"},
-    {grid: {colSpan: 2, rowSpan: 1}, card: "wide"},
-  ],
-  /** 3×1 풀 와이드 배너 → 1 아이템, 1행 */
-  banner: [
-    {grid: {colSpan: 3, rowSpan: 1}, card: "banner"},
-  ],
-} satisfies Record<string, LayoutItem[]>;
-
-/** 시각적 다양성을 위한 블록 순환 시퀀스 */
-const BLOCK_SEQUENCE: LayoutItem[][] = [
-  BLOCKS.featured,   // 3 아이템 → 2행
-  BLOCKS.wideRight,  // 2 아이템 → 1행
-  BLOCKS.triple,     // 3 아이템 → 1행
-  BLOCKS.wideLeft,   // 2 아이템 → 1행
-];
-// 사이클 합계: 10 아이템
-
-/**
- * 3열 Bento 그리드에서 빈 영역 없이 아이템을 배치하는 레이아웃 생성기.
- * 블록 단위로 아이템을 배치하며, 각 블록은 행을 완전히 채운다.
- * 나머지 아이템도 빈 영역 없이 처리한다.
- */
-function generateBentoLayout(count: number): LayoutItem[] {
-  if (count === 0) return [];
-
-  const layout: LayoutItem[] = [];
-  let remaining = count;
-  let seqIndex = 0;
-
-  while (remaining > 0) {
-    const block = BLOCK_SEQUENCE[seqIndex % BLOCK_SEQUENCE.length];
-
-    if (remaining >= block.length) {
-      layout.push(...block);
-      remaining -= block.length;
-      seqIndex++;
-    } else {
-      // 나머지 아이템 — 빈 영역 없이 채우기
-      if (remaining >= 3) {
-        layout.push(...BLOCKS.triple);
-        remaining -= 3;
-      } else if (remaining === 2) {
-        layout.push(...BLOCKS.wideLeft);
-        remaining -= 2;
-      } else {
-        // 1개 남음 → 풀 와이드 배너
-        layout.push(...BLOCKS.banner);
-        remaining -= 1;
-      }
-    }
-  }
-
-  return layout;
-}
-
-// ---------------------------------------------------------------------------
 // ProjectGrid 컴포넌트
 // ---------------------------------------------------------------------------
 
@@ -125,8 +36,6 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
     if (sortOrder === "latest") return b.year - a.year;
     return a.year - b.year;
   });
-
-  const layout = generateBentoLayout(sortedProjects.length);
 
   useGsapContext(gridRef, () => {
     if (!gridRef.current) return;
@@ -169,9 +78,8 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
             Projects
           </GradientText>
           <p className="mt-2 max-w-xl text-muted-foreground leading-relaxed">
-            다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한
-            프로젝트들입니다. 모던 기술 스택을 활용하여 실질적인 가치를
-            만들어냈습니다.
+            다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한 프로젝트들입니다. 모던 기술
+            스택을 활용하여 실질적인 가치를 만들어냈습니다.
           </p>
         </FadeIn>
 
@@ -217,12 +125,16 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
         className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 grid-flow-dense auto-rows-[minmax(200px,auto)]"
       >
         {sortedProjects.map((project, i) => {
-          const {grid, card} = layout[i];
+          // featured 프로젝트는 2x2, 나머지는 1x1
+          const isFeatured = project.featured;
+          const colSpan = isFeatured ? 2 : 1;
+          const rowSpan = isFeatured ? 2 : 1;
+          const cardType = isFeatured ? "featured" : "default";
 
           return (
-            <BentoGridItem key={project.slug} colSpan={grid.colSpan} rowSpan={grid.rowSpan}>
-              <div data-project-card style={{opacity: 0}}>
-                <ProjectCard project={project} size={card} />
+            <BentoGridItem key={project.slug} colSpan={colSpan} rowSpan={rowSpan}>
+              <div data-project-card style={{opacity: 0}} className="h-full">
+                <ProjectCard project={project} size={cardType} />
               </div>
             </BentoGridItem>
           );
