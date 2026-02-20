@@ -19,7 +19,6 @@ interface ExperienceJourneyProps {
  */
 export function ExperienceJourney({items}: ExperienceJourneyProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const timelineLineRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
   useGsapContext(containerRef, () => {
@@ -32,25 +31,7 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
     const descEls = containerRef.current.querySelectorAll<HTMLElement>("[data-journey-desc]");
     const linkContainers = containerRef.current.querySelectorAll<HTMLElement>("[data-journey-links]");
 
-    // 1. 타임라인 라인 스크롤 드로잉
-    // 아이템이 먼저 등장한 후 라인이 따라 그려지도록 시작점을 늦춤
-    if (timelineLineRef.current) {
-      const containerH = containerRef.current!.offsetHeight;
-      gsap.set(timelineLineRef.current, {height: 0});
-      gsap.to(timelineLineRef.current, {
-        height: containerH,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current!,
-          start: "top 60%",
-          end: `+=${containerH}`,
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-        },
-      });
-    }
-
-    // 2. 각 여정 아이템 교차 등장 (라인보다 먼저 나타남)
+    // 각 여정 아이템 교차 등장
     articles.forEach((article, i) => {
       const fromLeft = i % 2 === 0;
 
@@ -175,10 +156,9 @@ export function ExperienceJourney({items}: ExperienceJourneyProps) {
 
   return (
     <div ref={containerRef} className="relative mt-10" role="list" aria-label="개발 여정">
-      {/* 스크롤 드로잉 타임라인 라인 */}
+      {/* 타임라인 라인 */}
       <div
-        ref={timelineLineRef}
-        className="absolute left-0 top-0 w-px bg-gradient-to-b from-accent-indigo via-gradient-accent-via to-gradient-accent-to"
+        className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-accent-indigo via-gradient-accent-via to-gradient-accent-to"
         aria-hidden="true"
       />
 
