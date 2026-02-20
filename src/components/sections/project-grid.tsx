@@ -1,12 +1,12 @@
 "use client";
 
-import {useRef, useState} from "react";
+import {Fragment, useRef, useState} from "react";
 import {gsap} from "@/lib/gsap";
 import {useGsapContext} from "@/hooks/use-gsap";
 import {useReducedMotion} from "@/hooks/use-reduced-motion";
 import {BentoGridItem} from "@/components/ui/bento-grid";
 import {FadeIn} from "@/components/animation/fade-in";
-import {GradientText} from "@/components/ui/gradient-text";
+import {PageHeader} from "@/components/sections/page-header";
 import {ProjectCard} from "./project-card";
 import type {Project} from "./project-card";
 
@@ -72,16 +72,20 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
   return (
     <>
       {/* 헤더 — 타이틀 + 정렬 */}
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <FadeIn>
-          <GradientText as="h1" gradient="primary" className="text-3xl font-bold">
-            Projects
-          </GradientText>
-          <p className="mt-2 max-w-xl text-muted-foreground leading-relaxed">
-            다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한 프로젝트들입니다. 모던 기술
-            스택을 활용하여 실질적인 가치를 만들어냈습니다.
-          </p>
-        </FadeIn>
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <PageHeader
+          title="Projects"
+          description={[
+            <Fragment key="line-1">
+              다양한 도메인에서 사용자 경험을 최우선으로 설계하고 구현한
+              프로젝트들입니다.
+            </Fragment>,
+            <Fragment key="line-2">
+              모던 기술 스택을 활용하여 실질적인 가치를 만들어냈습니다.
+            </Fragment>,
+          ]}
+          className="max-w-xl"
+        />
 
         <FadeIn delay={0.1}>
           <div className="flex items-center gap-2">
