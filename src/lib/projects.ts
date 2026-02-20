@@ -1,6 +1,7 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
+import { unstable_cache } from "next/cache"
 import type { Project } from "@/components/sections/project-card"
 import { getPlaceholderThumbnail } from "@/data/project-thumbnails"
 import { getBlurDataURL } from "@/lib/image"
@@ -91,15 +92,20 @@ async function assignThumbnails(projects: Project[]): Promise<Project[]> {
 /**
  * 모든 프로젝트의 메타데이터를 반환한다.
  * Notion API 호출을 시도하고, 실패 시 로컬 마크다운 파일을 사용한다.
+ * unstable_cache로 래핑하여 요청 간에도 서버 레벨 캐싱을 유지한다.
  */
-export async function getAllProjects(): Promise<Project[]> {
-  try {
-    return await assignThumbnails(await fetchFromNotion())
-  } catch (error) {
-    console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
-    return await assignThumbnails(getAllProjectsFromFiles())
-  }
-}
+export const getAllProjects = unstable_cache(
+  async (): Promise<Project[]> => {
+    try {
+      return await assignThumbnails(await fetchFromNotion())
+    } catch (error) {
+      console.warn("[projects] Notion 실패, 로컬 파일 fallback:", error)
+      return await assignThumbnails(getAllProjectsFromFiles())
+    }
+  },
+  ["all-projects"],
+  { revalidate: 3600, tags: ["projects"] },
+)
 
 /**
  * 슬러그로 단일 프로젝트(본문 포함)를 반환한다.

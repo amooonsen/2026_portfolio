@@ -7,6 +7,8 @@ import {ProjectGrid} from "@/components/sections/project-grid";
 import {getAllProjects} from "@/lib/projects";
 import {createMetadata} from "@/lib/metadata";
 
+export const revalidate = 3600;
+
 export const metadata = createMetadata({
   title: "프로젝트",
   description:
