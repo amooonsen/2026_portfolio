@@ -91,7 +91,11 @@ export function PageEndCelebration() {
             <p>혼자 하지 않고 함께 간다</p>
           </div>
 
-          <GradientText as="p" gradient="primary" className="mt-6 text-sm font-semibold tracking-[0.25em]">
+          <GradientText
+            as="p"
+            gradient="primary"
+            className="mt-6 text-sm font-semibold tracking-[0.25em]"
+          >
             — AX FORCE
           </GradientText>
         </div>
@@ -123,14 +127,15 @@ export function PageEndCelebration() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <Link
-              href="/contact"
+            <a
+              target="_blank"
+              href="https://www.notion.so/etribe/IA-0f0f05b74d654eadbb0da07e1c653281?source=copy_link"
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-accent-indigo-muted bg-accent-indigo-subtle px-8 py-4 text-base font-semibold text-foreground backdrop-blur-sm transition-all duration-300 hover:border-accent-indigo/60 hover:shadow-lg hover:shadow-accent-indigo-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-accent-indigo/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
-              <span className="relative">이 실험에 합류하기</span>
+              <span className="relative">여정에 함께하기 🕺</span>
               <ArrowRight className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>

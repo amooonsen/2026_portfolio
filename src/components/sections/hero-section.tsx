@@ -252,11 +252,11 @@ export function HeroSection({
 
             {/* CTA 버튼 */}
             <div ref={ctaRef} className="mt-10 flex gap-4">
-              <Magnetic>
+              {/* <Magnetic>
                 <Button size="lg" asChild>
                   <Link href={ctaHref}>{ctaLabel}</Link>
                 </Button>
-              </Magnetic>
+              </Magnetic> */}
               <Magnetic>
                 <Button
                   variant="outline"

@@ -43,8 +43,7 @@ const phases: Phase[] = [
         num: "02",
         title: "팀 프롬프트 라이브러리",
         desc: "형식: 상황 | 프롬프트 | 결과 | 검증자",
-        detail:
-          "Notion/GitHub Wiki에 공유 공간 개설. 첫 달 목표: 각자 3개씩 → 팀 전체 15개 이상.",
+        detail: "Notion/GitHub Wiki에 공유 공간 개설. 첫 달 목표: 각자 3개씩 → 팀 전체 15개 이상.",
       },
       {
         num: "03",
@@ -134,9 +133,9 @@ export function AxCapabilities() {
         </GradientText>
         <FadeIn delay={0.1}>
           <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-            <span className="text-accent-highlight">선언은 실행이 없으면 포스터다.</span>
+            <span className="text-accent-highlight">선언은 실행이 없으면 죽은 단어 입니다.</span>
             <br />
-            아래는 지금 당장 시작할 수 있는 것들이다.
+            우리가 당장 시작하고 끝낼 수 있는 일 들을 찾아야 합니다.
           </p>
         </FadeIn>
       </FadeIn>

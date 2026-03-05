@@ -20,17 +20,24 @@ export default function Home() {
     <HomeClient>
       <HeroSection
         title="We're Ax Force"
-        subtitle="조경문 매니저"
-        description="전(?) UX Group, 현 AX Force.<br/> 4년간 SI 현장에서 프론트엔드 개발을 쌓아왔고,<br/> 지금은 AI로 일하는 방식 자체를 바꾸는 실험을 하고 있습니다."
-        ctaLabel="View Projects"
-        ctaHref="/projects"
+        subtitle="Dear Team Members"
+        description="안녕하세요. 조경문 매니저 입니다.<br/>
+        전(?) UX Group, 현 AX Force의 팀원입니다.<br/>
+        4년간 퍼블리싱 및 프론트엔드 개발을 쌓아왔고,<br/> 지금은 일하는 방식 자체를 바꾸는 여정에 합류 했습니다✌️✌️."
+        // ctaLabel="View Projects"
+        // ctaHref="/projects"
         secondaryLabel="My Journey"
         secondaryHref="/experience"
       />
 
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
-        text="시장이 방향을 정하기 전, 우리는 이미 해보고 있어야 한다.<br/> 말하기 전에 해보고, 제안하기 전에 증명하고,<br/> 혼자 하지 않고 함께 간다."
+        text="이미 인공지능 기술은 시대를 앞서 갔습니다.<br/>
+        기술의 변혁을 시장을 주도할 수는 없습니다.<br/>
+        하지만 우리는 Maintainer — 공급자가 될 수 있습니다.<br/>말하기 전에 해보고, 제안하기 전에 증명해야 합니다.<br/>
+        ETRIBE의 헤게모니 아래 하나의 팀이 되었습니다.<br/>
+        Ai transformation eXperience. AX Force.<br/>
+        우리의 변화는 우리가 주도합나다."
       />
 
       {/* 팀 철학 */}
