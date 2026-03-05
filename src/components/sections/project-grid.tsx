@@ -128,7 +128,7 @@ export function ProjectGrid({projects, children}: ProjectGridProps) {
         ref={gridRef}
         className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 grid-flow-dense auto-rows-[minmax(200px,auto)]"
       >
-        {sortedProjects.map((project, i) => {
+        {sortedProjects.map((project) => {
           // featured 프로젝트는 2x2, 나머지는 1x1
           const isFeatured = project.featured;
           const colSpan = isFeatured ? 2 : 1;
