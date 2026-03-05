@@ -1,30 +1,33 @@
-"use client"
+"use client";
 
-import {useEffect, useRef} from "react"
-import {useGsapContext} from "@/hooks/use-gsap"
-import {Section} from "@/components/ui/section"
-import {GradientText} from "@/components/ui/gradient-text"
-import {FadeIn} from "@/components/animation/fade-in"
-import {gsap} from "@/lib/gsap"
-import {useReducedMotion} from "@/hooks/use-reduced-motion"
-import {cn} from "@/lib/utils"
+import {useEffect, useRef} from "react";
+import {useGsapContext} from "@/hooks/use-gsap";
+import {Section} from "@/components/ui/section";
+import {GradientText} from "@/components/ui/gradient-text";
+import {FadeIn} from "@/components/animation/fade-in";
+import {gsap} from "@/lib/gsap";
+import {useReducedMotion} from "@/hooks/use-reduced-motion";
+import {cn} from "@/lib/utils";
 
 interface TechItem {
-  name: string
-  icon?: React.ReactNode
+  name: string;
+  icon?: React.ReactNode;
 }
 
 interface TechCategory {
-  name: string
-  items: TechItem[]
+  name: string;
+  items: TechItem[];
 }
 
 interface TechStackProps {
-  categories: TechCategory[]
+  categories: TechCategory[];
 }
 
 /** 카테고리별 액센트 색상 매핑 — 라이트: 600, 다크: 400 */
-const categoryColors: Record<string, {border: string; bg: string; text: string; glow: string; rgb: string}> = {
+const categoryColors: Record<
+  string,
+  {border: string; bg: string; text: string; glow: string; rgb: string}
+> = {
   Frontend: {
     border: "border-indigo-500/20 dark:border-indigo-400/30",
     bg: "bg-indigo-500/5 dark:bg-indigo-400/5",
@@ -60,7 +63,7 @@ const categoryColors: Record<string, {border: string; bg: string; text: string; 
     glow: "group-hover:shadow-amber-500/15 dark:group-hover:shadow-amber-400/20",
     rgb: "245, 158, 11",
   },
-}
+};
 
 const defaultColor = {
   border: "border-glass-hover-border",
@@ -68,31 +71,31 @@ const defaultColor = {
   text: "text-foreground/80",
   glow: "group-hover:shadow-glass-shadow",
   rgb: "148, 163, 184",
-}
+};
 
 /**
  * 기술 스택 섹션 컴포넌트.
  * 카테고리별 색상 강조, 3D tilt 호버, 교차 방향 진입 애니메이션을 포함한다.
  */
 export function TechStack({categories}: TechStackProps) {
-  const gridRef = useRef<HTMLDivElement>(null)
-  const reducedMotion = useReducedMotion()
+  const gridRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   // GSAP 스크롤 등장 애니메이션 — ScrollTrigger 2개로 통합 (기존 10개 → 2개)
   useGsapContext(gridRef, () => {
-    if (!gridRef.current || reducedMotion) return
+    if (!gridRef.current || reducedMotion) return;
 
-    const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]")
-    if (cards.length === 0) return
+    const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]");
+    if (cards.length === 0) return;
 
     // 카드 교차 방향 진입 — 단일 ScrollTrigger + stagger
     gsap.set(cards, {
       opacity: 0,
-      x: (i: number) => i % 2 === 0 ? -80 : 80,
+      x: (i: number) => (i % 2 === 0 ? -80 : 80),
       y: 40,
-      rotateY: (i: number) => i % 2 === 0 ? -8 : 8,
+      rotateY: (i: number) => (i % 2 === 0 ? -8 : 8),
       scale: 0.92,
-    })
+    });
 
     gsap.to(cards, {
       opacity: 1,
@@ -108,12 +111,12 @@ export function TechStack({categories}: TechStackProps) {
         start: "top 85%",
         toggleActions: "play none none none",
       },
-    })
+    });
 
     // 뱃지 stagger 등장 — 단일 ScrollTrigger
-    const allBadges = gridRef.current.querySelectorAll("[data-tech-badge]")
+    const allBadges = gridRef.current.querySelectorAll("[data-tech-badge]");
     if (allBadges.length > 0) {
-      gsap.set(allBadges, {opacity: 0, scale: 0.6, y: 20, rotateX: -30})
+      gsap.set(allBadges, {opacity: 0, scale: 0.6, y: 20, rotateX: -30});
 
       gsap.to(allBadges, {
         opacity: 1,
@@ -128,62 +131,66 @@ export function TechStack({categories}: TechStackProps) {
           start: "top 80%",
           toggleActions: "play none none none",
         },
-      })
+      });
     }
 
     // 카테고리 도트 펄스 — CSS @keyframes로 위임 (off-screen 시 GPU 유휴)
-    const dots = gridRef.current.querySelectorAll<HTMLElement>("[data-category-dot]")
+    const dots = gridRef.current.querySelectorAll<HTMLElement>("[data-category-dot]");
     dots.forEach((dot) => {
-      dot.classList.add("animate-dot-pulse")
-    })
-  }, [reducedMotion])
+      dot.classList.add("animate-dot-pulse");
+    });
+  }, [reducedMotion]);
 
   // 3D tilt 효과 — gsap.quickTo()로 mousemove당 tween 재생성 방지
   useEffect(() => {
-    if (!gridRef.current || reducedMotion) return
+    if (!gridRef.current || reducedMotion) return;
 
-    const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]")
+    const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-tech-card]");
 
-    const controllers: Array<{ card: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = []
+    const controllers: Array<{
+      card: HTMLElement;
+      move: (e: MouseEvent) => void;
+      leave: () => void;
+    }> = [];
 
     cards.forEach((card) => {
-      const qRotateY = gsap.quickTo(card, "rotateY", { duration: 0.4, ease: "power2.out" })
-      const qRotateX = gsap.quickTo(card, "rotateX", { duration: 0.4, ease: "power2.out" })
-      const glowEl = card.querySelector<HTMLElement>("[data-card-glow]")
+      const qRotateY = gsap.quickTo(card, "rotateY", {duration: 0.4, ease: "power2.out"});
+      const qRotateX = gsap.quickTo(card, "rotateX", {duration: 0.4, ease: "power2.out"});
+      const glowEl = card.querySelector<HTMLElement>("[data-card-glow]");
 
       function handleMouseMove(e: MouseEvent) {
-        const rect = card.getBoundingClientRect()
-        const x = (e.clientX - rect.left) / rect.width - 0.5
-        const y = (e.clientY - rect.top) / rect.height - 0.5
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-        qRotateY(x * 10)
-        qRotateX(-y * 10)
+        qRotateY(x * 10);
+        qRotateX(-y * 10);
 
         if (glowEl) {
-          glowEl.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(var(--card-rgb), 0.15) 0%, transparent 60%)`
+          glowEl.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(var(--card-rgb), 0.15) 0%, transparent 60%)`;
         }
       }
 
       function handleMouseLeave() {
-        qRotateY(0)
-        qRotateX(0)
+        qRotateY(0);
+        qRotateX(0);
         if (glowEl) {
-          glowEl.style.background = "transparent"
+          glowEl.style.background = "transparent";
         }
       }
 
-      card.addEventListener("mousemove", handleMouseMove)
-      card.addEventListener("mouseleave", handleMouseLeave)
-      controllers.push({ card, move: handleMouseMove, leave: handleMouseLeave })
-    })
+      card.addEventListener("mousemove", handleMouseMove);
+      card.addEventListener("mouseleave", handleMouseLeave);
+      controllers.push({card, move: handleMouseMove, leave: handleMouseLeave});
+    });
 
     return () => {
-      controllers.forEach(({ card, move, leave }) => {
-        card.removeEventListener("mousemove", move)
-        card.removeEventListener("mouseleave", leave)
-      })
-    }
-  }, [reducedMotion])
+      controllers.forEach(({card, move, leave}) => {
+        card.removeEventListener("mousemove", move);
+        card.removeEventListener("mouseleave", leave);
+      });
+    };
+  }, [reducedMotion]);
 
   return (
     <Section spacing="lg" container>
@@ -195,17 +202,16 @@ export function TechStack({categories}: TechStackProps) {
           <p className="mt-4 text-lg leading-relaxed text-foreground/80">
             <span className="text-accent-highlight">실무에서 검증된 기술</span>을 기반으로
             효율적이고 확장 가능한 시스템을 구축합니다.
-            <br />
-            각 기술의 선택에는{" "}
-            <span className="text-accent-highlight">명확한 이유</span>가 있습니다.
+            <br />각 기술의 선택에는 <span className="text-accent-highlight">명확한 이유</span>가
+            있습니다.
           </p>
         </FadeIn>
       </FadeIn>
 
       <div ref={gridRef} className="mt-10 grid gap-6 md:grid-cols-2 perspective-1000">
         {categories.map((category) => {
-          const color = categoryColors[category.name] ?? defaultColor
-          const rgb = "rgb" in color ? color.rgb : defaultColor.rgb
+          const color = categoryColors[category.name] ?? defaultColor;
+          const rgb = "rgb" in color ? color.rgb : defaultColor.rgb;
 
           return (
             <div
@@ -243,16 +249,11 @@ export function TechStack({categories}: TechStackProps) {
                   />
                   <span
                     data-category-dot
-                    className={cn(
-                      "absolute inset-0 rounded-full",
-                      color.bg,
-                    )}
+                    className={cn("absolute inset-0 rounded-full", color.bg)}
                     aria-hidden="true"
                   />
                 </span>
-                <h3 className={cn("text-lg font-semibold", color.text)}>
-                  {category.name}
-                </h3>
+                <h3 className={cn("text-lg font-semibold", color.text)}>{category.name}</h3>
                 <span className="ml-auto text-xs text-muted-foreground tabular-nums">
                   {category.items.length}
                 </span>
@@ -278,11 +279,11 @@ export function TechStack({categories}: TechStackProps) {
                 ))}
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </Section>
-  )
+  );
 }
 
-export type {TechCategory, TechItem}
+export type {TechCategory, TechItem};

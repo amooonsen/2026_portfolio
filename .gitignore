@@ -42,3 +42,6 @@ next-env.d.ts
 
 # docs history (claude 작업 이력)
 /docs/history
+
+# skills (개인 전용 — 심링크 원본)
+/.skills

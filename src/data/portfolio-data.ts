@@ -5,7 +5,6 @@ import type {TechCategory} from "@/components/sections/tech-stack";
 export const navItems = [
   {label: "Projects", href: "/projects"},
   {label: "Experience", href: "/experience"},
-  // { label: "블로그", href: "https://blog.example.com", external: true },
   {label: "Contact", href: "/contact"},
 ];
 
