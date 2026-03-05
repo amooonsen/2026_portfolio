@@ -2,11 +2,7 @@ import type {TechCategory} from "@/components/sections/tech-stack";
 
 /* ─── 네비게이션 ─── */
 
-export const navItems = [
-  {label: "Projects", href: "/projects"},
-  {label: "Experience", href: "/experience"},
-  {label: "Contact", href: "/contact"},
-];
+export const navItems = [{label: "Experience", href: "/experience"}];
 
 /* ─── 기술 스택 ─── */
 
@@ -71,4 +67,3 @@ export const techCategories: TechCategory[] = [
     items: [{name: "Git"}, {name: "GitHub"}, {name: "GitLab"}, {name: "Figma"}, {name: "WAI-ARIA"}],
   },
 ];
-

@@ -402,7 +402,7 @@ export function IntroLoader({isSceneReady, onComplete, children}: IntroLoaderPro
                 ref={titleRef}
                 className="text-5xl font-bold tracking-tight text-foreground md:text-6xl perspective-1000 preserve-3d"
               >
-                Portfolio
+                Hello Ax Force
               </h1>
               <p
                 ref={subtitleRef}
