@@ -7,7 +7,7 @@ import {cache} from "react";
  * Sharp를 사용해 10×10으로 다운샘플링 후 JPEG base64로 인코딩한다.
  *
  * - SVG: 최적화 대상 아님 → undefined 반환
- * - 외부 URL: 원격 fetch 없이 → undefined 반환
+ * - 외부 URL: 원격 fetch 없이 → undefined
  * - 로컬 파일 없음 / 처리 실패: undefined 반환
  */
 export const getBlurDataURL = cache(async (imageSrc: string): Promise<string | undefined> => {

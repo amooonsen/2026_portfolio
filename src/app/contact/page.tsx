@@ -23,8 +23,8 @@ export default function ContactPage() {
         description={[
           <Fragment key="line-1">
             <PageHeaderHighlight>채용 문의</PageHeaderHighlight>,{" "}
-            <PageHeaderHighlight>협업 제안</PageHeaderHighlight>, 기술적인 대화까지 — 어떤
-            주제든 편하게 남겨주세요.
+            <PageHeaderHighlight>협업 제안</PageHeaderHighlight>, 기술적인 대화까지 — 어떤 주제든
+            편하게 남겨주세요.
           </Fragment>,
           <Fragment key="line-2">
             소속과 직위를 함께 적어주시면 더 빠르고 정확하게 답변드리겠습니다.
