@@ -29,20 +29,19 @@ export default function ExperiencePage() {
           title="Experience"
           description={[
             <Fragment key="line-1">
-              <PageHeaderHighlight>Next.js, TypeScript, React</PageHeaderHighlight>를 기반으로
-              엔터프라이즈급 웹 애플리케이션을 구축합니다.
+              4년간{" "}
+              <PageHeaderHighlight>삼성, 롯데, LG CNS</PageHeaderHighlight> 등 대형 SI
+              프로젝트에서 프론트엔드 개발을 맡아왔습니다.
             </Fragment>,
             <Fragment key="line-2">
-              <PageHeaderHighlight>React Hook Form + Zod</PageHeaderHighlight>로
-              타입 안전한 폼 시스템을 설계하고,{" "}
-              <PageHeaderHighlight>GSAP</PageHeaderHighlight>과{" "}
-              <PageHeaderHighlight>Chart.js</PageHeaderHighlight>로 인터랙션과 데이터를
-              시각화합니다.
+              2024년부터{" "}
+              <PageHeaderHighlight>AI 기반 솔루션 개발을 리드</PageHeaderHighlight>하며
+              기획·개발·자동화를 아우르는 역할로 확장했습니다.
             </Fragment>,
             <Fragment key="line-3">
-              <PageHeaderHighlight>Claude Code, Antigravity</PageHeaderHighlight> 등 AI 도구를
-              적극 활용하여 코드 생성부터 리팩토링, 디버깅까지 개발 전 과정의 생산성을 높이고
-              있습니다.
+              이 경험들이{" "}
+              <PageHeaderHighlight>AX Force</PageHeaderHighlight>에서 실험하고 증명하는
+              토대가 됩니다.
             </Fragment>,
           ]}
         />

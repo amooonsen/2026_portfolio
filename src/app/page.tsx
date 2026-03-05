@@ -19,9 +19,9 @@ export default function Home() {
   return (
     <HomeClient>
       <HeroSection
-        title="Welecome to AX FORCE!"
+        title="We're Ax Force"
         subtitle="조경문 매니저"
-        description="전(?) UX Group, 현 Ax Force 조경문 매니저 입니다.<br/> 4년 조금 넘게 웹 프로그래밍을 하고 있습니다.<br/> Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여<br/> 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
+        description="전(?) UX Group, 현 AX Force.<br/> 4년간 SI 현장에서 프론트엔드 개발을 쌓아왔고,<br/> 지금은 AI로 일하는 방식 자체를 바꾸는 실험을 하고 있습니다."
         ctaLabel="View Projects"
         ctaHref="/projects"
         secondaryLabel="My Journey"
@@ -30,9 +30,7 @@ export default function Home() {
 
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
-        text="기술 선택에는 이유가 있어야 하고 코드는 레거시가 되어도 이해할 수 있어야 합니다.
-              AI를 적극 활용하되 생성된 코드를 이해하고 검증하는 것이 개발자의 역할이라고 생각합니다.
-              성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
+        text="시장이 방향을 정하기 전, 우리는 이미 해보고 있어야 한다.<br/> 말하기 전에 해보고, 제안하기 전에 증명하고,<br/> 혼자 하지 않고 함께 간다."
       />
 
       {/* 팀 철학 */}
@@ -63,7 +61,9 @@ export default function Home() {
           <FadeIn delay={0.5}>
             <p className="mt-4 text-lg leading-relaxed text-foreground/80">
               AI는 우리를 대체하는 것이 아닌&nbsp;
-              <span className="text-accent-highlight">이전에는 불가능했던 것을 가능하게 하는 증폭기</span>
+              <span className="text-accent-highlight">
+                이전에는 불가능했던 것을 가능하게 하는 증폭기
+              </span>
               입니다.
               <br />
               단, <span className="text-accent-highlight">판단은 언제나 우리가 합니다.</span>
