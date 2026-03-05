@@ -243,30 +243,45 @@ type AIUsageLevel = {
 
 > PPT 3장 대신, **현재의 나를 코드로 표현한다.**
 > 언어, 형식, 길이는 자유. 단, 진짜 나여야 한다.
+> 개발만이 아니다 — 기획, 디자인, 아이데이션, 문제 발굴 등 자신이 움직이는 전 영역을 담는다.
 
 ```typescript
 // 예시: 조경문의 코딩본
 const me = {
   name: "조경문",
-  role: "Frontend Developer",
+  role: "AX Engineer — Frontend · AI · Product",
 
   currentState: {
-    focus: ["AI-assisted development", "DX 개선", "인터랙션 설계"],
-    learning: ["Agent 기반 워크플로우", "LLM 프롬프트 최적화"],
-    using: ["Claude Code", "n8n", "GSAP", "Three.js"]
+    focus: [
+      "AI-assisted development",
+      "기획 아이데이션 자동화",
+      "디자인-개발 워크플로우 통합",
+      "사용자 경험 설계",
+    ],
+    learning: [
+      "Agent 기반 워크플로우",
+      "LLM 프롬프트 최적화",
+      "Product thinking — 문제 발굴과 정의",
+    ],
+    using: {
+      ideation:    ["ChatGPT", "Claude", "Perplexity", "Notion AI"],
+      design:      ["Figma", "v0", "Midjourney"],
+      development: ["Claude Code", "Cursor", "Next.js", "Three.js"],
+      automation:  ["n8n", "GitHub Actions"],
+    },
   },
 
-  belief: "좋은 코드는 사람을 위한 경험을 만든다",
+  belief: "기술은 수단이고, 사람의 문제를 푸는 것이 목적이다",
 
   question: "AI와 함께 일할 때, 나는 어떤 사람이 되고 싶은가?",
 
   // 이번 발표에서 하고 싶은 말
-  message: "우리가 함께 실험하면, 더 빨리, 더 멀리 갈 수 있다"
+  message: "우리가 함께 실험하면, 더 빨리, 더 멀리 갈 수 있다",
 };
 ```
 
 **각자의 코딩본이 담아야 할 것:**
-- 지금 내가 집중하는 것
+- 지금 내가 집중하는 영역 (개발에 국한하지 않을 것 — 기획, 디자인, 아이데이션, 발굴 모두 포함)
 - 내가 팀에 기여할 수 있는 것
 - 이 팀에서 해보고 싶은 것 또는 던지고 싶은 질문
 

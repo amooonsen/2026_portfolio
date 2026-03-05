@@ -4,66 +4,71 @@ import type {TechCategory} from "@/components/sections/tech-stack";
 
 export const navItems = [{label: "Experience", href: "/experience"}];
 
-/* ─── 기술 스택 ─── */
+/* ─── AX 역량 스펙트럼 ─── */
 
 export const techCategories: TechCategory[] = [
   {
-    name: "Frontend",
+    name: "기획 & 발굴",
+    items: [
+      {name: "Notion"},
+      {name: "FigJam"},
+      {name: "Miro"},
+      {name: "ChatGPT"},
+      {name: "Perplexity"},
+      {name: "Claude"},
+    ],
+  },
+  {
+    name: "디자인 & 프로토타입",
+    items: [
+      {name: "Figma"},
+      {name: "v0"},
+      {name: "Midjourney"},
+      {name: "DALL-E"},
+      {name: "Framer"},
+    ],
+  },
+  {
+    name: "프론트엔드 개발",
     items: [
       {name: "React"},
       {name: "Next.js"},
       {name: "TypeScript"},
-      {name: "JavaScript"},
       {name: "Vue.js"},
-      {name: "HTML5"},
-      {name: "CSS"},
       {name: "Tailwind CSS"},
-      {name: "SCSS"},
-    ],
-  },
-  {
-    name: "State & Form",
-    items: [
-      {name: "Zustand"},
-      {name: "React Hook Form"},
-      {name: "Zod"},
-      {name: "React Query"},
-      {name: "Vuex"},
-    ],
-  },
-  {
-    name: "Animation & Visualization",
-    items: [
       {name: "GSAP"},
-      {name: "Lottie.js"},
-      {name: "Amcharts"},
-      {name: "Chart.js"},
       {name: "Three.js"},
     ],
   },
   {
-    name: "Backend & Infra",
-    items: [
-      {name: "Supabase"},
-      {name: "Fastify"},
-      {name: "n8n"},
-      {name: "GitLab CI/CD"},
-      {name: "AWS"},
-      {name: "Sentry"},
-    ],
-  },
-  {
-    name: "AI & Productivity",
+    name: "AI & 자동화",
     items: [
       {name: "Claude Code"},
       {name: "Antigravity"},
       {name: "GitHub Copilot"},
-      {name: "v0"},
-      {name: "ChatGPT"},
+      {name: "Cursor"},
+      {name: "n8n"},
+      {name: "GitHub Actions"},
     ],
   },
   {
-    name: "Tools",
-    items: [{name: "Git"}, {name: "GitHub"}, {name: "GitLab"}, {name: "Figma"}, {name: "WAI-ARIA"}],
+    name: "데이터 & 시각화",
+    items: [
+      {name: "Amcharts"},
+      {name: "Chart.js"},
+      {name: "Lottie.js"},
+      {name: "Supabase"},
+      {name: "Fastify"},
+    ],
+  },
+  {
+    name: "협업 & 운영",
+    items: [
+      {name: "Git / GitHub"},
+      {name: "GitLab CI/CD"},
+      {name: "Sentry"},
+      {name: "AWS"},
+      {name: "Confluence"},
+    ],
   },
 ];
