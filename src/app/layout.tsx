@@ -29,59 +29,77 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// export const metadata: Metadata = {
-//   metadataBase: new URL(siteConfig.url),
-//   title: {
-//     default: siteConfig.name,
-//     template: `%s | ${siteConfig.author.name}`,
-//   },
-//   description: siteConfig.description,
-//   keywords: siteConfig.keywords,
-//   authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
-//   creator: siteConfig.author.name,
-//   icons: {
-//     icon: [
-//       { url: "/icons/icon-light-32.png", sizes: "32x32", type: "image/png", media: "(prefers-color-scheme: light)" },
-//       { url: "/icons/icon-dark-32.png", sizes: "32x32", type: "image/png", media: "(prefers-color-scheme: dark)" },
-//       { url: "/icons/icon-light-16.png", sizes: "16x16", type: "image/png", media: "(prefers-color-scheme: light)" },
-//       { url: "/icons/icon-dark-16.png", sizes: "16x16", type: "image/png", media: "(prefers-color-scheme: dark)" },
-//     ],
-//     apple: [
-//       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
-//     ],
-//     other: [
-//       { rel: "icon", url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-//     ],
-//   },
-//   openGraph: {
-//     type: "website",
-//     locale: "ko_KR",
-//     url: "/",
-//     title: siteConfig.name,
-//     description: siteConfig.description,
-//     siteName: siteConfig.name,
-//   },
-//   twitter: {
-//     card: "summary_large_image",
-//     title: siteConfig.name,
-//     description: siteConfig.description,
-//     creator: "@cho_kyeongmoon",
-//   },
-//   robots: {
-//     index: true,
-//     follow: true,
-//     googleBot: {
-//       index: true,
-//       follow: true,
-//       "max-video-preview": -1,
-//       "max-image-preview": "large",
-//       "max-snippet": -1,
-//     },
-//   },
-//   alternates: {
-//     canonical: "/",
-//   },
-// }
+// DEV COMMIT
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.author.name}`,
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{name: siteConfig.author.name, url: siteConfig.author.url}],
+  creator: siteConfig.author.name,
+  icons: {
+    icon: [
+      {
+        url: "/icons/icon-light-32.png",
+        sizes: "32x32",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icons/icon-dark-32.png",
+        sizes: "32x32",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icons/icon-light-16.png",
+        sizes: "16x16",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icons/icon-dark-16.png",
+        sizes: "16x16",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+    apple: [{url: "/apple-icon.png", sizes: "180x180", type: "image/png"}],
+    other: [{rel: "icon", url: "/icons/icon-192.png", sizes: "192x192", type: "image/png"}],
+  },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "/",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    creator: "@cho_kyeongmoon",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "/",
+  },
+};
 
 /**
  * 루트 레이아웃 컴포넌트.
