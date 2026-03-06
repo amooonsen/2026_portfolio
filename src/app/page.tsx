@@ -6,9 +6,8 @@ import {GlassCard} from "@/components/ui/glass-card";
 import {GradientText} from "@/components/ui/gradient-text";
 import {FadeIn} from "@/components/animation/fade-in";
 import {StaggerChildren} from "@/components/animation/stagger-children";
-import {TechStack} from "@/components/sections/tech-stack";
+import {AxCapabilities} from "@/components/sections/ax-capabilities";
 import {PageEndCelebration} from "@/components/sections/page-end-celebration";
-import {techCategories} from "@/data/portfolio-data";
 import {philosophies} from "@/data/constants/home";
 
 // TEST COMMIT
@@ -23,23 +22,28 @@ export default function Home() {
   return (
     <HomeClient>
       <HeroSection
-        title="Crafting Digital Experiences"
-        subtitle="개발자 조경문"
-        description="React, Next.js, TypeScript 기반의 4년차 프론트엔드 개발자 입니다.<br/> 팀의 개발 표준을 세우고 AI를 통해 반복을 덜어내고 있습니다.<br/> Claude Code, Antigravity 등 AI 도구를 실무에 적극 활용하여<br/> 개발 생산성과 코드 품질을 동시에 높이고 있습니다."
-        ctaLabel="View Projects"
-        ctaHref="/projects"
+        title="We're AX Force"
+        subtitle="Dear Team Members"
+        description="안녕하세요. 조경문 매니저 입니다.<br/>
+        전(?) UX Group, 현 AX Force의 팀원입니다.<br/>
+        4년간 퍼블리싱 및 프론트엔드 개발을 쌓아왔고<br/> 지금은 일하는 방식 자체를 바꾸는 여정에 합류 했습니다✌️✌️"
+        // ctaLabel="View Projects"
+        // ctaHref="/projects"
         secondaryLabel="My Journey"
         secondaryHref="/experience"
       />
 
       {/* 스크롤 리빌 텍스트 */}
       <AboutHero
-        text="기술 선택에는 이유가 있어야 하고 코드는 레거시가 되어도 이해할 수 있어야 합니다.
-              AI를 적극 활용하되 생성된 코드를 이해하고 검증하는 것이 개발자의 역할이라고 생각합니다.
-              성능·유지보수성·확장성을 균형있게 고려하며, 팀과 함께 성장하는 개발 문화를 만드려 노력합니다."
+        text="이미 인공지능 기술은 시대를 앞서 갔습니다.<br/>
+        기술의 변혁을 시장을 주도할 수는 없습니다.<br/>
+        하지만 우리는 Maintainer — 공급자가 될 수 있습니다.<br/>말하기 전에 해보고, 제안하기 전에 증명해야 합니다.<br/>
+        ETRIBE의 헤게모니 아래 하나의 팀이 되었습니다.<br/>
+        Ai transformation eXperience. AX Force.<br/>
+        우리의 변화는 우리가 주도합나다."
       />
 
-      {/* 개발 철학 */}
+      {/* 팀 철학 */}
       <Section spacing="lg" container>
         <FadeIn>
           <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
@@ -47,44 +51,39 @@ export default function Home() {
           </GradientText>
           <FadeIn delay={0.1}>
             <p className="mt-6 text-lg leading-relaxed text-foreground/80">
-              개발, 더 나아가 제품을 만들 때 가장 중요한 것은
-              <span className="text-accent-highlight"> &ldquo;왜?&rdquo;라는 질문</span>이라고
-              생각합니다.
-              <br /> 왜 이 스펙을 선택했는지. 왜 이 구조가 더 나은지. 기술 선택에 명확한 이유가 있을
-              때
+              <span className="text-accent-highlight font-mono">f(problem) = value</span>
               <br />
-              <span className="text-accent-highlight">
-                비로소 확장 가능하고 유지보수하기 쉬운 시스템
-              </span>
-              이 만들어집니다.
+              우리는 현실의 문제를 입력받아{" "}
+              <span className="text-accent-highlight">AI로 가속된 실제 결과물</span>을 출력하는
+              팀입니다.
+              <br />
+              변수처럼 유연하게 움직이고, 함수처럼 명확한 결과를 만듭니다.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
             <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-              기술적 의사결정뿐만 아니라&nbsp;
-              <span className="text-accent-highlight">팀과 함께 성장하는 것</span>을 중요하게
-              생각합니다.
-              <br /> 코드 리뷰 문화를 정착시키고, 기술 문서를 체계화 하였습니다.
+              기획·디자인·개발·자동화 — 영역을 가리지 않고{" "}
+              <span className="text-accent-highlight">먼저 해보고, 작동하는 것으로 말합니다.</span>
+              <br />
+              AI를 도구가 아닌 동료로, 경험을 개인의 자산이 아닌 팀의 자산으로.
             </p>
           </FadeIn>
           <FadeIn delay={0.5}>
             <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-              AI는 개발자를 대체하는 것이 아닌&nbsp;
-              <span className="text-accent-highlight">더 본질적인 문제에 집중하게 해주는 도구</span>
-              라고 생각합니다.
-              <br />
-              개발자는
+              AI는 우리를 대체하는 것이 아닌&nbsp;
               <span className="text-accent-highlight">
-                문제를 해결하고 가치를 만드는 사람&nbsp;
+                이전에는 불가능했던 것을 가능하게 하는 증폭기
               </span>
-              이라고 믿습니다.
+              입니다.
+              <br />
+              단, <span className="text-accent-highlight">판단은 언제나 우리가 합니다.</span>
             </p>
           </FadeIn>
         </FadeIn>
 
         <StaggerChildren
           className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          aria-label="개발 철학"
+          aria-label="AX FORCE 팀 철학"
         >
           {philosophies.map((item) => (
             <GlassCard key={item.title} padding="lg" hover tabIndex={0}>
@@ -114,8 +113,8 @@ export default function Home() {
         </StaggerChildren>
       </Section>
 
-      {/* 기술 스택 */}
-      <TechStack categories={techCategories} />
+      {/* AX 실행 방법론 */}
+      <AxCapabilities />
 
       {/* 축하 애니메이션 — 최하단 */}
       <PageEndCelebration />
