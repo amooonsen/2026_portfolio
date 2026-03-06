@@ -10,8 +10,11 @@ import {AxCapabilities} from "@/components/sections/ax-capabilities";
 import {PageEndCelebration} from "@/components/sections/page-end-celebration";
 import {philosophies} from "@/data/constants/home";
 
+// TEST COMMIT
+
 /**
  * 메인 페이지 컴포넌트.
+ *
  * 3D 우주 배경의 Hero 섹션, 소개 콘텐츠, 둘러보기 섹션을 표시한다.
  * 초기 로드 시 인트로 로딩 화면을 표시한다.
  */
