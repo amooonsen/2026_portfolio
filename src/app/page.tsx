@@ -19,11 +19,11 @@ export default function Home() {
   return (
     <HomeClient>
       <HeroSection
-        title="We're Ax Force"
+        title="We're AX Force"
         subtitle="Dear Team Members"
         description="안녕하세요. 조경문 매니저 입니다.<br/>
         전(?) UX Group, 현 AX Force의 팀원입니다.<br/>
-        4년간 퍼블리싱 및 프론트엔드 개발을 쌓아왔고,<br/> 지금은 일하는 방식 자체를 바꾸는 여정에 합류 했습니다✌️✌️."
+        4년간 퍼블리싱 및 프론트엔드 개발을 쌓아왔고<br/> 지금은 일하는 방식 자체를 바꾸는 여정에 합류 했습니다✌️✌️"
         // ctaLabel="View Projects"
         // ctaHref="/projects"
         secondaryLabel="My Journey"
