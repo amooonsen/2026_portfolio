@@ -93,52 +93,29 @@ export interface JourneyItem {
 export const journeyItems: JourneyItem[] = [
   {
     year: "2021",
-    title: "입사 — 첫 SI 프로젝트",
-    description:
-      "이트라이브 입사 후 RISE ETF 데이터 시각화를 단독 담당했습니다. Amcharts 5종 이상의 차트를 설계하고 WCAG 2.1을 적용해 웹 접근성 인증 마크를 획득했습니다.",
-    projects: [{slug: "rise-etf", name: "RISE ETF"}],
+    title: "입사",
+    description: "이트라이브 입사 후 퍼블리셔로써 첫 커리어를 시작했습니다!",
   },
   {
     year: "2022",
-    title: "대형 고객사 SI 연속 수행",
-    description:
-      "메리츠화재, 호텔롯데, 삼성카드, 이트라이브 자사 홈페이지를 연달아 수행했습니다. GSAP·Lottie.js 기반 인터랙션과 Lerp 스무스 스크롤 엔진을 직접 설계했고, 레거시 리팩토링과 비즈니스 로직 모듈화를 통해 유지보수성을 개선했습니다.",
-    projects: [
-      {slug: "meritz-fire", name: "메리츠화재"},
-      {slug: "hotel-lotte", name: "호텔롯데"},
-      {slug: "samsungcard-platform", name: "삼성카드"},
-      {slug: "etribe-homepage", name: "이트라이브"},
-    ],
-  },
-  {
-    year: "2023",
-    title: "네이티브-웹 통신 & 크로스 플랫폼",
-    description:
-      "래미안 홈닉 Vue.js 웹뷰 개발에서 네이티브 앱 통신 인터페이스를 직접 설계했습니다. Chart.js로 관리비 데이터를 시각화하고 iOS/Android 크로스 플랫폼 호환성을 확보했습니다.",
-    projects: [{slug: "raemian-homenic", name: "래미안 홈닉"}],
+    title: "전문적인 UI 스크립터로",
+    description: "",
   },
   {
     year: "2024",
-    title: "AI 솔루션 리드 — 전환점",
-    description:
-      "사내 스타트업 AI CARAMEL의 FE/BE를 리드해 삼성·롯데 대상 AI 분석 통합 솔루션을 End-to-End로 개발했습니다. Next.js 대시보드 아키텍처 설계, Supabase·Fastify 연동, n8n 자동화 파이프라인 구축까지 직접 수행하며 AI 제품 개발로 전환점을 만들었습니다.",
-    projects: [
-      {slug: "ai-caramel", name: "AI CARAMEL"},
-      {slug: "funetf-charts", name: "FunETF"},
-      {slug: "kpmg-homepage", name: "KPMG"},
-    ],
+    title: "프론트엔드 개발을 하다",
+    description: "",
   },
   {
     year: "2025",
-    title: "성능 최적화 & AI 워크플로우 내재화",
+    title: "AI 솔루션 리드 — 전환점",
     description:
-      "LG CNS 채용 솔루션에서 LCP 2s 이하, INP 150ms 이하 Core Web Vitals를 달성했습니다. Claude Code, Antigravity 등 AI 도구를 개발 워크플로우 전반에 통합하며 AX Force 합류를 준비했습니다.",
-    projects: [{slug: "lgcns-recruitment", name: "LG CNS 채용 솔루션"}],
+      "AI CARAMEL. 실제 운영 고객사에 도입 후 유저 피드백 수집 후 고도화를 했습니다. 이제는 제품화 준비 중!",
   },
   {
     year: "2026",
-    title: "AX Force — AI 시대의 실행 조직",
+    title: "AX Force — 이제는 새로운 팀에서",
     description:
-      "기존 SI 업무를 넘어 AI 선적용 실험 조직 AX Force에 합류했습니다. 기획·디자인·개발·자동화 전 영역에서 AI를 증폭기로 활용하는 방법론을 팀과 함께 만들어가고 있습니다.",
+      "기존 SI 업무를 넘어 AI 선적용 실험 조직 AX Force에 합류했습니다. 함께 만들어가길 바랍니다 :)",
   },
 ];
