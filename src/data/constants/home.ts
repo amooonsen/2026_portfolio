@@ -1,4 +1,4 @@
-/** 메인 페이지 개발 철학 데이터 */
+/** 메인 페이지 팀 철학 데이터 */
 export interface Philosophy {
   number: string;
   title: string;
@@ -9,68 +9,68 @@ export interface Philosophy {
 export const philosophies: Philosophy[] = [
   {
     number: "01",
-    title: "사용자 중심 설계",
+    title: "선험(先驗) — 먼저 해본 사람이 말한다",
     description:
-      "기술보다 사용자를 먼저 생각합니다. 모든 인터페이스는 사용자가 목적을 달성하는 데 집중할 수 있도록 직관적이어야 합니다. 접근성과 사용성을 기반으로 한 설계를 추구합니다.",
+      "AI 도구, 자동화 워크플로우, 새로운 패러다임. 조직이 '검토해봐'라고 하기 전에 우리는 이미 써보고 있어야 한다. 경험 없는 의견은 의견이 아니다.",
     details: [
-      "WCAG 2.1 AA 기준 접근성 준수",
-      "사용자 여정 기반 UI 설계",
-      "키보드 네비게이션, 스크린 리더 지원",
+      "도구는 써봐야 안다 — 아티클은 정보, 실적용이 경험",
+      "먼저 실험하고, 결과로 말한다",
+      "AI를 기획·디자인·개발 전 영역에 선적용",
     ],
   },
   {
     number: "02",
-    title: "견고한 코드",
+    title: "실행 우선 (Execution First)",
     description:
-      "읽기 쉽고 유지보수 가능한 코드를 추구합니다. TypeScript의 타입 안전성과 일관된 컨벤션을 기반으로 하되, Claude Code 등 AI 도구를 활용한 코드 리뷰와 리팩토링으로 품질을 한 단계 높입니다.",
+      "완벽한 계획보다 불완전한 실행이 낫다. MVP를 만들어 보여주고, 작동하는 것으로 대화한다. '이런 게 가능합니다'가 아닌 '이게 작동합니다'로 말한다.",
     details: [
-      "TypeScript strict mode 기반 타입 안전성",
-      "AI 보조 코드 리뷰로 패턴 일관성 검증",
-      "ESLint, Prettier로 일관된 컨벤션 유지",
+      "작게 시작하고, 빠르게 검증하고, 담대하게 확장",
+      "작동하는 데모가 백 마디 말보다 강하다",
+      "설득은 PT가 아닌 결과물로 한다",
     ],
   },
   {
     number: "03",
-    title: "성능 최적화",
+    title: "조용한 영향력 (Silent Influence)",
     description:
-      "빠른 로딩과 부드러운 인터랙션은 좋은 사용자 경험의 기본입니다. Core Web Vitals를 기준으로 측정 가능한 성능 개선을 추구하며, 번들 사이즈와 렌더링 최적화에 집중합니다.",
+      "우리의 목표는 주목이 아니다. 함께 일한 팀이 '이 방식으로 하면 더 빠르네'라고 느끼게 만드는 것. 소음 없이 기준을 바꾸는 것이 진짜 영향력이다.",
     details: [
-      "코드 스플리팅과 Lazy loading 전략",
-      "이미지 최적화 (WebP/AVIF, 반응형)",
-      "Lighthouse 기반 정량적 성능 관리",
+      "변화는 선언이 아닌 경험으로 전파된다",
+      "프로세스에 녹아드는 방식으로 영향을 준다",
+      "조직의 일하는 기준을 조용히 높인다",
     ],
   },
   {
     number: "04",
-    title: "디자인 시스템",
+    title: "AI는 대체재가 아닌 증폭기",
     description:
-      "일관된 사용자 경험의 기반은 체계적인 디자인 시스템입니다. 재사용 가능한 컴포넌트와 토큰 기반 스타일링으로 개발 속도와 디자인 일관성을 동시에 달성합니다.",
+      "AI가 나를 대신하는 것이 두렵다면, AI를 쓰는 사람에게 자리를 빼앗길 것이다. 우리는 AI와 함께 이전에는 불가능했던 것을 만드는 팀이다.",
     details: [
-      "Atomic Design 기반 컴포넌트 계층 설계",
-      "디자인 토큰으로 색상·타이포·간격 표준화",
-      "Storybook 기반 컴포넌트 문서화와 시각 테스트",
+      "f(problem) = value — AI로 가속된 실제 결과물",
+      "기획·디자인·개발·자동화 전 영역에서 AI를 증폭기로",
+      "도구는 수단, 목적은 더 큰 가치의 창출",
     ],
   },
   {
     number: "05",
-    title: "협업과 소통",
+    title: "AI는 파트너 — 판단은 내가 한다",
     description:
-      "좋은 코드는 혼자 만들 수 없습니다. 명확한 코드 리뷰, 기술 문서 작성, 디자이너와의 원활한 소통으로 팀의 시너지를 극대화합니다. 지식 공유를 통해 함께 성장합니다.",
+      "AI는 강력한 파트너이지만 주객이 전도되어서는 안 된다. AI의 출력은 참고 자료다. 그 답이 맞는지 틀린지를 판단하는 것은 여전히 우리의 몫이다.",
     details: [
-      "PR 기반 코드 리뷰 문화 정착",
-      "ADR(Architecture Decision Records) 운영",
-      "디자인-개발 핸드오프 프로세스 최적화",
+      "AI 출력을 검증하고 최적화하는 것이 핵심 역량",
+      "사실 확인을 넘어 신념까지 AI에 맡기지 않는다",
+      "AI를 잘 쓰는 동시에, 없이도 사고할 수 있는 팀",
     ],
   },
   {
     number: "06",
-    title: "AI 시대의 개발자",
+    title: "문서화는 자산이다",
     description:
-      "Claude Code, Antigravity, GitHub Copilot 등 AI 도구를 실무 워크플로우에 통합하여 개발 생산성을 극대화합니다. AI가 생성한 코드를 검증하고 최적화하는 것이 현대 개발자의 핵심 역량이라고 생각합니다.",
+      "경험은 공유되어야 자산이 된다. 시도한 것, 실패한 것, 성공한 것 — 모두 기록한다. 팀의 지식은 개인의 머릿속이 아닌 공유된 공간에 있어야 한다.",
     details: [
-      "Claude Code로 코드 생성·리팩토링·디버깅 자동화",
-      "Antigravity + Copilot 기반 AI 페어 프로그래밍",
-      "n8n + AI Agent로 반복 업무 자동화 파이프라인 구축",
+      "실패 기록이 팀의 가장 값진 성장 자산",
+      "반복 실수를 막는 가장 확실한 방법은 기록",
+      "지식 공유로 팀 전체의 수준이 올라간다",
     ],
   },
 ];
@@ -93,16 +93,16 @@ export interface JourneyItem {
 export const journeyItems: JourneyItem[] = [
   {
     year: "2021",
-    title: "입사 & 데이터 시각화",
+    title: "입사 — 첫 SI 프로젝트",
     description:
-      "이트라이브에 입사하여 RISE ETF 데이터 시각화 프로젝트를 담당했습니다. Amcharts로 5종 이상의 차트를 설계하고, WCAG 2.1 가이드라인을 적용하여 웹 접근성 인증 마크를 획득했습니다.",
+      "이트라이브 입사 후 RISE ETF 데이터 시각화를 단독 담당했습니다. Amcharts 5종 이상의 차트를 설계하고 WCAG 2.1을 적용해 웹 접근성 인증 마크를 획득했습니다.",
     projects: [{slug: "rise-etf", name: "RISE ETF"}],
   },
   {
     year: "2022",
-    title: "엔터프라이즈 프론트엔드",
+    title: "대형 고객사 SI 연속 수행",
     description:
-      "메리츠화재, 호텔롯데, 삼성카드, 이트라이브 자사 홈페이지 등 대형 고객사 프로젝트를 연달아 수행했습니다. 레거시 코드 리팩토링과 비즈니스 로직 모듈화를 통해 코드 품질을 개선하고, GSAP·Lottie.js 기반 인터랙션 구현 및 Lerp 기반 스무스 스크롤 엔진을 자체 설계했습니다.",
+      "메리츠화재, 호텔롯데, 삼성카드, 이트라이브 자사 홈페이지를 연달아 수행했습니다. GSAP·Lottie.js 기반 인터랙션과 Lerp 스무스 스크롤 엔진을 직접 설계했고, 레거시 리팩토링과 비즈니스 로직 모듈화를 통해 유지보수성을 개선했습니다.",
     projects: [
       {slug: "meritz-fire", name: "메리츠화재"},
       {slug: "hotel-lotte", name: "호텔롯데"},
@@ -112,16 +112,16 @@ export const journeyItems: JourneyItem[] = [
   },
   {
     year: "2023",
-    title: "웹뷰 & 크로스 플랫폼",
+    title: "네이티브-웹 통신 & 크로스 플랫폼",
     description:
-      "래미안 홈플랫폼 홈닉의 Vue.js 기반 웹뷰를 개발하며 네이티브 앱과의 통신 인터페이스를 구축했습니다. Chart.js로 관리비 데이터를 시각화하고, iOS/Android 크로스 플랫폼 호환성을 확보했습니다.",
+      "래미안 홈닉 Vue.js 웹뷰 개발에서 네이티브 앱 통신 인터페이스를 직접 설계했습니다. Chart.js로 관리비 데이터를 시각화하고 iOS/Android 크로스 플랫폼 호환성을 확보했습니다.",
     projects: [{slug: "raemian-homenic", name: "래미안 홈닉"}],
   },
   {
     year: "2024",
-    title: "FE 리드 & AI 솔루션",
+    title: "AI 솔루션 리드 — 전환점",
     description:
-      "사내 스타트업 AI CARAMEL의 FE/BE를 리드하여 삼성·롯데 대상 AI 분석 통합 솔루션을 개발했습니다. Next.js 기반 대시보드 아키텍처 설계, Supabase·Fastify 백엔드 연동, n8n 자동화 파이프라인 구축까지 End-to-End로 수행했습니다.",
+      "사내 스타트업 AI CARAMEL의 FE/BE를 리드해 삼성·롯데 대상 AI 분석 통합 솔루션을 End-to-End로 개발했습니다. Next.js 대시보드 아키텍처 설계, Supabase·Fastify 연동, n8n 자동화 파이프라인 구축까지 직접 수행하며 AI 제품 개발로 전환점을 만들었습니다.",
     projects: [
       {slug: "ai-caramel", name: "AI CARAMEL"},
       {slug: "funetf-charts", name: "FunETF"},
@@ -130,9 +130,15 @@ export const journeyItems: JourneyItem[] = [
   },
   {
     year: "2025",
-    title: "성능 최적화 & AI 워크플로우",
+    title: "성능 최적화 & AI 워크플로우 내재화",
     description:
-      "LG CNS 채용 솔루션 고도화 프로젝트에서 Core Web Vitals 최적화(LCP 2000ms 이하, INP 150ms 이하)를 달성하고, 400+ 폼 필드 렌더링 최적화를 수행했습니다. Claude Code, Antigravity 등 AI 도구를 개발 워크플로우 전반에 도입하여 코드 생성·리팩토링·디버깅 효율을 크게 높였습니다.",
+      "LG CNS 채용 솔루션에서 LCP 2s 이하, INP 150ms 이하 Core Web Vitals를 달성했습니다. Claude Code, Antigravity 등 AI 도구를 개발 워크플로우 전반에 통합하며 AX Force 합류를 준비했습니다.",
     projects: [{slug: "lgcns-recruitment", name: "LG CNS 채용 솔루션"}],
+  },
+  {
+    year: "2026",
+    title: "AX Force — AI 시대의 실행 조직",
+    description:
+      "기존 SI 업무를 넘어 AI 선적용 실험 조직 AX Force에 합류했습니다. 기획·디자인·개발·자동화 전 영역에서 AI를 증폭기로 활용하는 방법론을 팀과 함께 만들어가고 있습니다.",
   },
 ];
