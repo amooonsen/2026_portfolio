@@ -6,12 +6,12 @@ import {PageHeader, PageHeaderHighlight} from "@/components/sections/page-header
 import {journeyItems} from "@/data/constants/home";
 import {createMetadata} from "@/lib/metadata";
 
-export const metadata = createMetadata({
-  title: "Experience",
-  description:
-    "조경문의 4년 프론트엔드 개발 경력입니다. 삼성, 롯데, LG CNS 등 대형 고객사 프로젝트 경험을 확인하세요.",
-  path: "/experience",
-});
+// export const metadata = createMetadata({
+//   title: "Experience",
+//   description:
+//     "조경문의 4년 프론트엔드 개발 경력입니다. 삼성, 롯데, LG CNS 등 대형 고객사 프로젝트 경험을 확인하세요.",
+//   path: "/experience",
+// });
 
 /**
  * Experience 페이지.
@@ -29,18 +29,16 @@ export default function ExperiencePage() {
           title="Experience"
           description={[
             <Fragment key="line-1">
-              4년간{" "}
-              <PageHeaderHighlight>삼성, 롯데, LG CNS</PageHeaderHighlight> 등 대형 SI
-              프로젝트에서 프론트엔드 개발을 맡아왔습니다.
+              <PageHeaderHighlight>삼성, 롯데, LG CNS</PageHeaderHighlight> 등 대형 SI 프로젝트에서
+              프론트엔드 개발을 맡아왔습니다.
             </Fragment>,
             <Fragment key="line-2">
-              2024년부터{" "}
-              <PageHeaderHighlight>AI 기반 솔루션 개발을 리드</PageHeaderHighlight>하며
-              기획·개발·자동화를 아우르는 역할로 확장했습니다.
+              2021년 부터 업계와 들어와
+              <PageHeaderHighlight>퍼블리셔로 일을 시작</PageHeaderHighlight>하며
+              <PageHeaderHighlight>프론트엔드 개발자가 되었습니다.</PageHeaderHighlight>
             </Fragment>,
             <Fragment key="line-3">
-              이 경험들이{" "}
-              <PageHeaderHighlight>AX Force</PageHeaderHighlight>에서 실험하고 증명하는
+              이 경험들이 <PageHeaderHighlight>AX Force</PageHeaderHighlight>에서 실험하고 증명하는
               토대가 됩니다.
             </Fragment>,
           ]}
