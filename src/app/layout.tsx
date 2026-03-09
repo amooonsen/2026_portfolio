@@ -99,6 +99,8 @@ export const metadata: Metadata = {
   },
 };
 
+// DEV TEST
+
 /**
  * 루트 레이아웃 컴포넌트.
  * Pretendard 폰트, 다크 모드 초기화, 공용 네비게이션 및 Footer를 포함한다.
