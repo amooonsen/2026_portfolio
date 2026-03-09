@@ -28,40 +28,47 @@ const categoryColors: Record<
   string,
   {border: string; bg: string; text: string; glow: string; rgb: string}
 > = {
-  Frontend: {
+  "기획 & 발굴": {
     border: "border-indigo-500/20 dark:border-indigo-400/30",
     bg: "bg-indigo-500/5 dark:bg-indigo-400/5",
     text: "text-indigo-600 dark:text-indigo-400",
     glow: "group-hover:shadow-indigo-500/15 dark:group-hover:shadow-indigo-400/20",
     rgb: "99, 102, 241",
   },
-  "State & Form": {
+  "디자인 & 프로토타입": {
     border: "border-violet-500/20 dark:border-violet-400/30",
     bg: "bg-violet-500/5 dark:bg-violet-400/5",
     text: "text-violet-600 dark:text-violet-400",
     glow: "group-hover:shadow-violet-500/15 dark:group-hover:shadow-violet-400/20",
     rgb: "139, 92, 246",
   },
-  "Animation & Visualization": {
+  "프론트엔드 개발": {
     border: "border-pink-500/20 dark:border-pink-400/30",
     bg: "bg-pink-500/5 dark:bg-pink-400/5",
     text: "text-pink-600 dark:text-pink-400",
     glow: "group-hover:shadow-pink-500/15 dark:group-hover:shadow-pink-400/20",
     rgb: "236, 72, 153",
   },
-  "Backend & Infra": {
+  "AI & 자동화": {
+    border: "border-amber-500/20 dark:border-amber-400/30",
+    bg: "bg-amber-500/5 dark:bg-amber-400/5",
+    text: "text-amber-600 dark:text-amber-400",
+    glow: "group-hover:shadow-amber-500/15 dark:group-hover:shadow-amber-400/20",
+    rgb: "245, 158, 11",
+  },
+  "데이터 & 시각화": {
     border: "border-emerald-500/20 dark:border-emerald-400/30",
     bg: "bg-emerald-500/5 dark:bg-emerald-400/5",
     text: "text-emerald-600 dark:text-emerald-400",
     glow: "group-hover:shadow-emerald-500/15 dark:group-hover:shadow-emerald-400/20",
     rgb: "16, 185, 129",
   },
-  Tools: {
-    border: "border-amber-500/20 dark:border-amber-400/30",
-    bg: "bg-amber-500/5 dark:bg-amber-400/5",
-    text: "text-amber-600 dark:text-amber-400",
-    glow: "group-hover:shadow-amber-500/15 dark:group-hover:shadow-amber-400/20",
-    rgb: "245, 158, 11",
+  "협업 & 운영": {
+    border: "border-sky-500/20 dark:border-sky-400/30",
+    bg: "bg-sky-500/5 dark:bg-sky-400/5",
+    text: "text-sky-600 dark:text-sky-400",
+    glow: "group-hover:shadow-sky-500/15 dark:group-hover:shadow-sky-400/20",
+    rgb: "14, 165, 233",
   },
 };
 
@@ -196,14 +203,15 @@ export function TechStack({categories}: TechStackProps) {
     <Section spacing="lg" container>
       <FadeIn>
         <GradientText as="h2" gradient="primary" className="text-3xl font-bold">
-          Tech Stack
+          AX Capabilities
         </GradientText>
         <FadeIn delay={0.1}>
           <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-            <span className="text-accent-highlight">실무에서 검증된 기술</span>을 기반으로
-            효율적이고 확장 가능한 시스템을 구축합니다.
-            <br />각 기술의 선택에는 <span className="text-accent-highlight">명확한 이유</span>가
-            있습니다.
+            기획·발굴부터 디자인·개발·자동화·운영까지 —{" "}
+            <span className="text-accent-highlight">전 영역에 AI를 증폭기로 활용</span>합니다.
+            <br />
+            영역의 경계보다{" "}
+            <span className="text-accent-highlight">결과의 가치</span>를 먼저 생각합니다.
           </p>
         </FadeIn>
       </FadeIn>

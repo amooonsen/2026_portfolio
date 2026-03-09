@@ -73,12 +73,18 @@ export function AboutHero({text, className}: AboutHeroProps) {
   return (
     <div ref={wrapperRef} className={cn("relative h-[300vh]", className)}>
       <div className="sticky top-16 flex min-h-[calc(100vh-4rem)] items-center">
-        <div className="mx-auto max-w-5xl px-6">
-          <p ref={textRef} aria-label={text} className="font-bold leading-relaxed text-[7vw] sm:text-[5vw] md:text-[4vw] lg:text-[3.5vw] xl:text-[3vw] 2xl:text-[2.5vw]">
+        <div className="mx-auto max-w-5xl 2xl:max-w-432 px-6">
+          <p
+            ref={textRef}
+            aria-label={text}
+            className="font-bold leading-relaxed text-[7vw] sm:text-[5vw] md:text-[4vw] lg:text-[3.5vw] xl:text-[3vw] 2xl:text-[2.5vw]"
+          >
             {tokens.map((token, i) => {
               if (token.type === "br") return <br key={i} className={token.className} />;
               return reducedMotion ? (
-                <span key={i} className="text-foreground">{token.text}{" "}</span>
+                <span key={i} className="text-foreground">
+                  {token.text}{" "}
+                </span>
               ) : (
                 <span
                   key={i}

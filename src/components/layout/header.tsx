@@ -98,8 +98,11 @@ export function Header({items, className}: HeaderProps) {
       >
         <Container>
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="text-lg font-bold tracking-tight focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg">
-              Portfolio
+            <Link
+              href="/"
+              className="text-lg font-bold tracking-tight focus-visible:ring-2 focus-visible:ring-accent-indigo focus-visible:outline-none focus-visible:rounded-lg"
+            >
+              Ax Force
             </Link>
 
             <nav aria-label="메인 내비게이션" className="hidden md:flex items-center gap-1">
